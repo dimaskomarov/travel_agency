@@ -1,15 +1,14 @@
-package ua.dima.agency.dto;
+package ua.dima.agency.domain;
 
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.List;
 
 public class Tour {
     private Long id;
     private Double price;
     private Integer amountDay;
     private Instant dateDeparture;
-    private List<Country> countries;
+    private Long companyId;
+    private Long travelTypeId;
 
     private Tour() {
         //private constructor
@@ -47,12 +46,20 @@ public class Tour {
         this.dateDeparture = dateDeparture;
     }
 
-    public List<Country> getCountries() {
-        return countries;
+    public Long getCompanyId() {
+        return companyId;
     }
 
-    public void setCountries(List<Country> countries) {
-        this.countries = countries;
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
+
+    public Long getTravelTypeId() {
+        return travelTypeId;
+    }
+
+    public void setTravelTypeId(Long travelTypeId) {
+        this.travelTypeId = travelTypeId;
     }
 
     @Override
@@ -62,7 +69,8 @@ public class Tour {
                 ", price=" + price +
                 ", amountDay=" + amountDay +
                 ", dateDeparture=" + dateDeparture +
-                ", countries=" + countries +
+                ", companyId=" + companyId +
+                ", travelTypeId=" + travelTypeId +
                 '}';
     }
 
@@ -71,7 +79,6 @@ public class Tour {
     }
 
     public class Builder {
-
         private Builder() {
             //private constructor
         }
@@ -96,8 +103,13 @@ public class Tour {
             return this;
         }
 
-        public Builder withCountries(Country ... countries) {
-            Tour.this.countries = Arrays.asList(countries);
+        public Builder withCompanyId(Long companyId) {
+            Tour.this.companyId = companyId;
+            return this;
+        }
+
+        public Builder withTravelTypeId(Long travelTypeId) {
+            Tour.this.travelTypeId = travelTypeId;
             return this;
         }
 

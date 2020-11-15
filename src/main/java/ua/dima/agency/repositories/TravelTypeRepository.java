@@ -1,6 +1,6 @@
 package ua.dima.agency.repositories;
 
-import ua.dima.agency.dto.TravelType;
+import ua.dima.agency.domain.TravelType;
 
 import java.util.List;
 import java.util.Optional;

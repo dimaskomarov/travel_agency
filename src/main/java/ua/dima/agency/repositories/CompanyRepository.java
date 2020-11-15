@@ -1,6 +1,6 @@
 package ua.dima.agency.repositories;
 
-import ua.dima.agency.dto.Company;
+import ua.dima.agency.domain.Company;
 
 import java.util.List;
 import java.util.Optional;

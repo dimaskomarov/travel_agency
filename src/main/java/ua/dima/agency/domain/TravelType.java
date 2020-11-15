@@ -1,4 +1,4 @@
-package ua.dima.agency.dto;
+package ua.dima.agency.domain;
 
 public class TravelType {
     private Long id;
@@ -37,7 +37,6 @@ public class TravelType {
     }
 
     public class Builder {
-
         private Builder() {
             //private constructor
         }

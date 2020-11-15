@@ -1,6 +1,6 @@
 package ua.dima.agency.repositories;
 
-import ua.dima.agency.dto.Country;
+import ua.dima.agency.domain.Country;
 
 import java.util.List;
 import java.util.Optional;

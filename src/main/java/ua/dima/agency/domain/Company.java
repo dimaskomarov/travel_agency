@@ -1,14 +1,10 @@
-package ua.dima.agency.dto;
-
-import java.util.Arrays;
-import java.util.List;
+package ua.dima.agency.domain;
 
 public class Company {
     private Long id;
     private String name;
     private String address;
     private int age;
-    private List<Tour> tours;
 
     private Company() {
         //private constructor
@@ -46,14 +42,6 @@ public class Company {
         this.age = age;
     }
 
-    public void setTours(List<Tour> tours) {
-        this.tours = tours;
-    }
-
-    public List<Tour> getTours() {
-        return tours;
-    }
-
     @Override
     public String toString() {
         return "Company{" +
@@ -61,7 +49,6 @@ public class Company {
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
                 ", age=" + age +
-                ", tours=" + tours +
                 '}';
     }
 
@@ -70,7 +57,6 @@ public class Company {
     }
 
     public class Builder {
-
         private Builder() {
             //private constructor
         }
@@ -92,11 +78,6 @@ public class Company {
 
         public Builder withAge(Integer age) {
             Company.this.age = age;
-            return this;
-        }
-
-        public Builder withTours(Tour ... tours) {
-            Company.this.tours = Arrays.asList(tours);
             return this;
         }
 

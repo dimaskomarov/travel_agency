@@ -1,4 +1,4 @@
-package ua.dima.agency.dto;
+package ua.dima.agency.domain;
 
 public class Country {
     private Long id;
@@ -37,7 +37,6 @@ public class Country {
     }
 
     public class Builder {
-
         private Builder() {
             //private constructor
         }

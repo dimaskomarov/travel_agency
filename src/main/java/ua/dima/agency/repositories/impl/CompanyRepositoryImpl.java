@@ -7,13 +7,15 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import ua.dima.agency.dto.Company;
+import org.springframework.stereotype.Component;
+import ua.dima.agency.domain.Company;
 import ua.dima.agency.repositories.CompanyRepository;
 
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class CompanyRepositoryImpl implements CompanyRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(CompanyRepositoryImpl.class);
             
@@ -53,7 +55,11 @@ public class CompanyRepositoryImpl implements CompanyRepository {
             statement.setInt(3, company.getAge());
             return statement;
         }, keyHolder);
-        long id = Optional.of(keyHolder.getKey().longValue()).orElse(0L);
+        long id = 0;
+        Optional<Number> key = Optional.ofNullable(keyHolder.getKey());
+        if(key.isPresent()) {
+            id = key.get().longValue();
+        }
         return getOne(id);
     }
 

@@ -1,6 +1,6 @@
 package ua.dima.agency.repositories;
 
-import ua.dima.agency.dto.Tour;
+import ua.dima.agency.domain.Tour;
 
 import java.util.List;
 import java.util.Optional;
