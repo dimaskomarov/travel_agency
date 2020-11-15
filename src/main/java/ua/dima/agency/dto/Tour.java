@@ -19,20 +19,51 @@ public class Tour {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Double getPrice() {
         return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
     }
 
     public Integer getAmountDay() {
         return amountDay;
     }
 
+    public void setAmountDay(Integer amountDay) {
+        this.amountDay = amountDay;
+    }
+
     public Instant getDateDeparture() {
         return dateDeparture;
     }
 
+    public void setDateDeparture(Instant dateDeparture) {
+        this.dateDeparture = dateDeparture;
+    }
+
     public List<Country> getCountries() {
         return countries;
+    }
+
+    public void setCountries(List<Country> countries) {
+        this.countries = countries;
+    }
+
+    @Override
+    public String toString() {
+        return "Tour{" +
+                "id=" + id +
+                ", price=" + price +
+                ", amountDay=" + amountDay +
+                ", dateDeparture=" + dateDeparture +
+                ", countries=" + countries +
+                '}';
     }
 
     public static Builder createTour() {

@@ -12,8 +12,24 @@ public class TravelType {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getType() {
         return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    @Override
+    public String toString() {
+        return "TravelType{" +
+                "id=" + id +
+                ", type='" + type + '\'' +
+                '}';
     }
 
     public static Builder createTravelType() {
