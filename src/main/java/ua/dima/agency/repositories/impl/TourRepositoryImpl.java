@@ -49,7 +49,7 @@ public class TourRepositoryImpl implements TourRepository {
     public Optional<Tour> create(Tour tour) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO tours(price, amount_day, date_departure, company_id, travel_type_id) VALUES(?, ?, ?, ?, ?)", new String[] {"id"});
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO tours(price, amount_day, date_departure, company_id, travel_type_id) VALUES(?, ?, ?::timestamp, ?, ?)", new String[] {"id"});
             statement.setDouble(1, tour.getPrice());
             statement.setInt(2, tour.getAmountDay());
             statement.setString(3, tour.getDateDeparture().toString());
@@ -68,7 +68,16 @@ public class TourRepositoryImpl implements TourRepository {
     @Override
     public Optional<Tour> update(Long id, Tour tour) {
         try {
-            jdbcTemplate.update("UPDATE tours SET price=?, amount_day=?, date_departure=?, company_id=?, travel_type_id=? WHERE id=?", tour.getPrice(), tour.getAmountDay(), tour.getDateDeparture(), tour.getCompanyId(), tour.getTravelTypeId(), id);
+            jdbcTemplate.update(connection -> {
+                PreparedStatement statement = connection.prepareStatement("UPDATE tours SET price=?, amount_day=?, date_departure=?::timestamp, company_id=?, travel_type_id=? WHERE id=?");
+                statement.setDouble(1, tour.getPrice());
+                statement.setInt(2, tour.getAmountDay());
+                statement.setString(3, tour.getDateDeparture().toString());
+                statement.setLong(4, tour.getCompanyId());
+                statement.setLong(5, tour.getTravelTypeId());
+                statement.setLong(6, id);
+                return statement;
+            });
         } catch (DataAccessException e) {
             LOGGER.debug("Method update has been failed", e);
             return Optional.empty();

@@ -34,9 +34,9 @@ public class CountryTourRepositoryImpl implements CountryTourRepository {
     }
 
     @Override
-    public Optional<CountryTour> getOneByCountryId(Long countryId) {
+    public Optional<List<CountryTour>> getAllByCountryId(Long countryId) {
         try {
-            return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM countries_tours WHERE country_id = ?", new BeanPropertyRowMapper<>(CountryTour.class), countryId));
+            return Optional.of(jdbcTemplate.query("SELECT * FROM countries_tours WHERE country_id = ?", new BeanPropertyRowMapper<>(CountryTour.class), countryId));
         } catch(DataAccessException e) {
             LOGGER.debug("Method getOne has been failed", e);
             return Optional.empty();
@@ -44,9 +44,9 @@ public class CountryTourRepositoryImpl implements CountryTourRepository {
     }
 
     @Override
-    public Optional<CountryTour> getOneByTourId(Long tourId) {
+    public Optional<List<CountryTour>> getAllByTourId(Long tourId) {
         try {
-            return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM countries_tours WHERE tour_id = ?", new BeanPropertyRowMapper<>(CountryTour.class), tourId));
+            return Optional.of(jdbcTemplate.query("SELECT * FROM countries_tours WHERE tour_id = ?", new BeanPropertyRowMapper<>(CountryTour.class), tourId));
         } catch(DataAccessException e) {
             LOGGER.debug("Method getOne has been failed", e);
             return Optional.empty();
@@ -54,51 +54,19 @@ public class CountryTourRepositoryImpl implements CountryTourRepository {
     }
 
     @Override
-    public Optional<CountryTour> create(CountryTour countryTour) {
+    public void create(CountryTour countryTour) {
         jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO countries_tours(country_id, tour_id) VALUES(?, ?)", new String[] {"id"});
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO countries_tours(country_id, tour_id) VALUES(?, ?)");
             statement.setLong(1, countryTour.getCountryId());
             statement.setLong(2, countryTour.getTourId());
             return statement;
         });
-        return Optional.of(countryTour);
     }
 
     @Override
-    public Optional<CountryTour> updateByCountryId(Long countryId, CountryTour countryTour) {
+    public void delete(CountryTour countryTour) {
         try {
-            jdbcTemplate.update("UPDATE countries_tours SET country_id=? WHERE tour_id=?", countryTour.getCountryId(), countryTour.getTourId());
-        } catch (DataAccessException e) {
-            LOGGER.debug("Method update has been failed", e);
-            return Optional.empty();
-        }
-        return getOneByCountryId(countryId);
-    }
-
-    @Override
-    public Optional<CountryTour> updateByTourId(Long tourId, CountryTour countryTour) {
-        try {
-            jdbcTemplate.update("UPDATE countries_tours SET tour_id=? WHERE country_id=?", countryTour.getTourId(), countryTour.getCountryId());
-        } catch (DataAccessException e) {
-            LOGGER.debug("Method update has been failed", e);
-            return Optional.empty();
-        }
-        return getOneByTourId(tourId);
-    }
-
-    @Override
-    public void deleteByCountryId(Long countryId) {
-        try {
-            jdbcTemplate.update("DELETE FROM countries_tours WHERE country_id = ?", countryId);
-        } catch (DataAccessException e) {
-            LOGGER.debug("Method delete has been failed", e);
-        }
-    }
-
-    @Override
-    public void deleteByTourId(Long tourId) {
-        try {
-            jdbcTemplate.update("DELETE FROM countries_tours WHERE tour_id = ?", tourId);
+            jdbcTemplate.update("DELETE FROM countries_tours WHERE tour_id=? AND country_id=?", countryTour.getTourId(), countryTour.getCountryId());
         } catch (DataAccessException e) {
             LOGGER.debug("Method delete has been failed", e);
         }

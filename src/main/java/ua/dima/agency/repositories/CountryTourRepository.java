@@ -7,11 +7,8 @@ import java.util.Optional;
 
 public interface CountryTourRepository {
     Optional<List<CountryTour>> getAll();
-    Optional<CountryTour> getOneByCountryId(Long countryId);
-    Optional<CountryTour> getOneByTourId(Long tourId);
-    Optional<CountryTour> create(CountryTour countryTour);
-    Optional<CountryTour> updateByCountryId(Long countryId, CountryTour countryTour);
-    Optional<CountryTour> updateByTourId(Long tourId, CountryTour countryTour);
-    void deleteByCountryId(Long countryId);
-    void deleteByTourId(Long tourId);
+    Optional<List<CountryTour>> getAllByCountryId(Long countryId);
+    Optional<List<CountryTour>> getAllByTourId(Long tourId);
+    void create(CountryTour countryTour);
+    void delete(CountryTour countryTour);
 }

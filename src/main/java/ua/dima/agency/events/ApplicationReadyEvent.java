@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import ua.dima.agency.domain.*;
 import ua.dima.agency.repositories.*;
 
-import java.time.Instant;
+import java.time.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -99,51 +99,40 @@ public class ApplicationReadyEvent {
         CountryTour defaultCountryTour = CountryTour.createCountryTour().build();
 
         CountryTour testCountryTour = CountryTour.createCountryTour()
-                .withCountryId(1L)
-                .withTourId(1L)
+                .withCountryId(5L)
+                .withTourId(6L)
                 .build();
 
-        CountryTour countryTourByCountryId = countryTourRepository.getOneByCountryId(1L)
-                .orElse(defaultCountryTour);
-        LOGGER.info("First countryTour by countryId: {}", countryTourByCountryId);
+        List<CountryTour> allCountryToursByCountryId = countryTourRepository.getAllByCountryId(1L)
+                .orElse(Arrays.asList(defaultCountryTour));
+        LOGGER.info("All countryTour by countryId: {}", allCountryToursByCountryId);
 
-        CountryTour countryTourByTourId = countryTourRepository.getOneByTourId(1L)
-                .orElse(defaultCountryTour);
-        LOGGER.info("First countryTour by tourId: {}", countryTourByTourId);
+        List<CountryTour> allCountryToursByTourId = countryTourRepository.getAllByTourId(1L)
+                .orElse(Arrays.asList(defaultCountryTour));
+        LOGGER.info("All countryTour by tourId: {}", allCountryToursByTourId);
 
         List<CountryTour> allCountryTours = countryTourRepository.getAll()
                 .orElse(Arrays.asList(defaultCountryTour));
-        LOGGER.info("All tours: {}", allCountryTours);
+        LOGGER.info("All countryTours: {}", allCountryTours);
 
-        var createdCountryTour = countryTourRepository.create(testCountryTour)
-                .orElse(defaultCountryTour);
-        LOGGER.info("Created countryTour: {}", createdCountryTour);
+        countryTourRepository.create(testCountryTour);
+        LOGGER.info("Created countryTour: {}", testCountryTour);
 
-        createdCountryTour.setCountryId(2L);
-        var updatedCountryTourByCountryId = countryTourRepository.updateByCountryId(createdCountryTour.getCountryId(), createdCountryTour)
-                .orElse(defaultCountryTour);
-        LOGGER.info("Updated countryTour by countryId: {}", updatedCountryTourByCountryId);
-
-        createdCountryTour.setTourId(2L);
-        var updatedCountryTourByTourId = countryTourRepository.updateByTourId(createdCountryTour.getTourId(), createdCountryTour)
-                .orElse(defaultCountryTour);
-        LOGGER.info("Updated countryTour by tourId: {}", updatedCountryTourByTourId);
-
-        countryTourRepository.deleteByCountryId(createdCountryTour.getCountryId());
-        LOGGER.info("Removed countryTour by countryId: {}", createdCountryTour);
-
-        countryTourRepository.deleteByTourId(createdCountryTour.getTourId());
-        LOGGER.info("Removed countryTour by tourId: {}", createdCountryTour);
+        countryTourRepository.delete(testCountryTour);
+        LOGGER.info("Removed countryTour by tourId: {}", testCountryTour);
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void testTourRepository() {
         Tour defaultTour = Tour.createTour().build();
 
+        LocalDateTime localDateTime = LocalDateTime.parse("1990-11-22T10:00:00");
+        Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
+
         Tour testTour = Tour.createTour()
                 .withPrice(2_675.0)
                 .withAmountDay(3)
-                .withDateDeparture(Instant.now())
+                .withDateDeparture(instant)
                 .withCompanyId(1L)
                 .withTravelTypeId(1L)
                 .build();
@@ -161,7 +150,7 @@ public class ApplicationReadyEvent {
         Tour updatedTour = tourRepository.update(createdTour.getId(), createdTour).orElse(defaultTour);
         LOGGER.info("Updated tour: {}", updatedTour);
 
-        tourRepository.delete(createdTour.getId());
+        tourRepository.delete(1L);
         LOGGER.info("Removed tour: {}", createdTour);
     }
 
@@ -186,7 +175,7 @@ public class ApplicationReadyEvent {
         TravelType updatedCompany = travelTypeRepository.update(createdTravelTypes.getId(), createdTravelTypes).orElse(defaultTravelType);
         LOGGER.info("Updated travelType: {}", updatedCompany);
 
-        travelTypeRepository.delete(createdTravelTypes.getId());
+        travelTypeRepository.delete(6L);
         LOGGER.info("Removed travelType: {}", createdTravelTypes);
     }
 }
