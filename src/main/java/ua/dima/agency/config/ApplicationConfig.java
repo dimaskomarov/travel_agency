@@ -43,15 +43,4 @@ public class ApplicationConfig {
     public String internalDate(@Qualifier("yesterday") Supplier<Instant> instantSupplier) {
         return "It is " + instantSupplier.get();
     }
-
-    @Bean
-    public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/travel_agency");
-        dataSource.setUsername("postgres");
-        dataSource.setPassword("password");
-
-        return dataSource;
-    }
 }
