@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CountryTourRepository {
-    List<CountryTour> getAll();
+    List<CountryTour> getAll();//return type changed
     List<CountryTour> getAllByCountryId(Long countryId);
     List<CountryTour> getAllByTourId(Long tourId);
     void create(CountryTour countryTour);

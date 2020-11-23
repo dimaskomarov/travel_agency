@@ -19,7 +19,7 @@ import java.util.Optional;
 @Component
 public class TourRepositoryImpl implements TourRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(TourRepositoryImpl.class);
-    private static final BeanPropertyRowMapper<Tour> TOUR_MAPPER =  new BeanPropertyRowMapper<>(Tour.class);
+    private static final BeanPropertyRowMapper<Tour> TOUR_MAPPER =  new BeanPropertyRowMapper<>(Tour.class);//added
 
     private final JdbcTemplate jdbcTemplate;
 

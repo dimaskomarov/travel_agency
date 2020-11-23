@@ -34,7 +34,7 @@ public class ApplicationReadyEvent {
         this.travelTypeRepository = travelTypeRepository;
     }
 
-    @EventListener(ApplicationReadyEvent.class)
+    @EventListener(ApplicationReadyEvent.class) //Changed
     public void testCompanyRepository() {
         Company defaultCompany = Company.createCompany().build();
 
@@ -61,7 +61,7 @@ public class ApplicationReadyEvent {
         LOGGER.info("Removed company: {}", createdCompany);
     }
 
-    @EventListener(ApplicationReadyEvent.class)
+    @EventListener(ApplicationReadyEvent.class) //Changed
     public void testCountryRepository() {
         Country defaultCountry = Country.createCountry().build();
 
@@ -88,7 +88,7 @@ public class ApplicationReadyEvent {
         LOGGER.info("Removed country: {}", createdCountry);
     }
 
-    @EventListener(ApplicationReadyEvent.class)
+    @EventListener(ApplicationReadyEvent.class) //Changed
     public void testCountryTourRepository() {
         CountryTour defaultCountryTour = CountryTour.createCountryTour().build();
 
@@ -113,7 +113,7 @@ public class ApplicationReadyEvent {
         LOGGER.info("Removed countryTour by tourId: {}", testCountryTour);
     }
 
-    @EventListener(ApplicationReadyEvent.class)
+    @EventListener(ApplicationReadyEvent.class) //Changed
     public void testTourRepository() {
         Tour defaultTour = Tour.createTour().build();
 
@@ -145,8 +145,7 @@ public class ApplicationReadyEvent {
         LOGGER.info("Removed tour: {}", createdTour);
     }
 
-
-    @EventListener(ApplicationReadyEvent.class)
+    @EventListener(ApplicationReadyEvent.class) //Changed
     public void testTravelTypeRepository() {
         TravelType defaultTravelType = TravelType.createTravelType().build();
 

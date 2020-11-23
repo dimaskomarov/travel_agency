@@ -20,7 +20,7 @@ import java.util.Optional;
 @Component
 public class CountryRepositoryImpl implements CountryRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(CountryRepositoryImpl.class);
-    private static final BeanPropertyRowMapper<Country> COUNTRY_MAPPER =  new BeanPropertyRowMapper<>(Country.class);
+    private static final BeanPropertyRowMapper<Country> COUNTRY_MAPPER =  new BeanPropertyRowMapper<>(Country.class);//added
 
     private final JdbcTemplate jdbcTemplate;
 

@@ -16,7 +16,7 @@ import java.util.List;
 @Component
 public class CountryTourRepositoryImpl implements CountryTourRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(CountryTourRepositoryImpl.class);
-    private static final BeanPropertyRowMapper<CountryTour> COUNTRY_TOUR_MAPPER =  new BeanPropertyRowMapper<>(CountryTour.class);
+    private static final BeanPropertyRowMapper<CountryTour> COUNTRY_TOUR_MAPPER =  new BeanPropertyRowMapper<>(CountryTour.class);//added
 
 
     private final JdbcTemplate jdbcTemplate;

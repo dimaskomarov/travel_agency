@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CountryRepository {
-    List<Country> getAll();
+    List<Country> getAll();//return type changed
     Optional<Country> getOne(Long id);
     Optional<Country> create(Country country);
     Optional<Country> update(Long id, Country country);

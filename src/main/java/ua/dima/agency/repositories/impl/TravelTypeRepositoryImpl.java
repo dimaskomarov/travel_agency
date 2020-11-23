@@ -19,7 +19,7 @@ import java.util.Optional;
 @Component
 public class TravelTypeRepositoryImpl implements TravelTypeRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(TravelTypeRepositoryImpl.class);
-    private static final BeanPropertyRowMapper<TravelType> TRAVEL_TYPE_MAPPER =  new BeanPropertyRowMapper<>(TravelType.class);
+    private static final BeanPropertyRowMapper<TravelType> TRAVEL_TYPE_MAPPER =  new BeanPropertyRowMapper<>(TravelType.class); //added
 
     private final JdbcTemplate jdbcTemplate;
 

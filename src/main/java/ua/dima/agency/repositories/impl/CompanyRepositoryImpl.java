@@ -19,7 +19,7 @@ import java.util.Optional;
 @Component
 public class CompanyRepositoryImpl implements CompanyRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(CompanyRepositoryImpl.class);
-    private static final BeanPropertyRowMapper<Company> COMPANY_MAPPER =  new BeanPropertyRowMapper<>(Company.class);
+    private static final BeanPropertyRowMapper<Company> COMPANY_MAPPER =  new BeanPropertyRowMapper<>(Company.class);//added
             
     private final JdbcTemplate jdbcTemplate;
 
