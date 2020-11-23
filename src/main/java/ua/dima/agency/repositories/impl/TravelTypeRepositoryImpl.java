@@ -12,12 +12,14 @@ import ua.dima.agency.domain.TravelType;
 import ua.dima.agency.repositories.TravelTypeRepository;
 
 import java.sql.PreparedStatement;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Component
 public class TravelTypeRepositoryImpl implements TravelTypeRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(TravelTypeRepositoryImpl.class);
+    private static final BeanPropertyRowMapper<TravelType> TRAVEL_TYPE_MAPPER =  new BeanPropertyRowMapper<>(TravelType.class);
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -26,19 +28,19 @@ public class TravelTypeRepositoryImpl implements TravelTypeRepository {
     }
 
     @Override
-    public Optional<List<TravelType>> getAll() {
+    public List<TravelType> getAll() {
         try {
-            return Optional.of(jdbcTemplate.query("SELECT * FROM travel_types", new BeanPropertyRowMapper<>(TravelType.class)));
+            return jdbcTemplate.query("SELECT * FROM travel_types", TRAVEL_TYPE_MAPPER);
         } catch(DataAccessException e) {
             LOGGER.debug("Method getAll has been failed", e);
-            return Optional.empty();
+            return Collections.emptyList();
         }
     }
 
     @Override
     public Optional<TravelType> getOne(Long id) {
         try {
-            return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM travel_types WHERE id = ?", new BeanPropertyRowMapper<>(TravelType.class), id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM travel_types WHERE id = ?", TRAVEL_TYPE_MAPPER, id));
         } catch(DataAccessException e) {
             LOGGER.debug("Method getOne has been failed", e);
             return Optional.empty();

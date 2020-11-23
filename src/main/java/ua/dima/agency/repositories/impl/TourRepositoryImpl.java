@@ -12,12 +12,14 @@ import ua.dima.agency.domain.Tour;
 import ua.dima.agency.repositories.TourRepository;
 
 import java.sql.PreparedStatement;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Component
 public class TourRepositoryImpl implements TourRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(TourRepositoryImpl.class);
+    private static final BeanPropertyRowMapper<Tour> TOUR_MAPPER =  new BeanPropertyRowMapper<>(Tour.class);
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -26,19 +28,19 @@ public class TourRepositoryImpl implements TourRepository {
     }
 
     @Override
-    public Optional<List<Tour>> getAll() {
+    public List<Tour> getAll() {
         try {
-            return Optional.of(jdbcTemplate.query("SELECT * FROM tours", new BeanPropertyRowMapper<>(Tour.class)));
+            return jdbcTemplate.query("SELECT * FROM tours", TOUR_MAPPER);
         } catch(DataAccessException e) {
             LOGGER.debug("Method getAll has been failed", e);
-            return Optional.empty();
+            return Collections.emptyList();
         }
     }
 
     @Override
     public Optional<Tour> getOne(Long id) {
         try {
-            return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM tours WHERE id = ?", new BeanPropertyRowMapper<>(Tour.class), id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM tours WHERE id = ?", TOUR_MAPPER, id));
         } catch(DataAccessException e) {
             LOGGER.debug("Method getOne has been failed", e);
             return Optional.empty();

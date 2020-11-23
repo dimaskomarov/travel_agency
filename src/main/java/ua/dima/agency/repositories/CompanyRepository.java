@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CompanyRepository {
-    Optional<List<Company>> getAll();
+    List<Company> getAll();
     Optional<Company> getOne(Long id);
     Optional<Company> create(Company company);
     Optional<Company> update(Long id, Company company);

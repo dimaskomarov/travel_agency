@@ -8,16 +8,19 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import ua.dima.agency.domain.Company;
 import ua.dima.agency.domain.Country;
 import ua.dima.agency.repositories.CountryRepository;
 
 import java.sql.PreparedStatement;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Component
 public class CountryRepositoryImpl implements CountryRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(CountryRepositoryImpl.class);
+    private static final BeanPropertyRowMapper<Country> COUNTRY_MAPPER =  new BeanPropertyRowMapper<>(Country.class);
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -26,19 +29,19 @@ public class CountryRepositoryImpl implements CountryRepository {
     }
 
     @Override
-    public Optional<List<Country>> getAll() {
+    public List<Country> getAll() {
         try {
-            return Optional.of(jdbcTemplate.query("SELECT * FROM countries", new BeanPropertyRowMapper<>(Country.class)));
+            return jdbcTemplate.query("SELECT * FROM countries", COUNTRY_MAPPER);
         } catch(DataAccessException e) {
             LOGGER.debug("Method getAll has been failed", e);
-            return Optional.empty();
+            return Collections.emptyList();
         }
     }
 
     @Override
     public Optional<Country> getOne(Long id) {
         try {
-            return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM countries WHERE id = ?", new BeanPropertyRowMapper<>(Country.class), id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM countries WHERE id = ?", COUNTRY_MAPPER, id));
         } catch(DataAccessException e) {
             LOGGER.debug("Method getOne has been failed", e);
             return Optional.empty();

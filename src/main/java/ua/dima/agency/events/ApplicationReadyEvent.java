@@ -7,8 +7,9 @@ import org.springframework.stereotype.Component;
 import ua.dima.agency.domain.*;
 import ua.dima.agency.repositories.*;
 
-import java.time.*;
-import java.util.Arrays;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @Component
@@ -31,12 +32,6 @@ public class ApplicationReadyEvent {
         this.countryTourRepository = countryTourRepository;
         this.tourRepository = tourRepository;
         this.travelTypeRepository = travelTypeRepository;
-
-        testCompanyRepository();
-        testCountryRepository();
-        testCountryTourRepository();
-        testTourRepository();
-        testTravelTypeRepository();
     }
 
     @EventListener(ApplicationReadyEvent.class)
@@ -52,7 +47,7 @@ public class ApplicationReadyEvent {
         Company companyNumberOne = companyRepository.getOne(1L).orElse(defaultCompany);
         LOGGER.info("First company: {}", companyNumberOne);
 
-        List<Company> allCompany = companyRepository.getAll().orElse(Arrays.asList(defaultCompany));
+        List<Company> allCompany = companyRepository.getAll();
         LOGGER.info("All companies: {}", allCompany);
 
         Company createdCompany = companyRepository.create(testCompany).orElse(defaultCompany);
@@ -77,8 +72,7 @@ public class ApplicationReadyEvent {
         Country countryNumberOne = countryRepository.getOne(1L).orElse(defaultCountry);
         LOGGER.info("First country: {}", countryNumberOne);
 
-        List<Country> allCountries = countryRepository.getAll()
-                .orElse(Arrays.asList(defaultCountry));
+        List<Country> allCountries = countryRepository.getAll();
         LOGGER.info("All countries: {}", allCountries);
 
         Country createdCountry = countryRepository.create(uganda)
@@ -103,16 +97,13 @@ public class ApplicationReadyEvent {
                 .withTourId(6L)
                 .build();
 
-        List<CountryTour> allCountryToursByCountryId = countryTourRepository.getAllByCountryId(1L)
-                .orElse(Arrays.asList(defaultCountryTour));
+        List<CountryTour> allCountryToursByCountryId = countryTourRepository.getAllByCountryId(1L);
         LOGGER.info("All countryTour by countryId: {}", allCountryToursByCountryId);
 
-        List<CountryTour> allCountryToursByTourId = countryTourRepository.getAllByTourId(1L)
-                .orElse(Arrays.asList(defaultCountryTour));
+        List<CountryTour> allCountryToursByTourId = countryTourRepository.getAllByTourId(1L);
         LOGGER.info("All countryTour by tourId: {}", allCountryToursByTourId);
 
-        List<CountryTour> allCountryTours = countryTourRepository.getAll()
-                .orElse(Arrays.asList(defaultCountryTour));
+        List<CountryTour> allCountryTours = countryTourRepository.getAll();
         LOGGER.info("All countryTours: {}", allCountryTours);
 
         countryTourRepository.create(testCountryTour);
@@ -140,7 +131,7 @@ public class ApplicationReadyEvent {
         Tour tourNumberOne = tourRepository.getOne(1L).orElse(defaultTour);
         LOGGER.info("First tour: {}", tourNumberOne);
 
-        List<Tour> allTours = tourRepository.getAll().orElse(Arrays.asList(defaultTour));
+        List<Tour> allTours = tourRepository.getAll();
         LOGGER.info("All tours: {}", allTours);
 
         Tour createdTour = tourRepository.create(testTour).orElse(defaultTour);
@@ -154,6 +145,7 @@ public class ApplicationReadyEvent {
         LOGGER.info("Removed tour: {}", createdTour);
     }
 
+
     @EventListener(ApplicationReadyEvent.class)
     public void testTravelTypeRepository() {
         TravelType defaultTravelType = TravelType.createTravelType().build();
@@ -165,7 +157,7 @@ public class ApplicationReadyEvent {
         TravelType travelTypeNumberOne = travelTypeRepository.getOne(1L).orElse(defaultTravelType);
         LOGGER.info("First travelType: {}", travelTypeNumberOne);
 
-        List<TravelType> allTravelTypes = travelTypeRepository.getAll().orElse(Arrays.asList(defaultTravelType));
+        List<TravelType> allTravelTypes = travelTypeRepository.getAll();
         LOGGER.info("All travelTypes: {}", allTravelTypes);
 
         TravelType createdTravelTypes = travelTypeRepository.create(travelType).orElse(defaultTravelType);

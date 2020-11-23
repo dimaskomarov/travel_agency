@@ -10,12 +10,14 @@ import ua.dima.agency.domain.CountryTour;
 import ua.dima.agency.repositories.CountryTourRepository;
 
 import java.sql.PreparedStatement;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class CountryTourRepositoryImpl implements CountryTourRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(CountryTourRepositoryImpl.class);
+    private static final BeanPropertyRowMapper<CountryTour> COUNTRY_TOUR_MAPPER =  new BeanPropertyRowMapper<>(CountryTour.class);
+
 
     private final JdbcTemplate jdbcTemplate;
 
@@ -24,32 +26,32 @@ public class CountryTourRepositoryImpl implements CountryTourRepository {
     }
 
     @Override
-    public Optional<List<CountryTour>> getAll() {
+    public List<CountryTour> getAll() {
         try {
-            return Optional.of(jdbcTemplate.query("SELECT * FROM countries_tours", new BeanPropertyRowMapper<>(CountryTour.class)));
+            return jdbcTemplate.query("SELECT * FROM countries_tours", COUNTRY_TOUR_MAPPER);
         } catch(DataAccessException e) {
             LOGGER.debug("Method getAll has been failed", e);
-            return Optional.empty();
+            return Collections.emptyList();
         }
     }
 
     @Override
-    public Optional<List<CountryTour>> getAllByCountryId(Long countryId) {
+    public List<CountryTour> getAllByCountryId(Long countryId) {
         try {
-            return Optional.of(jdbcTemplate.query("SELECT * FROM countries_tours WHERE country_id = ?", new BeanPropertyRowMapper<>(CountryTour.class), countryId));
+            return jdbcTemplate.query("SELECT * FROM countries_tours WHERE country_id = ?", COUNTRY_TOUR_MAPPER, countryId);
         } catch(DataAccessException e) {
             LOGGER.debug("Method getOne has been failed", e);
-            return Optional.empty();
+            return Collections.emptyList();
         }
     }
 
     @Override
-    public Optional<List<CountryTour>> getAllByTourId(Long tourId) {
+    public List<CountryTour> getAllByTourId(Long tourId) {
         try {
-            return Optional.of(jdbcTemplate.query("SELECT * FROM countries_tours WHERE tour_id = ?", new BeanPropertyRowMapper<>(CountryTour.class), tourId));
+            return jdbcTemplate.query("SELECT * FROM countries_tours WHERE tour_id = ?", COUNTRY_TOUR_MAPPER, tourId);
         } catch(DataAccessException e) {
             LOGGER.debug("Method getOne has been failed", e);
-            return Optional.empty();
+            return Collections.emptyList();
         }
     }
 

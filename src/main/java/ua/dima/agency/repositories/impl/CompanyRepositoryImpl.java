@@ -12,12 +12,14 @@ import ua.dima.agency.domain.Company;
 import ua.dima.agency.repositories.CompanyRepository;
 
 import java.sql.PreparedStatement;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Component
 public class CompanyRepositoryImpl implements CompanyRepository {
     private static final Logger LOGGER = LoggerFactory.getLogger(CompanyRepositoryImpl.class);
+    private static final BeanPropertyRowMapper<Company> COMPANY_MAPPER =  new BeanPropertyRowMapper<>(Company.class);
             
     private final JdbcTemplate jdbcTemplate;
 
@@ -26,19 +28,19 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     }
 
     @Override
-    public Optional<List<Company>> getAll() {
+    public List<Company> getAll() {
         try {
-            return Optional.of(jdbcTemplate.query("SELECT * FROM companies", new BeanPropertyRowMapper<>(Company.class)));
+            return jdbcTemplate.query("SELECT * FROM companies", COMPANY_MAPPER);
         } catch(DataAccessException e) {
             LOGGER.debug("Method getAll has been failed", e);
-            return Optional.empty();
+            return Collections.emptyList();
         }
     }
 
     @Override
     public Optional<Company> getOne(Long id) {
         try {
-            return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM companies WHERE id = ?", new BeanPropertyRowMapper<>(Company.class), id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM companies WHERE id = ?", COMPANY_MAPPER, id));
         } catch(DataAccessException e) {
             LOGGER.debug("Method getOne has been failed", e);
             return Optional.empty();
