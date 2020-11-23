@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS companies
 (
     id      SERIAL PRIMARY KEY,
     name    VARCHAR(100) NOT NULL CHECK (name != ''),
-    address VARCHAR(100) NOT NULL CHECK (address != ''),
-    age     INT          NOT NULL CHECK (age > 0)
+    address VARCHAR(100) ,
+    age     INT          CHECK (age > 0)
 );
 
 CREATE TABLE IF NOT EXISTS travel_types
@@ -29,11 +29,11 @@ CREATE TABLE IF NOT EXISTS tours
     CONSTRAINT company_fk
         FOREIGN KEY (company_id)
             REFERENCES companies (id)
-            ON DELETE CASCADE,
+            ON DELETE SET NULL ,
     CONSTRAINT travel_type_fk
         FOREIGN KEY (travel_type_id)
             REFERENCES travel_types (id)
-            ON DELETE CASCADE
+            ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS countries
@@ -44,16 +44,16 @@ CREATE TABLE IF NOT EXISTS countries
 
 CREATE TABLE IF NOT EXISTS countries_tours
 (
-    country_id INT NOT NULL,
-    tour_id    INT NOT NULL,
+    country_id INT,
+    tour_id    INT,
     CONSTRAINT country_fk
         FOREIGN KEY (country_id)
             REFERENCES countries (id)
-            ON DELETE CASCADE,
+            ON DELETE SET NULL,
     CONSTRAINT tour_fk
         FOREIGN KEY (tour_id)
             REFERENCES tours (id)
-            ON DELETE CASCADE
+            ON DELETE SET NULL
 );
 
 INSERT INTO companies (name, address, age)
@@ -95,53 +95,3 @@ VALUES (1, 1),
        (5, 7),
        (6, 7),
        (2, 8);
-
-SELECT * FROM companies;
-UPDATE companies SET address = 'Kharkov, st. Pushkinskaya 15' WHERE name = 'Cactus travel';
-DELETE FROM companies WHERE name = 'Cactus travel';
-
-SELECT * FROM travel_types;
-UPDATE travel_types SET type = 'by ships' WHERE type = 'by ship';
-DELETE FROM travel_types WHERE type = 'by car';
-
-SELECT * FROM tours;
-UPDATE tours SET price = 146700.00 WHERE amount_day = 14;
-DELETE FROM tours WHERE price = 34200.00;
-
-SELECT * FROM countries;
-UPDATE countries SET name = 'Turkey1' WHERE name = 'Turkey';
-DELETE FROM countries WHERE name = 'Austria';
-
-SELECT * FROM countries_tours;
-UPDATE countries_tours SET country_id = 2 WHERE tour_id = 1;
-DELETE FROM countries_tours WHERE country_id = 3;
-
--- list of travel types belongs to different companies
-SELECT DISTINCT (SELECT travel_companies.name
-                 FROM travel_companies
-                 WHERE travel_companies.id = tours.company_id) AS company,
-                (SELECT travel_types.type
-                 FROM travel_types
-                 WHERE travel_types.id = travel_type_id) AS tours
-FROM tours;
-
--- list of travel types belongs to one company
-SELECT DISTINCT (SELECT travel_types.type FROM travel_types WHERE travel_types.id = travel_type_id) AS "Arcadia tour"
-FROM tours
-WHERE tours.company_id = (SELECT id FROM travel_companies WHERE name = 'Arcadia tour');
-
--- list of countries belong for companies
-SELECT DISTINCT (SELECT (SELECT travel_companies.name
-                         FROM travel_companies
-                         WHERE travel_companies.id = tours.company_id)
-                 FROM tours
-                 WHERE tours.id = countries_tours.tour_id),
-                (SELECT countries.name FROM countries WHERE countries.id = countries_tours.country_id)
-FROM countries_tours;
-
--- price of ticket to Egypt in all companies
-SELECT (SELECT (SELECT name FROM travel_companies WHERE id = tours.company_id) FROM tours WHERE id = tour_id) AS company,
-       (SELECT price FROM tours WHERE id = tour_id),
-       (SELECT name FROM countries WHERE id = countries_tours.country_id) AS country
-FROM countries_tours
-WHERE country_id = (SELECT id FROM countries WHERE name = 'Egypt');
