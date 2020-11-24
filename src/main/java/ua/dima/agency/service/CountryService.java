@@ -1,10 +1,10 @@
 package ua.dima.agency.service;
 
-import ua.dima.agency.dto.CountryDTO;
+import ua.dima.agency.dto.CountryDto;
 
 public interface CountryService {
-    CountryDTO create(CountryDTO countryDTO);
-    CountryDTO get(Long id);
-    CountryDTO update(Long id, CountryDTO countryDTO);
+    CountryDto create(CountryDto countryDTO);
+    CountryDto get(Long id);
+    CountryDto update(Long id, CountryDto countryDTO);
     void delete(Long id);
 }

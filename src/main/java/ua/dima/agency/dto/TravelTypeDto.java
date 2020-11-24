@@ -1,10 +1,12 @@
 package ua.dima.agency.dto;
 
-public class TravelTypeDTO {
+import ua.dima.agency.domain.TravelType;
+
+public class TravelTypeDto {
     private Long id;
     private String type;
 
-    public TravelTypeDTO() {
+    public TravelTypeDto() {
         //empty constructor
     }
 
@@ -32,8 +34,14 @@ public class TravelTypeDTO {
         this.type = type;
     }
 
+    public static TravelTypeDto parse(TravelType travelType) {
+        return TravelTypeDto.createTravelTypeDTO()
+                .withId(travelType.getId())
+                .withType(travelType.getType()).build();
+    }
+
     public static Builder createTravelTypeDTO(){
-        return new TravelTypeDTO().new Builder();
+        return new TravelTypeDto().new Builder();
     }
 
     public class Builder {
@@ -43,17 +51,17 @@ public class TravelTypeDTO {
         }
 
         public Builder withId(Long id) {
-            TravelTypeDTO.this.id = id;
+            TravelTypeDto.this.id = id;
             return this;
         }
 
         public Builder withType(String type) {
-            TravelTypeDTO.this.type = type;
+            TravelTypeDto.this.type = type;
             return this;
         }
 
-        public TravelTypeDTO build() {
-            return TravelTypeDTO.this;
+        public TravelTypeDto build() {
+            return TravelTypeDto.this;
         }
     }
 }

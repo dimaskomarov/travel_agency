@@ -1,7 +1,7 @@
 package ua.dima.agency.service.impl;
 
 import org.springframework.stereotype.Service;
-import ua.dima.agency.dto.TourDTO;
+import ua.dima.agency.dto.TourDto;
 import ua.dima.agency.repositories.*;
 import ua.dima.agency.service.TourService;
 
@@ -27,17 +27,17 @@ public class TourServiceImpl implements TourService {
     }
 
     @Override
-    public TourDTO create(TourDTO tourDTO) {
+    public TourDto create(TourDto tourDTO) {
         return null;
     }
 
     @Override
-    public TourDTO get(Long id) {
+    public TourDto get(Long id) {
         return null;
     }
 
     @Override
-    public TourDTO update(Long id, TourDTO tourDTO) {
+    public TourDto update(Long id, TourDto tourDTO) {
         return null;
     }
 

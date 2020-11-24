@@ -1,5 +1,7 @@
 package ua.dima.agency.domain;
 
+import ua.dima.agency.dto.CompanyDto;
+
 public class Company {
     private Long id;
     private String name;
@@ -7,7 +9,17 @@ public class Company {
     private int age;
 
     private Company() {
-        //private constructor
+        //empty constructor
+    }
+
+    @Override
+    public String toString() {
+        return "Company{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", age=" + age +
+                '}';
     }
 
     public Long getId() {
@@ -42,14 +54,12 @@ public class Company {
         this.age = age;
     }
 
-    @Override
-    public String toString() {
-        return "Company{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", age=" + age +
-                '}';
+    public static Company parse(CompanyDto companyDTO) {
+        return Company.createCompany()
+                .withId(companyDTO.getId())
+                .withName(companyDTO.getName())
+                .withAddress(companyDTO.getAddress())
+                .withAge(companyDTO.getAge()).build();
     }
 
     public static Builder createCompany() {
@@ -58,7 +68,7 @@ public class Company {
 
     public class Builder {
         private Builder() {
-            //private constructor
+            //empty constructor
         }
 
         public Builder withId(Long id) {

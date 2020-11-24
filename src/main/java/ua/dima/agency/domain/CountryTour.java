@@ -5,7 +5,15 @@ public class CountryTour {
     private Long tourId;
 
     private CountryTour() {
-        //private constructor
+        //empty constructor
+    }
+
+    @Override
+    public String toString() {
+        return "CountryTour{" +
+                "CountryId=" + countryId +
+                ", TourId=" + tourId +
+                '}';
     }
 
     public Long getCountryId() {
@@ -24,21 +32,13 @@ public class CountryTour {
         this.tourId = tourId;
     }
 
-    @Override
-    public String toString() {
-        return "CountryTour{" +
-                "CountryId=" + countryId +
-                ", TourId=" + tourId +
-                '}';
-    }
-
     public static Builder createCountryTour() {
         return new CountryTour().new Builder();
     }
 
     public class Builder {
         private Builder() {
-            //private constructor
+            //empty constructor
         }
 
         public Builder withCountryId(Long countryId) {

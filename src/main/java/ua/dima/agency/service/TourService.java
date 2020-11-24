@@ -1,10 +1,10 @@
 package ua.dima.agency.service;
 
-import ua.dima.agency.dto.TourDTO;
+import ua.dima.agency.dto.TourDto;
 
 public interface TourService {
-    TourDTO create(TourDTO tourDTO);
-    TourDTO get(Long id);
-    TourDTO update(Long id, TourDTO tourDTO);
+    TourDto create(TourDto tourDTO);
+    TourDto get(Long id);
+    TourDto update(Long id, TourDto tourDTO);
     void delete(Long id);
 }

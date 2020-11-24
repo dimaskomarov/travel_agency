@@ -1,10 +1,12 @@
 package ua.dima.agency.dto;
 
-public class CountryDTO {
+import ua.dima.agency.domain.Country;
+
+public class CountryDto {
     private Long id;
     private String name;
 
-    public CountryDTO() {
+    public CountryDto() {
         //empty constructor
     }
 
@@ -32,8 +34,14 @@ public class CountryDTO {
         this.name = name;
     }
 
+    public static CountryDto parse(Country country) {
+        return CountryDto.createCountryDTO()
+                .withId(country.getId())
+                .withName(country.getName()).build();
+    }
+
     public static Builder createCountryDTO(){
-        return new CountryDTO().new Builder();
+        return new CountryDto().new Builder();
     }
 
     public class Builder {
@@ -43,17 +51,17 @@ public class CountryDTO {
         }
 
         public Builder withId(Long id) {
-            CountryDTO.this.id = id;
+            CountryDto.this.id = id;
             return this;
         }
 
         public Builder withName(String name) {
-            CountryDTO.this.name = name;
+            CountryDto.this.name = name;
             return this;
         }
 
-        public CountryDTO build() {
-            return CountryDTO.this;
+        public CountryDto build() {
+            return CountryDto.this;
         }
     }
 }

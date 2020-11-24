@@ -1,17 +1,19 @@
 package ua.dima.agency.dto;
 
+import ua.dima.agency.domain.Tour;
+
 import java.time.Instant;
 import java.util.List;
 
-public class TourDTO {
+public class TourDto {
     private Long id;
     private Double price;
     private Integer amountDays;
     private Instant dateDeparture;
-    private TravelTypeDTO travelType;
-    private List<CountryDTO> counties;
+    private TravelTypeDto travelTypeDto;
+    private List<CountryDto> countiesDto;
 
-    public TourDTO() {
+    public TourDto() {
         //empty constructor
     }
 
@@ -22,8 +24,8 @@ public class TourDTO {
                 ", price=" + price +
                 ", amountDays=" + amountDays +
                 ", dateDeparture=" + dateDeparture +
-                ", travelType=" + travelType +
-                ", counties=" + counties +
+                ", travelTypeDto=" + travelTypeDto +
+                ", countiesDto=" + countiesDto +
                 '}';
     }
 
@@ -59,24 +61,33 @@ public class TourDTO {
         this.dateDeparture = dateDeparture;
     }
 
-    public TravelTypeDTO getTravelType() {
-        return travelType;
+    public TravelTypeDto getTravelTypeDto() {
+        return travelTypeDto;
     }
 
-    public void setTravelType(TravelTypeDTO travelType) {
-        this.travelType = travelType;
+    public void setTravelTypeDto(TravelTypeDto travelTypeDto) {
+        this.travelTypeDto = travelTypeDto;
     }
 
-    public List<CountryDTO> getCounties() {
-        return counties;
+    public List<CountryDto> getCountiesDto() {
+        return countiesDto;
     }
 
-    public void setCounties(List<CountryDTO> counties) {
-        this.counties = counties;
+    public void setCountiesDto(List<CountryDto> countiesDto) {
+        this.countiesDto = countiesDto;
+    }
+
+    public static TourDto parse(Tour tour, TravelTypeDto travelTypeDto, List<CountryDto> counties) {
+        return TourDto.createTourDTO()
+                .withPrice(tour.getPrice())
+                .withAmountDays(tour.getAmountDay())
+                .withDateDeparture(tour.getDateDeparture())
+                .withTravelTypeDto(travelTypeDto)
+                .withCountiesDto(counties).build();
     }
 
     public static Builder createTourDTO(){
-        return new TourDTO().new Builder();
+        return new TourDto().new Builder();
     }
 
     public class Builder {
@@ -86,37 +97,37 @@ public class TourDTO {
         }
 
         public Builder withId(Long id) {
-            TourDTO.this.id = id;
+            TourDto.this.id = id;
             return this;
         }
 
         public Builder withPrice(Double price) {
-            TourDTO.this.price = price;
+            TourDto.this.price = price;
             return this;
         }
 
         public Builder withAmountDays(Integer amountDays) {
-            TourDTO.this.amountDays = amountDays;
+            TourDto.this.amountDays = amountDays;
             return this;
         }
 
         public Builder withDateDeparture(Instant dateDeparture) {
-            TourDTO.this.dateDeparture = dateDeparture;
+            TourDto.this.dateDeparture = dateDeparture;
             return this;
         }
 
-        public Builder withTravelType(TravelTypeDTO travelType) {
-            TourDTO.this.travelType = travelType;
+        public Builder withTravelTypeDto(TravelTypeDto travelTypeDto) {
+            TourDto.this.travelTypeDto = travelTypeDto;
             return this;
         }
 
-        public Builder withCounties(List<CountryDTO> counties) {
-            TourDTO.this.counties = counties;
+        public Builder withCountiesDto(List<CountryDto> countiesDto) {
+            TourDto.this.countiesDto = countiesDto;
             return this;
         }
 
-        public TourDTO build() {
-            return TourDTO.this;
+        public TourDto build() {
+            return TourDto.this;
         }
     }
 }

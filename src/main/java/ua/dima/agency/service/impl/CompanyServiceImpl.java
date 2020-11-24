@@ -1,7 +1,7 @@
 package ua.dima.agency.service.impl;
 
 import org.springframework.stereotype.Service;
-import ua.dima.agency.dto.CompanyDTO;
+import ua.dima.agency.dto.CompanyDto;
 import ua.dima.agency.repositories.*;
 import ua.dima.agency.service.CompanyService;
 
@@ -28,17 +28,17 @@ public class CompanyServiceImpl implements CompanyService {
 
 
     @Override
-    public CompanyDTO create(CompanyDTO companyDTO) {
+    public CompanyDto create(CompanyDto companyDTO) {
         return null;
     }
 
     @Override
-    public CompanyDTO get(Long id) {
+    public CompanyDto get(Long id) {
         return null;
     }
 
     @Override
-    public CompanyDTO update(Long id, CompanyDTO companyDTO) {
+    public CompanyDto update(Long id, CompanyDto companyDTO) {
         return null;
     }
 

@@ -1,10 +1,10 @@
 package ua.dima.agency.service;
 
-import ua.dima.agency.dto.TravelTypeDTO;
+import ua.dima.agency.dto.TravelTypeDto;
 
 public interface TravelTypeService {
-    TravelTypeDTO create(TravelTypeDTO travelTypeDTO);
-    TravelTypeDTO get(Long id);
-    TravelTypeDTO update(Long id, TravelTypeDTO travelTypeDTO);
+    TravelTypeDto create(TravelTypeDto travelTypeDTO);
+    TravelTypeDto get(Long id);
+    TravelTypeDto update(Long id, TravelTypeDto travelTypeDTO);
     void delete(Long id);
 }

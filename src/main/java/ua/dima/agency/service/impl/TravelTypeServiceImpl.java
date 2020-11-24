@@ -1,7 +1,7 @@
 package ua.dima.agency.service.impl;
 
 import org.springframework.stereotype.Service;
-import ua.dima.agency.dto.TravelTypeDTO;
+import ua.dima.agency.dto.TravelTypeDto;
 import ua.dima.agency.repositories.*;
 import ua.dima.agency.service.TravelTypeService;
 
@@ -27,17 +27,17 @@ public class TravelTypeServiceImpl implements TravelTypeService {
     }
 
     @Override
-    public TravelTypeDTO create(TravelTypeDTO travelTypeDTO) {
+    public TravelTypeDto create(TravelTypeDto travelTypeDTO) {
         return null;
     }
 
     @Override
-    public TravelTypeDTO get(Long id) {
+    public TravelTypeDto get(Long id) {
         return null;
     }
 
     @Override
-    public TravelTypeDTO update(Long id, TravelTypeDTO travelTypeDTO) {
+    public TravelTypeDto update(Long id, TravelTypeDto travelTypeDTO) {
         return null;
     }
 

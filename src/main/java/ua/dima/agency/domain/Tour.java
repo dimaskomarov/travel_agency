@@ -1,5 +1,7 @@
 package ua.dima.agency.domain;
 
+import ua.dima.agency.dto.TourDto;
+
 import java.time.Instant;
 
 public class Tour {
@@ -11,7 +13,19 @@ public class Tour {
     private Long travelTypeId;
 
     private Tour() {
-        //private constructor
+        //empty constructor
+    }
+
+    @Override
+    public String toString() {
+        return "Tour{" +
+                "id=" + id +
+                ", price=" + price +
+                ", amountDay=" + amountDay +
+                ", dateDeparture=" + dateDeparture +
+                ", companyId=" + companyId +
+                ", travelTypeId=" + travelTypeId +
+                '}';
     }
 
     public Long getId() {
@@ -62,16 +76,14 @@ public class Tour {
         this.travelTypeId = travelTypeId;
     }
 
-    @Override
-    public String toString() {
-        return "Tour{" +
-                "id=" + id +
-                ", price=" + price +
-                ", amountDay=" + amountDay +
-                ", dateDeparture=" + dateDeparture +
-                ", companyId=" + companyId +
-                ", travelTypeId=" + travelTypeId +
-                '}';
+    public static Tour parse(TourDto TourDTO, Long companyId, Long travelTypeId) {
+        return Tour.createTour()
+                .withId(TourDTO.getId())
+                .withPrice(TourDTO.getPrice())
+                .withAmountDay(TourDTO.getAmountDays())
+                .withDateDeparture(TourDTO.getDateDeparture())
+                .withCompanyId(companyId)
+                .withTravelTypeId(travelTypeId).build();
     }
 
     public static Builder createTour() {
@@ -80,7 +92,7 @@ public class Tour {
 
     public class Builder {
         private Builder() {
-            //private constructor
+            //empty constructor
         }
 
         public Builder withId(Long id) {

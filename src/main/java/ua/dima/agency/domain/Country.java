@@ -1,11 +1,21 @@
 package ua.dima.agency.domain;
 
+import ua.dima.agency.dto.CountryDto;
+
 public class Country {
     private Long id;
     private String name;
 
     private Country() {
-        //private constructor
+        //empty constructor
+    }
+
+    @Override
+    public String toString() {
+        return "Country{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 
     public Long getId() {
@@ -24,12 +34,10 @@ public class Country {
         this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return "Country{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+    public static Country parse(CountryDto countryDTO) {
+        return Country.createCountry()
+                .withId(countryDTO.getId())
+                .withName(countryDTO.getName()).build();
     }
 
     public static Builder createCountry() {
@@ -38,7 +46,7 @@ public class Country {
 
     public class Builder {
         private Builder() {
-            //private constructor
+            //empty constructor
         }
 
         public Builder withId(Long id) {

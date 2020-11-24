@@ -1,7 +1,8 @@
 package ua.dima.agency.service.impl;
 
 import org.springframework.stereotype.Service;
-import ua.dima.agency.dto.CountryDTO;
+import ua.dima.agency.domain.Country;
+import ua.dima.agency.dto.CountryDto;
 import ua.dima.agency.repositories.*;
 import ua.dima.agency.service.CountryService;
 
@@ -27,17 +28,18 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public CountryDTO create(CountryDTO countryDTO) {
+    public CountryDto create(CountryDto countryDTO) {
+//        Country country = countryRepository.create();
         return null;
     }
 
     @Override
-    public CountryDTO get(Long id) {
+    public CountryDto get(Long id) {
         return null;
     }
 
     @Override
-    public CountryDTO update(Long id, CountryDTO countryDTO) {
+    public CountryDto update(Long id, CountryDto countryDTO) {
         return null;
     }
 

@@ -1,15 +1,16 @@
 package ua.dima.agency.dto;
 
+import ua.dima.agency.domain.Company;
 import java.util.List;
 
-public class CompanyDTO {
+public class CompanyDto {
     private Long id;
     private String name;
     private String address;
     private Integer age;
-    private List<TourDTO> tours;
+    private List<TourDto> toursDto;
 
-    private CompanyDTO() {
+    private CompanyDto() {
         //empty constructor
     }
 
@@ -20,7 +21,7 @@ public class CompanyDTO {
                 ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
                 ", age=" + age +
-                ", tours=" + tours +
+                ", toursDto=" + toursDto +
                 '}';
     }
 
@@ -56,16 +57,25 @@ public class CompanyDTO {
         this.age = age;
     }
 
-    public List<TourDTO> getTours() {
-        return tours;
+    public List<TourDto> getToursDto() {
+        return toursDto;
     }
 
-    public void setTours(List<TourDTO> tours) {
-        this.tours = tours;
+    public void setToursDto(List<TourDto> toursDto) {
+        this.toursDto = toursDto;
+    }
+
+    public static CompanyDto parse(Company company, List<TourDto> toursDto) {
+        return CompanyDto.createCompanyDTO()
+                .withId(company.getId())
+                .withName(company.getName())
+                .withAddress(company.getAddress())
+                .withAge(company.getAge())
+                .withToursDto(toursDto).build();
     }
 
     public static Builder createCompanyDTO() {
-        return new CompanyDTO().new Builder();
+        return new CompanyDto().new Builder();
     }
 
     public class Builder {
@@ -75,32 +85,32 @@ public class CompanyDTO {
         }
 
         public Builder withId(Long id) {
-            CompanyDTO.this.id = id;
+            CompanyDto.this.id = id;
             return this;
         }
 
         public Builder withName(String name) {
-            CompanyDTO.this.name = name;
+            CompanyDto.this.name = name;
             return this;
         }
 
         public Builder withAddress(String address) {
-            CompanyDTO.this.address = address;
+            CompanyDto.this.address = address;
             return this;
         }
 
         public Builder withAge(Integer age) {
-            CompanyDTO.this.age = age;
+            CompanyDto.this.age = age;
             return this;
         }
 
-        public Builder withTours(List<TourDTO> tours) {
-            CompanyDTO.this.tours = tours;
+        public Builder withToursDto(List<TourDto> toursDto) {
+            CompanyDto.this.toursDto = toursDto;
             return this;
         }
 
-        public CompanyDTO build() {
-            return CompanyDTO.this;
+        public CompanyDto build() {
+            return CompanyDto.this;
         }
     }
 }

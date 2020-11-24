@@ -1,11 +1,21 @@
 package ua.dima.agency.domain;
 
+import ua.dima.agency.dto.TravelTypeDto;
+
 public class TravelType {
     private Long id;
     private String type;
 
     private TravelType() {
-        //private constructor
+        //empty constructor
+    }
+
+    @Override
+    public String toString() {
+        return "TravelType{" +
+                "id=" + id +
+                ", type='" + type + '\'' +
+                '}';
     }
 
     public Long getId() {
@@ -24,12 +34,11 @@ public class TravelType {
         this.type = type;
     }
 
-    @Override
-    public String toString() {
-        return "TravelType{" +
-                "id=" + id +
-                ", type='" + type + '\'' +
-                '}';
+    public static TravelType parse(TravelTypeDto travelTypeDto) {
+        return TravelType.createTravelType()
+                .withId(travelTypeDto.getId())
+                .withType(travelTypeDto.getType())
+                .build();
     }
 
     public static Builder createTravelType() {
@@ -38,7 +47,7 @@ public class TravelType {
 
     public class Builder {
         private Builder() {
-            //private constructor
+            //empty constructor
         }
 
         public Builder withId(Long id) {
