@@ -5,6 +5,8 @@ import ua.dima.agency.dto.CompanyDto;
 import ua.dima.agency.repositories.*;
 import ua.dima.agency.service.CompanyService;
 
+import java.util.List;
+
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
@@ -34,6 +36,11 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public CompanyDto get(Long id) {
+        return null;
+    }
+
+    @Override
+    public List<CompanyDto> getAll() {
         return null;
     }
 

@@ -51,8 +51,8 @@ public class CountryServiceImpl implements CountryService {
         List<Country> countries = countryRepository.getAll();
 
         if(countries.isEmpty()) {
-            LOGGER.error("Nothing has been found in the database.");
-            throw new NoDataException("Nothing has been found in the database.");
+            LOGGER.error("Any country hasn't been found in the database.");
+            throw new NoDataException("Any country hasn't been found in the database.");
         }
         return countries.stream().map(CountryDto::parse)
                 .collect(Collectors.toList());

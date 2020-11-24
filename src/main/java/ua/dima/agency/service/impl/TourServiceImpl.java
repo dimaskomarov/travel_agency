@@ -5,6 +5,8 @@ import ua.dima.agency.dto.TourDto;
 import ua.dima.agency.repositories.*;
 import ua.dima.agency.service.TourService;
 
+import java.util.List;
+
 @Service
 public class TourServiceImpl implements TourService {
 
@@ -33,6 +35,11 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public TourDto get(Long id) {
+        return null;
+    }
+
+    @Override
+    public List<TourDto> getAll() {
         return null;
     }
 
