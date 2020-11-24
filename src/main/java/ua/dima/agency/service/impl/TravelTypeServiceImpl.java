@@ -25,24 +25,24 @@ public class TravelTypeServiceImpl implements TravelTypeService {
 
     @Override
     public TravelTypeDto create(TravelTypeDto travelTypeDTO) {
-        Optional<TravelType> travelType = travelTypeRepository.create(TravelType.parse(travelTypeDTO));
+        Optional<TravelType> travelTypeOptional = travelTypeRepository.create(TravelType.parse(travelTypeDTO));
 
-        if(travelType.isEmpty()) {
+        if(travelTypeOptional.isEmpty()) {
             LOGGER.error("{} hasn't been created.", travelTypeDTO);
             throw new SQLException(String.format("%s hasn't been created.", travelTypeDTO));
         }
-        return TravelTypeDto.parse(travelType.get());
+        return TravelTypeDto.parse(travelTypeOptional.get());
     }
 
     @Override
     public TravelTypeDto get(Long id) {
-        Optional<TravelType> travelType = travelTypeRepository.getOne(id);
+        Optional<TravelType> travelTypeOptional = travelTypeRepository.getOne(id);
 
-        if(travelType.isEmpty()) {
+        if(travelTypeOptional.isEmpty()) {
             LOGGER.error("TravelType with id {} hasn't been found in the database.", id);
-            throw new NoDataException(String.format("TravelType with id %s hasn't been found in the database.", id));
+            throw new NoDataException(String.format("TravelType with id %d hasn't been found in the database.", id));
         }
-        return TravelTypeDto.parse(travelType.get());
+        return TravelTypeDto.parse(travelTypeOptional.get());
     }
 
     @Override
@@ -58,13 +58,13 @@ public class TravelTypeServiceImpl implements TravelTypeService {
 
     @Override
     public TravelTypeDto update(Long id, TravelTypeDto travelTypeDTO) {
-        Optional<TravelType> travelType = travelTypeRepository.update(id, TravelType.parse(travelTypeDTO));
+        Optional<TravelType> travelTypeOptional = travelTypeRepository.update(id, TravelType.parse(travelTypeDTO));
 
-        if(travelType.isEmpty()) {
+        if(travelTypeOptional.isEmpty()) {
             LOGGER.error("{} hasn't been updated.", travelTypeDTO);
-            throw new SQLException(String.format("{} hasn't been updated.", travelTypeDTO));
+            throw new SQLException(String.format("%s hasn't been updated.", travelTypeDTO));
         }
-        return TravelTypeDto.parse(travelType.get());
+        return TravelTypeDto.parse(travelTypeOptional.get());
     }
 
     @Override

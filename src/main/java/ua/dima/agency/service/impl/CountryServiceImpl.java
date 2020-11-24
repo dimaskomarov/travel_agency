@@ -26,24 +26,24 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public CountryDto create(CountryDto countryDto) {
-        Optional<Country> country = countryRepository.create(Country.parse(countryDto));
+        Optional<Country> countryOptional = countryRepository.create(Country.parse(countryDto));
 
-        if(country.isEmpty()) {
+        if(countryOptional.isEmpty()) {
             LOGGER.error("{} hasn't been created.", countryDto);
             throw new SQLException(String.format("%s hasn't been created.", countryDto));
         }
-        return CountryDto.parse(country.get());
+        return CountryDto.parse(countryOptional.get());
     }
 
     @Override
     public CountryDto get(Long id) {
-        Optional<Country> country = countryRepository.getOne(id);
+        Optional<Country> countryOptional = countryRepository.getOne(id);
 
-        if(country.isEmpty()) {
+        if(countryOptional.isEmpty()) {
             LOGGER.error("Country with id {} hasn't been found in the database.", id);
-            throw new NoDataException(String.format("Country with id %s hasn't been found in the database.", id));
+            throw new NoDataException(String.format("Country with id %d hasn't been found in the database.", id));
         }
-        return CountryDto.parse(country.get());
+        return CountryDto.parse(countryOptional.get());
     }
 
     @Override
@@ -60,13 +60,13 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public CountryDto update(Long id, CountryDto countryDTO) {
-        Optional<Country> country = countryRepository.update(id, Country.parse(countryDTO));
+        Optional<Country> countryOptional = countryRepository.update(id, Country.parse(countryDTO));
 
-        if(country.isEmpty()) {
+        if(countryOptional.isEmpty()) {
             LOGGER.error("{} hasn't been updated.", countryDTO);
-            throw new SQLException(String.format("{} hasn't been updated.", countryDTO));
+            throw new SQLException(String.format("%s hasn't been updated.", countryDTO));
         }
-        return CountryDto.parse(country.get());
+        return CountryDto.parse(countryOptional.get());
     }
 
     @Override

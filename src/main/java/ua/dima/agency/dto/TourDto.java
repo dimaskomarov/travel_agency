@@ -77,13 +77,13 @@ public class TourDto {
         this.countiesDto = countiesDto;
     }
 
-    public static TourDto parse(Tour tour, TravelTypeDto travelTypeDto, List<CountryDto> counties) {
+    public static TourDto parse(Tour tour, TravelTypeDto travelTypeDto, List<CountryDto> countiesDto) {
         return TourDto.createTourDTO()
                 .withPrice(tour.getPrice())
                 .withAmountDays(tour.getAmountDay())
                 .withDateDeparture(tour.getDateDeparture())
                 .withTravelTypeDto(travelTypeDto)
-                .withCountiesDto(counties).build();
+                .withCountiesDto(countiesDto).build();
     }
 
     public static Builder createTourDTO(){
