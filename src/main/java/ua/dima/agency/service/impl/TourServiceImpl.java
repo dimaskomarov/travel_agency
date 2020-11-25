@@ -4,20 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.dima.agency.domain.Country;
-import ua.dima.agency.domain.CountryTour;
-import ua.dima.agency.domain.Tour;
-import ua.dima.agency.domain.TravelType;
+import ua.dima.agency.domain.*;
 import ua.dima.agency.dto.CountryDto;
 import ua.dima.agency.dto.TourDto;
 import ua.dima.agency.dto.TravelTypeDto;
 import ua.dima.agency.exceptions.NoDataException;
 import ua.dima.agency.exceptions.ParseException;
 import ua.dima.agency.exceptions.SQLException;
-import ua.dima.agency.repositories.CountryRepository;
-import ua.dima.agency.repositories.CountryTourRepository;
-import ua.dima.agency.repositories.TourRepository;
-import ua.dima.agency.repositories.TravelTypeRepository;
+import ua.dima.agency.repositories.*;
 import ua.dima.agency.service.TourService;
 
 import java.util.List;
@@ -32,39 +26,46 @@ public class TourServiceImpl implements TourService {
     private CountryTourRepository countryTourRepository;
     private TravelTypeRepository travelTypeRepository;
     private CountryRepository countryRepository;
+    private CompanyRepository companyRepository;
     private TourRepository tourRepository;
 
     public TourServiceImpl(CountryTourRepository countryTourRepository,
                            TravelTypeRepository travelTypeRepository,
+                           CompanyRepository companyRepository,
                            CountryRepository countryRepository,
                            TourRepository tourRepository) {
         this.countryTourRepository = countryTourRepository;
         this.travelTypeRepository = travelTypeRepository;
+        this.companyRepository = companyRepository;
         this.countryRepository = countryRepository;
         this.tourRepository = tourRepository;
     }
 
     @Override
     @Transactional
-    public TourDto create(TourDto tourDTO) {
-        Optional<Tour> tourOptional = tourRepository.create(parse(tourDTO));
+    public TourDto create(TourDto tourDTO, Long companyId) {
+        Optional<TravelType> travelTypeOptional = travelTypeRepository.create(TravelType.parse(tourDTO.getTravelTypeDto()));
+        List<Country> countries = tourDTO.getCountiesDto().stream().map(countryDto -> countryRepository.create(Country.parse(countryDto)).get()).collect(Collectors.toList());
 
-        if(tourOptional.isEmpty()) {
-            LOGGER.error("{} hasn't been created.", tourDTO);
-            throw new SQLException(String.format("%s hasn't been created.", tourDTO));
-        }
-        return parse(tourOptional.get());
+        Tour tour = Tour.parse(tourDTO, companyId, travelTypeOptional.get().getId());
+        Optional<Tour> tourOptional = tourRepository.create(tour);
+
+//        if(tourOptional.isEmpty()) {
+//            LOGGER.error("{} hasn't been created.", tourDTO);
+//            throw new SQLException(String.format("%s hasn't been created.", tourDTO));
+//        }
+        return collect(tourOptional.get());
     }
 
     @Override
     public TourDto get(Long id) {
-        Optional<Tour> tourOptional = tourRepository.getOne(id);
+        Optional<Tour> tourOptional = tourRepository.get(id);
 
         if(tourOptional.isEmpty()) {
             LOGGER.error("Tour with id {} hasn't been found in the database.", id);
             throw new NoDataException(String.format("Tour with id %s hasn't been found in the database.", id));
         }
-        return parse(tourOptional.get());
+        return collect(tourOptional.get());
     }
 
     @Override
@@ -75,50 +76,39 @@ public class TourServiceImpl implements TourService {
             LOGGER.error("Any tour hasn't been found in the database.");
             throw new NoDataException("Any tour hasn't been found in the database.");
         }
-        return tours.stream().map(tour -> parse(tour))
+        return tours.stream().map(tour -> collect(tour))
                 .collect(Collectors.toList());
     }
 
     @Override
+    @Transactional
     public TourDto update(Long id, TourDto tourDTO) {
-        Optional<Tour> tourOptional = tourRepository.update(id, parse(tourDTO));
-
-        if(tourOptional.isEmpty()) {
-            LOGGER.error("{} hasn't been updated.", tourDTO);
-            throw new SQLException(String.format("{} hasn't been updated.", tourDTO));
-        }
-        return parse(tourOptional.get());
+//        Optional<Tour> tourOptional = tourRepository.update(id, parse(tourDTO));
+//
+//        if(tourOptional.isEmpty()) {
+//            LOGGER.error("{} hasn't been updated.", tourDTO);
+//            throw new SQLException(String.format("{} hasn't been updated.", tourDTO));
+//        }
+//        return collect(tourOptional.get());
+        return null;
     }
 
     @Override
+    @Transactional
     public void delete(Long id) {
+        countryTourRepository.deleteByTourId(id);
         tourRepository.delete(id);
     }
 
-    private Tour parse(TourDto tourDTO) {
-        Long companyId = null;
-        Long travelTypeId = null;
-        try {
-            Optional<Tour> tourOptional = tourRepository.getOne(tourDTO.getId());
-            companyId = tourOptional.get().getCompanyId();
-            travelTypeId = tourOptional.get().getTravelTypeId();
-        } catch(Exception e) {
-            LOGGER.error(LOG_PARSING_ERROR, "TourDto", tourDTO.getId());
-            throw new ParseException(String.format(MSG_PARSING_ERROR, "TourDto", tourDTO.getId()));
-        }
-
-        return Tour.parse(tourDTO, companyId, travelTypeId);
-    }
-
-    private TourDto parse(Tour tour) {
+    private TourDto collect(Tour tour) {
         TravelTypeDto travelTypeDto = null;
         List<CountryDto> countriesDto = null;
         try {
-            Optional<TravelType> travelTypeOptional = travelTypeRepository.getOne(tour.getTravelTypeId());
+            Optional<TravelType> travelTypeOptional = travelTypeRepository.get(tour.getTravelTypeId());
             travelTypeDto = TravelTypeDto.parse(travelTypeOptional.get());
 
             List<CountryTour> countryTours = countryTourRepository.getAllByTourId(tour.getId());
-            List<Country> counties = countryTours.stream().map(countryTour -> countryRepository.getOne(countryTour.getCountryId()).get()).collect(Collectors.toList());
+            List<Country> counties = countryTours.stream().map(countryTour -> countryRepository.get(countryTour.getCountryId()).get()).collect(Collectors.toList());
             countriesDto = counties.stream().map(CountryDto::parse).collect(Collectors.toList());
         } catch(Exception e) {
             LOGGER.error(LOG_PARSING_ERROR, "Tour", tour.getId());

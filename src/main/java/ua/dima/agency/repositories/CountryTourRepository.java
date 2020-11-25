@@ -11,4 +11,6 @@ public interface CountryTourRepository {
     List<CountryTour> getAllByTourId(Long tourId);
     void create(CountryTour countryTour);
     void delete(CountryTour countryTour);
+    void deleteByTourId(Long tourId);
+    void deleteByCountryId(Long countryId);
 }

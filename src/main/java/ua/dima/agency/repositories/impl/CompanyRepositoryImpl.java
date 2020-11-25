@@ -38,7 +38,7 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     }
 
     @Override
-    public Optional<Company> getOne(Long id) {
+    public Optional<Company> get(Long id) {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM companies WHERE id = ?", COMPANY_MAPPER, id));
         } catch(DataAccessException e) {
@@ -62,14 +62,14 @@ public class CompanyRepositoryImpl implements CompanyRepository {
         if(key.isPresent()) {
             id = key.get().longValue();
         }
-        return getOne(id);
+        return get(id);
     }
 
     @Override
     public Optional<Company> update(Long id, Company company) {
         try {
             jdbcTemplate.update("UPDATE companies SET name=?, address=?, age=? WHERE id=?", company.getName(), company.getAddress(), company.getAge(), id);
-            return getOne(id);
+            return get(id);
         } catch (DataAccessException e) {
             LOGGER.debug("Method update has been failed", e);
             return Optional.empty();

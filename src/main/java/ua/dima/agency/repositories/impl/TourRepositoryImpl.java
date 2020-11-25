@@ -38,7 +38,7 @@ public class TourRepositoryImpl implements TourRepository {
     }
 
     @Override
-    public Optional<Tour> getOne(Long id) {
+    public Optional<Tour> get(Long id) {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM tours WHERE id = ?", TOUR_MAPPER, id));
         } catch(DataAccessException e) {
@@ -64,7 +64,7 @@ public class TourRepositoryImpl implements TourRepository {
         if(key.isPresent()) {
             id = key.get().longValue();
         }
-        return getOne(id);
+        return get(id);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class TourRepositoryImpl implements TourRepository {
             LOGGER.debug("Method update has been failed", e);
             return Optional.empty();
         }
-        return getOne(id);
+        return get(id);
     }
 
     @Override

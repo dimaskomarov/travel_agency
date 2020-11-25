@@ -44,7 +44,7 @@ public class ApplicationReadyEvent {
                 .withAge(10)
                 .build();
 
-        Company companyNumberOne = companyRepository.getOne(1L).orElse(defaultCompany);
+        Company companyNumberOne = companyRepository.get(1L).orElse(defaultCompany);
         LOGGER.info("First company: {}", companyNumberOne);
 
         List<Company> allCompany = companyRepository.getAll();
@@ -69,7 +69,7 @@ public class ApplicationReadyEvent {
                 .withName("Uganda")
                 .build();
 
-        Country countryNumberOne = countryRepository.getOne(1L).orElse(defaultCountry);
+        Country countryNumberOne = countryRepository.get(1L).orElse(defaultCountry);
         LOGGER.info("First country: {}", countryNumberOne);
 
         List<Country> allCountries = countryRepository.getAll();

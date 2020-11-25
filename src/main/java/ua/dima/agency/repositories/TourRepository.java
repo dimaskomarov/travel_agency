@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface TourRepository {
     List<Tour> getAll();
-    Optional<Tour> getOne(Long id);
+    Optional<Tour> get(Long id);
     Optional<Tour> create(Tour tour);
     Optional<Tour> update(Long id, Tour tour);
     void delete(Long id);

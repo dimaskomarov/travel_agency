@@ -70,6 +70,24 @@ public class CountryTourRepositoryImpl implements CountryTourRepository {
         try {
             jdbcTemplate.update("DELETE FROM countries_tours WHERE tour_id=? AND country_id=?", countryTour.getTourId(), countryTour.getCountryId());
         } catch (DataAccessException e) {
+            LOGGER.debug("Method delete has been failed", e);//TODO change logs "CountryTour has been deleted."
+        }
+    }
+
+    @Override
+    public void deleteByTourId(Long tourId) {
+        try {
+            jdbcTemplate.update("DELETE FROM countries_tours WHERE tour_id=?", tourId);
+        } catch (DataAccessException e) {
+            LOGGER.debug("Method delete has been failed", e);
+        }
+    }
+
+    @Override
+    public void deleteByCountryId(Long countryId) {
+        try {
+            jdbcTemplate.update("DELETE FROM countries_tours WHERE country_id=?", countryId);
+        } catch (DataAccessException e) {
             LOGGER.debug("Method delete has been failed", e);
         }
     }

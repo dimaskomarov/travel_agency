@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface TravelTypeRepository {
     List<TravelType> getAll();
-    Optional<TravelType> getOne(Long id);
+    Optional<TravelType> get(Long id);
     Optional<TravelType> create(TravelType travelType);
     Optional<TravelType> update(Long id, TravelType travelType);
     void delete(Long id);

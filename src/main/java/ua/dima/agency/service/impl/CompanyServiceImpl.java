@@ -35,7 +35,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     @Transactional
     public CompanyDto create(CompanyDto companyDTO) {
-        return null;
+        companyRepository.create(companyDTO)
     }
 
     @Override

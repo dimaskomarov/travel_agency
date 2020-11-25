@@ -38,7 +38,7 @@ public class TravelTypeRepositoryImpl implements TravelTypeRepository {
     }
 
     @Override
-    public Optional<TravelType> getOne(Long id) {
+    public Optional<TravelType> get(Long id) {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM travel_types WHERE id = ?", TRAVEL_TYPE_MAPPER, id));
         } catch(DataAccessException e) {
@@ -60,7 +60,7 @@ public class TravelTypeRepositoryImpl implements TravelTypeRepository {
         if(key.isPresent()) {
             id = key.get().longValue();
         }
-        return getOne(id);
+        return get(id);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class TravelTypeRepositoryImpl implements TravelTypeRepository {
             LOGGER.debug("Method update has been failed", e);
             return Optional.empty();
         }
-        return getOne(id);
+        return get(id);
     }
 
     @Override

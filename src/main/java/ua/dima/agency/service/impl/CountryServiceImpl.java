@@ -37,7 +37,7 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public CountryDto get(Long id) {
-        Optional<Country> countryOptional = countryRepository.getOne(id);
+        Optional<Country> countryOptional = countryRepository.get(id);
 
         if(countryOptional.isEmpty()) {
             LOGGER.error("Country with id {} hasn't been found in the database.", id);

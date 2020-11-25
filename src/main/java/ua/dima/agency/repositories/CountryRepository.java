@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface CountryRepository {
     List<Country> getAll();
-    Optional<Country> getOne(Long id);
+    Optional<Country> get(Long id);
     Optional<Country> create(Country country);
     Optional<Country> update(Long id, Country country);
     void delete(Long id);

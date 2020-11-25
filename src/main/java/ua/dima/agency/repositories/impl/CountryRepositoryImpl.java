@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import ua.dima.agency.domain.Company;
 import ua.dima.agency.domain.Country;
 import ua.dima.agency.repositories.CountryRepository;
 
@@ -39,7 +38,7 @@ public class CountryRepositoryImpl implements CountryRepository {
     }
 
     @Override
-    public Optional<Country> getOne(Long id) {
+    public Optional<Country> get(Long id) {
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM countries WHERE id = ?", COUNTRY_MAPPER, id));
         } catch(DataAccessException e) {
@@ -61,7 +60,7 @@ public class CountryRepositoryImpl implements CountryRepository {
         if(key.isPresent()) {
             id = key.get().longValue();
         }
-        return getOne(id);
+        return get(id);
     }
 
     @Override
@@ -72,7 +71,7 @@ public class CountryRepositoryImpl implements CountryRepository {
             LOGGER.debug("Method update has been failed", e);
             return Optional.empty();
         }
-        return getOne(id);
+        return get(id);
     }
 
     @Override
