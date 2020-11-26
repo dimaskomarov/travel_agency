@@ -13,7 +13,6 @@ import ua.dima.agency.repositories.CountryRepository;
 import ua.dima.agency.repositories.CountryTourRepository;
 import ua.dima.agency.repositories.TourRepository;
 import ua.dima.agency.repositories.TravelTypeRepository;
-import ua.dima.agency.service.impl.TourServiceImpl;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class ParserUtil {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TourServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ParserUtil.class);
     private static final String LOG_PARSING_ERROR = "The parsing of {} with id {} has been failed.";
     private static final String MSG_PARSING_ERROR = "The parsing of %s with id %d has been failed.";
     private static CountryTourRepository countryTourRepository;
@@ -29,14 +28,8 @@ public class ParserUtil {
     private static CountryRepository countryRepository;
     private static TourRepository tourRepository;
 
-    public ParserUtil(CountryTourRepository countryTourRepository,
-                      TravelTypeRepository travelTypeRepository,
-                      CountryRepository countryRepository,
-                      TourRepository tourRepository) {
-        ParserUtil.countryTourRepository = countryTourRepository;
-        ParserUtil.travelTypeRepository = travelTypeRepository;
-        ParserUtil.countryRepository = countryRepository;
-        ParserUtil.tourRepository = tourRepository;
+    private ParserUtil() {
+        //empty constructor
     }
 
     public static CompanyDto parse(Company company) {
@@ -44,7 +37,7 @@ public class ParserUtil {
 
         try {
             List<Tour> tours = tourRepository.getByCompanyId(company.getId());
-            toursDto = tours.stream().map(tour -> parse(tour)).collect(Collectors.toList());
+            toursDto = tours.stream().map(ParserUtil::parse).collect(Collectors.toList());
         } catch(Exception e) {
             LOGGER.error(LOG_PARSING_ERROR, "Company", company.getId());
             throw new ParseException(String.format(MSG_PARSING_ERROR, "Company", company.getId()));

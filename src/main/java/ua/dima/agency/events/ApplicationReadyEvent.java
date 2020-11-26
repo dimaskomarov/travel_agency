@@ -128,7 +128,7 @@ public class ApplicationReadyEvent {
                 .withTravelTypeId(1L)
                 .build();
 
-        Tour tourNumberOne = tourRepository.getOne(1L).orElse(defaultTour);
+        Tour tourNumberOne = tourRepository.get(1L).orElse(defaultTour);
         LOGGER.info("First tour: {}", tourNumberOne);
 
         List<Tour> allTours = tourRepository.getAll();
@@ -154,7 +154,7 @@ public class ApplicationReadyEvent {
                 .withType("By banana")
                 .build();
 
-        TravelType travelTypeNumberOne = travelTypeRepository.getOne(1L).orElse(defaultTravelType);
+        TravelType travelTypeNumberOne = travelTypeRepository.get(1L).orElse(defaultTravelType);
         LOGGER.info("First travelType: {}", travelTypeNumberOne);
 
         List<TravelType> allTravelTypes = travelTypeRepository.getAll();
