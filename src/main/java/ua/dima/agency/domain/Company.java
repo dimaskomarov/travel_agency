@@ -1,7 +1,5 @@
 package ua.dima.agency.domain;
 
-import ua.dima.agency.dto.CompanyDto;
-
 public class Company {
     private Long id;
     private String name;
@@ -52,14 +50,6 @@ public class Company {
 
     public void setAge(int age) {
         this.age = age;
-    }
-
-    public static Company parse(CompanyDto companyDTO) {
-        return Company.createCompany()
-                .withId(companyDTO.getId())
-                .withName(companyDTO.getName())
-                .withAddress(companyDTO.getAddress())
-                .withAge(companyDTO.getAge()).build();
     }
 
     public static Builder createCompany() {

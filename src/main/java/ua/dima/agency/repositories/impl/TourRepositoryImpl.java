@@ -48,6 +48,16 @@ public class TourRepositoryImpl implements TourRepository {
     }
 
     @Override
+    public List<Tour> getByCompanyId(Long companyId) {
+        try {
+            return jdbcTemplate.query("SELECT * FROM tours WHERE company_id = ?", TOUR_MAPPER, companyId);
+        } catch(DataAccessException e) {
+            LOGGER.debug("Method getOne has been failed", e);
+            return Collections.emptyList();
+        }
+    }
+
+    @Override
     public Optional<Tour> create(Tour tour) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -91,6 +101,24 @@ public class TourRepositoryImpl implements TourRepository {
     public void delete(Long id) {
         try {
             jdbcTemplate.update("DELETE FROM tours WHERE id = ?", id);
+        } catch (DataAccessException e) {
+            LOGGER.debug("Method delete has been failed", e);
+        }
+    }
+
+    @Override
+    public void deleteByTourTypeId(Long travelTypeId) {
+        try {
+            jdbcTemplate.update("DELETE FROM tours WHERE travel_type_id = ?", travelTypeId);
+        } catch (DataAccessException e) {
+            LOGGER.debug("Method delete has been failed", e);
+        }
+    }
+
+    @Override
+    public void deleteByCompanyId(Long companyId) {
+        try {
+            jdbcTemplate.update("DELETE FROM tours WHERE company_id = ?", companyId);
         } catch (DataAccessException e) {
             LOGGER.debug("Method delete has been failed", e);
         }

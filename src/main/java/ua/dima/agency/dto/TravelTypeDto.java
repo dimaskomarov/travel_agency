@@ -1,7 +1,5 @@
 package ua.dima.agency.dto;
 
-import ua.dima.agency.domain.TravelType;
-
 public class TravelTypeDto {
     private Long id;
     private String type;
@@ -32,12 +30,6 @@ public class TravelTypeDto {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public static TravelTypeDto parse(TravelType travelType) {
-        return TravelTypeDto.createTravelTypeDTO()
-                .withId(travelType.getId())
-                .withType(travelType.getType()).build();
     }
 
     public static Builder createTravelTypeDTO(){

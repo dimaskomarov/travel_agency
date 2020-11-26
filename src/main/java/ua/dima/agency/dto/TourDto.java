@@ -1,7 +1,5 @@
 package ua.dima.agency.dto;
 
-import ua.dima.agency.domain.Tour;
-
 import java.time.Instant;
 import java.util.List;
 
@@ -75,15 +73,6 @@ public class TourDto {
 
     public void setCountiesDto(List<CountryDto> countiesDto) {
         this.countiesDto = countiesDto;
-    }
-
-    public static TourDto parse(Tour tour, TravelTypeDto travelTypeDto, List<CountryDto> countiesDto) {
-        return TourDto.createTourDTO()
-                .withPrice(tour.getPrice())
-                .withAmountDays(tour.getAmountDay())
-                .withDateDeparture(tour.getDateDeparture())
-                .withTravelTypeDto(travelTypeDto)
-                .withCountiesDto(countiesDto).build();
     }
 
     public static Builder createTourDTO(){

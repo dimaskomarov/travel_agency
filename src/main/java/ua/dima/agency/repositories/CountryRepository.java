@@ -9,6 +9,7 @@ public interface CountryRepository {
     List<Country> getAll();
     Optional<Country> get(Long id);
     Optional<Country> create(Country country);
+    List<Country> createAll(List<Country> countries);
     Optional<Country> update(Long id, Country country);
     void delete(Long id);
 }

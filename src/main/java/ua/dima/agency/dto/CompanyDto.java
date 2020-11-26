@@ -1,6 +1,4 @@
 package ua.dima.agency.dto;
-
-import ua.dima.agency.domain.Company;
 import java.util.List;
 
 public class CompanyDto {
@@ -63,15 +61,6 @@ public class CompanyDto {
 
     public void setToursDto(List<TourDto> toursDto) {
         this.toursDto = toursDto;
-    }
-
-    public static CompanyDto parse(Company company, List<TourDto> toursDto) {
-        return CompanyDto.createCompanyDTO()
-                .withId(company.getId())
-                .withName(company.getName())
-                .withAddress(company.getAddress())
-                .withAge(company.getAge())
-                .withToursDto(toursDto).build();
     }
 
     public static Builder createCompanyDTO() {

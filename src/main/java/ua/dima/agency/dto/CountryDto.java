@@ -1,7 +1,5 @@
 package ua.dima.agency.dto;
 
-import ua.dima.agency.domain.Country;
-
 public class CountryDto {
     private Long id;
     private String name;
@@ -32,12 +30,6 @@ public class CountryDto {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public static CountryDto parse(Country country) {
-        return CountryDto.createCountryDTO()
-                .withId(country.getId())
-                .withName(country.getName()).build();
     }
 
     public static Builder createCountryDTO(){

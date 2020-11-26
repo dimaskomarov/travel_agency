@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 public class CountryRepositoryImpl implements CountryRepository {
@@ -61,6 +62,12 @@ public class CountryRepositoryImpl implements CountryRepository {
             id = key.get().longValue();
         }
         return get(id);
+    }
+
+    @Override
+    public List<Country> createAll(List<Country> countries) {
+        return countries.stream().filter(country -> create(country).isPresent())
+                .map(country -> create(country).get()).collect(Collectors.toList());
     }
 
     @Override

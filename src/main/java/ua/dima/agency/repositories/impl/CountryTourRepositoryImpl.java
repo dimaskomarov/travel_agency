@@ -66,6 +66,16 @@ public class CountryTourRepositoryImpl implements CountryTourRepository {
     }
 
     @Override
+    public void create(Long tourId, Long countryId) {
+        jdbcTemplate.update(connection -> {
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO countries_tours(country_id, tour_id) VALUES(?, ?)");
+            statement.setLong(1, countryId);
+            statement.setLong(2, tourId);
+            return statement;
+        });
+    }
+
+    @Override
     public void delete(CountryTour countryTour) {
         try {
             jdbcTemplate.update("DELETE FROM countries_tours WHERE tour_id=? AND country_id=?", countryTour.getTourId(), countryTour.getCountryId());

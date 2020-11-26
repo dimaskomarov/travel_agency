@@ -8,6 +8,6 @@ public interface TourService {
     TourDto create(TourDto tourDTO, Long companyId);
     TourDto get(Long id);
     List<TourDto> getAll();
-    TourDto update(Long id, TourDto tourDTO);
+    TourDto update(TourDto tourDTO, Long countryId);
     void delete(Long id);
 }
