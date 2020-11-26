@@ -38,7 +38,7 @@ public class ParserUtil {
         try {
             List<Tour> tours = tourRepository.getByCompanyId(company.getId());
             toursDto = tours.stream().map(ParserUtil::parse).collect(Collectors.toList());
-        } catch(Exception e) {
+        } catch(RuntimeException e) {
             LOGGER.error(LOG_PARSING_ERROR, "Company", company.getId());
             throw new ParseException(String.format(MSG_PARSING_ERROR, "Company", company.getId()));
         }
@@ -68,12 +68,14 @@ public class ParserUtil {
         List<CountryDto> countriesDto = null;
         try {
             Optional<TravelType> travelTypeOptional = travelTypeRepository.get(tour.getTravelTypeId());
-            travelTypeDto = parse(travelTypeOptional.get());
+            if(travelTypeOptional.isPresent()) {
+                travelTypeDto = parse(travelTypeOptional.get());
+            }
 
             List<CountryTour> countryTours = countryTourRepository.getAllByTourId(tour.getId());
             List<Country> counties = countryTours.stream().map(countryTour -> countryRepository.get(countryTour.getCountryId()).get()).collect(Collectors.toList());
             countriesDto = counties.stream().map(ParserUtil::parse).collect(Collectors.toList());
-        } catch(Exception e) {
+        } catch(RuntimeException e) {
             LOGGER.error(LOG_PARSING_ERROR, "Tour", tour.getId());
             throw new ParseException(String.format(MSG_PARSING_ERROR, "Tour", tour.getId()));
         }

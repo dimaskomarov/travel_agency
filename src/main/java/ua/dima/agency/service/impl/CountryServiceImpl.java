@@ -23,7 +23,6 @@ public class CountryServiceImpl implements CountryService {
     private CountryRepository countryRepository;
     private CountryTourRepository countryTourRepository;
 
-
     public CountryServiceImpl(CountryRepository countryRepository,
                               CountryTourRepository countryTourRepository) {
         this.countryRepository = countryRepository;
@@ -32,53 +31,53 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public CountryDto create(CountryDto countryDto) {
-        Optional<Country> countryOptional = countryRepository.create(ParserUtil.parse(countryDto));
-
-        if(countryOptional.isEmpty()) {
-            LOGGER.error("{} hasn't been created.", countryDto);
-            throw new SQLException(String.format("%s hasn't been created.", countryDto));
+        Optional<Country> createdCountry = countryRepository.create(ParserUtil.parse(countryDto));
+        if(createdCountry.isPresent()) {
+            return ParserUtil.parse(createdCountry.get());
         }
-        return ParserUtil.parse(countryOptional.get());
+        LOGGER.warn("{} wasn't created.", countryDto);
+        throw new SQLException(String.format("%s wasn't created.", countryDto));
     }
 
     @Override
     public CountryDto get(Long id) {
-        Optional<Country> countryOptional = countryRepository.get(id);
-
-        if(countryOptional.isEmpty()) {
-            LOGGER.error("Country with id {} hasn't been found in the database.", id);
-            throw new NoDataException(String.format("Country with id %d hasn't been found in the database.", id));
+        Optional<Country> country = countryRepository.get(id);
+        if(country.isPresent()) {
+            return ParserUtil.parse(country.get());
         }
-        return ParserUtil.parse(countryOptional.get());
+        LOGGER.warn("Country with id={} doesn't exist.", id);
+        throw new NoDataException(String.format("Country with id=%d doesn't exist.", id));
     }
 
     @Override
     public List<CountryDto> getAll() {
         List<Country> countries = countryRepository.getAll();
-
-        if(countries.isEmpty()) {
-            LOGGER.error("Any country hasn't been found in the database.");
-            throw new NoDataException("Any country hasn't been found in the database.");
+        if(!countries.isEmpty()) {
+            return countries.stream().map(ParserUtil::parse).collect(Collectors.toList());
         }
-        return countries.stream().map(ParserUtil::parse)
-                .collect(Collectors.toList());
+        LOGGER.warn("There aren't any countries in database.");
+        throw new NoDataException("There aren't any countries in database.");
     }
 
     @Override
     public CountryDto update(Long id, CountryDto countryDTO) {
-        Optional<Country> countryOptional = countryRepository.update(id, ParserUtil.parse(countryDTO));
-
-        if(countryOptional.isEmpty()) {
-            LOGGER.error("{} hasn't been updated.", countryDTO);
-            throw new SQLException(String.format("%s hasn't been updated.", countryDTO));
+        Optional<Country> updatedCountry = countryRepository.update(id, ParserUtil.parse(countryDTO));
+        if(updatedCountry.isPresent()) {
+            return ParserUtil.parse(updatedCountry.get());
         }
-        return ParserUtil.parse(countryOptional.get());
+        LOGGER.warn("{} wasn't updated.", updatedCountry);
+        throw new SQLException(String.format("%s wasn't updated.", updatedCountry));
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        countryTourRepository.deleteByCountryId(id);
-        countryRepository.delete(id);
+        try {
+            countryTourRepository.deleteByCountryId(id);
+            countryRepository.delete(id);
+        } catch(RuntimeException e) {
+            LOGGER.warn("Country with id={} wasn't deleted.", id);
+            throw new SQLException(String.format("Country with id=%d wasn't deleted.", id));
+        }
     }
 }

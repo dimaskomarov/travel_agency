@@ -1,8 +1,5 @@
 package ua.dima.agency.repositories.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,13 +9,11 @@ import ua.dima.agency.domain.TravelType;
 import ua.dima.agency.repositories.TravelTypeRepository;
 
 import java.sql.PreparedStatement;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Component
 public class TravelTypeRepositoryImpl implements TravelTypeRepository {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TravelTypeRepositoryImpl.class);
     private static final BeanPropertyRowMapper<TravelType> TRAVEL_TYPE_MAPPER =  new BeanPropertyRowMapper<>(TravelType.class);
 
     private final JdbcTemplate jdbcTemplate;
@@ -29,22 +24,12 @@ public class TravelTypeRepositoryImpl implements TravelTypeRepository {
 
     @Override
     public List<TravelType> getAll() {
-        try {
-            return jdbcTemplate.query("SELECT * FROM travel_types", TRAVEL_TYPE_MAPPER);
-        } catch(DataAccessException e) {
-            LOGGER.debug("Method getAll has been failed", e);
-            return Collections.emptyList();
-        }
+        return jdbcTemplate.query("SELECT * FROM travel_types", TRAVEL_TYPE_MAPPER);
     }
 
     @Override
     public Optional<TravelType> get(Long id) {
-        try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM travel_types WHERE id = ?", TRAVEL_TYPE_MAPPER, id));
-        } catch(DataAccessException e) {
-            LOGGER.debug("Method getOne has been failed", e);
-            return Optional.empty();
-        }
+        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM travel_types WHERE id = ?", TRAVEL_TYPE_MAPPER, id));
     }
 
     @Override
@@ -65,21 +50,12 @@ public class TravelTypeRepositoryImpl implements TravelTypeRepository {
 
     @Override
     public Optional<TravelType> update(Long id, TravelType travelType) {
-        try {
-            jdbcTemplate.update("UPDATE travel_types SET type=? WHERE id=?", travelType.getType(), id);
-        } catch (DataAccessException e) {
-            LOGGER.debug("Method update has been failed", e);
-            return Optional.empty();
-        }
+        jdbcTemplate.update("UPDATE travel_types SET type=? WHERE id=?", travelType.getType(), id);
         return get(id);
     }
 
     @Override
     public void delete(Long id) {
-        try {
-            jdbcTemplate.update("DELETE FROM travel_types WHERE id = ?", id);
-        } catch (DataAccessException e) {
-            LOGGER.debug("Method delete has been failed", e);
-        }
+        jdbcTemplate.update("DELETE FROM travel_types WHERE id = ?", id);
     }
 }

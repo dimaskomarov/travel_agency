@@ -1,8 +1,5 @@
 package ua.dima.agency.repositories.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,13 +9,11 @@ import ua.dima.agency.domain.Tour;
 import ua.dima.agency.repositories.TourRepository;
 
 import java.sql.PreparedStatement;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Component
 public class TourRepositoryImpl implements TourRepository {
-    private static final Logger LOGGER = LoggerFactory.getLogger(TourRepositoryImpl.class);
     private static final BeanPropertyRowMapper<Tour> TOUR_MAPPER =  new BeanPropertyRowMapper<>(Tour.class);
 
     private final JdbcTemplate jdbcTemplate;
@@ -29,32 +24,17 @@ public class TourRepositoryImpl implements TourRepository {
 
     @Override
     public List<Tour> getAll() {
-        try {
-            return jdbcTemplate.query("SELECT * FROM tours", TOUR_MAPPER);
-        } catch(DataAccessException e) {
-            LOGGER.debug("Method getAll has been failed", e);
-            return Collections.emptyList();
-        }
+        return jdbcTemplate.query("SELECT * FROM tours", TOUR_MAPPER);
     }
 
     @Override
     public Optional<Tour> get(Long id) {
-        try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM tours WHERE id = ?", TOUR_MAPPER, id));
-        } catch(DataAccessException e) {
-            LOGGER.debug("Method getOne has been failed", e);
-            return Optional.empty();
-        }
+        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM tours WHERE id = ?", TOUR_MAPPER, id));
     }
 
     @Override
     public List<Tour> getByCompanyId(Long companyId) {
-        try {
-            return jdbcTemplate.query("SELECT * FROM tours WHERE company_id = ?", TOUR_MAPPER, companyId);
-        } catch(DataAccessException e) {
-            LOGGER.debug("Method getOne has been failed", e);
-            return Collections.emptyList();
-        }
+        return jdbcTemplate.query("SELECT * FROM tours WHERE company_id = ?", TOUR_MAPPER, companyId);
     }
 
     @Override
@@ -79,48 +59,31 @@ public class TourRepositoryImpl implements TourRepository {
 
     @Override
     public Optional<Tour> update(Long id, Tour tour) {
-        try {
-            jdbcTemplate.update(connection -> {
-                PreparedStatement statement = connection.prepareStatement("UPDATE tours SET price=?, amount_day=?, date_departure=?::timestamp, company_id=?, travel_type_id=? WHERE id=?");
-                statement.setDouble(1, tour.getPrice());
-                statement.setInt(2, tour.getAmountDay());
-                statement.setString(3, tour.getDateDeparture().toString());
-                statement.setLong(4, tour.getCompanyId());
-                statement.setLong(5, tour.getTravelTypeId());
-                statement.setLong(6, id);
-                return statement;
-            });
-        } catch (DataAccessException e) {
-            LOGGER.debug("Method update has been failed", e);
-            return Optional.empty();
-        }
+        jdbcTemplate.update(connection -> {
+            PreparedStatement statement = connection.prepareStatement("UPDATE tours SET price=?, amount_day=?, date_departure=?::timestamp, company_id=?, travel_type_id=? WHERE id=?");
+            statement.setDouble(1, tour.getPrice());
+            statement.setInt(2, tour.getAmountDay());
+            statement.setString(3, tour.getDateDeparture().toString());
+            statement.setLong(4, tour.getCompanyId());
+            statement.setLong(5, tour.getTravelTypeId());
+            statement.setLong(6, id);
+            return statement;
+        });
         return get(id);
     }
 
     @Override
     public void delete(Long id) {
-        try {
-            jdbcTemplate.update("DELETE FROM tours WHERE id = ?", id);
-        } catch (DataAccessException e) {
-            LOGGER.debug("Method delete has been failed", e);
-        }
+        jdbcTemplate.update("DELETE FROM tours WHERE id = ?", id);
     }
 
     @Override
     public void deleteByTourTypeId(Long travelTypeId) {
-        try {
-            jdbcTemplate.update("DELETE FROM tours WHERE travel_type_id = ?", travelTypeId);
-        } catch (DataAccessException e) {
-            LOGGER.debug("Method delete has been failed", e);
-        }
+        jdbcTemplate.update("DELETE FROM tours WHERE travel_type_id = ?", travelTypeId);
     }
 
     @Override
     public void deleteByCompanyId(Long companyId) {
-        try {
-            jdbcTemplate.update("DELETE FROM tours WHERE company_id = ?", companyId);
-        } catch (DataAccessException e) {
-            LOGGER.debug("Method delete has been failed", e);
-        }
+        jdbcTemplate.update("DELETE FROM tours WHERE company_id = ?", companyId);
     }
 }
