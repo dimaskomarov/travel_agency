@@ -40,16 +40,17 @@ public class TourServiceImpl implements TourService {
 
     @Override
     @Transactional
-    public TourDto create(TourDto tourDTO, Long companyId) {
+    public TourDto create(Long companyId, TourDto tourDTO) {
         List<Country> countriesFromTour = tourDTO.getCountiesDto().stream().map(ParserUtil::parse).collect(Collectors.toList());
         List<Country> createdCountries = countryRepository.createAll(countriesFromTour);
+
+        createdCountries.forEach(country -> countryTourRepository.create(tourDTO.getId(), country.getId()));
 
         travelTypeRepository.create(ParserUtil.parse(tourDTO.getTravelTypeDto()));
 
         Tour tour = ParserUtil.parse(tourDTO, companyId);
         Optional<Tour> createdTour = tourRepository.create(tour);
         if(createdTour.isPresent()) {
-            createdCountries.forEach(country -> countryTourRepository.create(createdTour.get().getId(), country.getId()));
             return ParserUtil.parse(createdTour.get());
         }
         LOGGER.warn("{} wasn't created.", tourDTO);
