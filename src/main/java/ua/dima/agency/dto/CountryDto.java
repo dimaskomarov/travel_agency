@@ -1,7 +1,6 @@
 package ua.dima.agency.dto;
 
 public class CountryDto {
-    private Long id;
     private String name;
 
     public CountryDto() {
@@ -10,18 +9,9 @@ public class CountryDto {
 
     @Override
     public String toString() {
-        return "CountryDTO{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
+        return "CountryDto{" +
+                "name='" + name + '\'' +
                 '}';
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -40,11 +30,6 @@ public class CountryDto {
 
         private Builder() {
             //empty constructor
-        }
-
-        public Builder withId(Long id) {
-            CountryDto.this.id = id;
-            return this;
         }
 
         public Builder withName(String name) {

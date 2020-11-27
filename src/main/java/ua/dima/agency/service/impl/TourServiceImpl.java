@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.dima.agency.domain.Country;
 import ua.dima.agency.domain.Tour;
+import ua.dima.agency.domain.TravelType;
 import ua.dima.agency.dto.TourDto;
 import ua.dima.agency.exceptions.NoDataException;
 import ua.dima.agency.exceptions.SQLException;
@@ -40,11 +41,11 @@ public class TourServiceImpl implements TourService {
 
     @Override
     @Transactional
-    public TourDto create(TourDto tourDTO, Long companyId) {
+    public TourDto create(TourDto tourDTO, Long tourId, Long companyId) {
         List<Country> countriesFromTour = tourDTO.getCountiesDto().stream().map(ParserUtil::parse).collect(Collectors.toList());
         List<Country> createdCountries = countryRepository.createAll(countriesFromTour);
 
-        createdCountries.forEach(country -> countryTourRepository.create(tourDTO.getId(), country.getId()));
+        createdCountries.forEach(country -> countryTourRepository.create(tourId, country.getId()));
 
         travelTypeRepository.create(ParserUtil.parse(tourDTO.getTravelTypeDto()));
 
@@ -79,8 +80,8 @@ public class TourServiceImpl implements TourService {
 
     @Override
     @Transactional
-    public TourDto update(TourDto tourDTO, Long countryId) {
-        Optional<Tour> updatedTour = tourRepository.update(tourDTO.getId(), ParserUtil.parse(tourDTO, countryId));
+    public TourDto update(TourDto tourDTO, Long tourId, Long countryId) {
+        Optional<Tour> updatedTour = tourRepository.update(tourId, ParserUtil.parse(tourDTO, countryId));
         if(updatedTour.isPresent()) {
             return ParserUtil.parse(updatedTour.get());
         }

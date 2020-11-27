@@ -33,6 +33,11 @@ public class TravelTypeRepositoryImpl implements TravelTypeRepository {
     }
 
     @Override
+    public Optional<TravelType> getByName(String type) {
+        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM travel_types WHERE type=?", TRAVEL_TYPE_MAPPER, type));
+    }
+
+    @Override
     public Optional<TravelType> create(TravelType travelType) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
