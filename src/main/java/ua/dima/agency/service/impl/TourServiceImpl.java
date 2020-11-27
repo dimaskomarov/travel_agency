@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.dima.agency.domain.Country;
 import ua.dima.agency.domain.Tour;
-import ua.dima.agency.domain.TravelType;
 import ua.dima.agency.dto.TourDto;
 import ua.dima.agency.exceptions.NoDataException;
 import ua.dima.agency.exceptions.SQLException;
@@ -41,17 +40,16 @@ public class TourServiceImpl implements TourService {
 
     @Override
     @Transactional
-    public TourDto create(TourDto tourDTO, Long tourId, Long companyId) {
+    public TourDto create(TourDto tourDTO, Long companyId) {
         List<Country> countriesFromTour = tourDTO.getCountiesDto().stream().map(ParserUtil::parse).collect(Collectors.toList());
         List<Country> createdCountries = countryRepository.createAll(countriesFromTour);
-
-        createdCountries.forEach(country -> countryTourRepository.create(tourId, country.getId()));
 
         travelTypeRepository.create(ParserUtil.parse(tourDTO.getTravelTypeDto()));
 
         Tour tour = ParserUtil.parse(tourDTO, companyId);
         Optional<Tour> createdTour = tourRepository.create(tour);
         if(createdTour.isPresent()) {
+            createdCountries.forEach(country -> countryTourRepository.create(createdTour.get().getId(), country.getId()));
             return ParserUtil.parse(createdTour.get());
         }
         LOGGER.warn("{} wasn't created.", tourDTO);
