@@ -1,6 +1,7 @@
 package ua.dima.agency.dto;
 
 public class TravelTypeDto {
+    private Long id;
     private String type;
 
     public TravelTypeDto() {
@@ -10,8 +11,17 @@ public class TravelTypeDto {
     @Override
     public String toString() {
         return "TravelTypeDto{" +
-                "type='" + type + '\'' +
+                "id=" + id +
+                ", type='" + type + '\'' +
                 '}';
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getType() {
@@ -30,6 +40,11 @@ public class TravelTypeDto {
 
         private Builder() {
             //empty constructor
+        }
+
+        public Builder withId(Long id) {
+            TravelTypeDto.this.id = id;
+            return this;
         }
 
         public Builder withType(String type) {

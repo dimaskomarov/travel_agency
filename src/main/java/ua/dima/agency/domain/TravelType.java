@@ -41,6 +41,11 @@ public class TravelType {
             //empty constructor
         }
 
+        public Builder withId(Long id) {
+            TravelType.this.id = id;
+            return this;
+        }
+
         public Builder withType(String type) {
             TravelType.this.type = type;
             return this;

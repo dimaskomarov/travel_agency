@@ -2,6 +2,7 @@ package ua.dima.agency.dto;
 import java.util.List;
 
 public class CompanyDto {
+    private Long id;
     private String name;
     private String address;
     private Integer age;
@@ -14,11 +15,20 @@ public class CompanyDto {
     @Override
     public String toString() {
         return "CompanyDto{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", address='" + address + '\'' +
                 ", age=" + age +
                 ", toursDto=" + toursDto +
                 '}';
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -61,6 +71,11 @@ public class CompanyDto {
 
         private Builder() {
             //empty constructor
+        }
+
+        public Builder withId(Long id) {
+            CompanyDto.this.id = id;
+            return this;
         }
 
         public Builder withName(String name) {

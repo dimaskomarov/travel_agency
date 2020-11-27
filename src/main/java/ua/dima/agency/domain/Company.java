@@ -61,6 +61,11 @@ public class Company {
             //empty constructor
         }
 
+        public Builder withId(Long id) {
+            Company.this.id = id;
+            return this;
+        }
+
         public Builder withName(String name) {
             Company.this.name = name;
             return this;

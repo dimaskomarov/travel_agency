@@ -41,6 +41,11 @@ public class Country {
             //empty constructor
         }
 
+        public Builder withId(Long id) {
+            Country.this.id = id;
+            return this;
+        }
+
         public Builder withName(String name) {
             Country.this.name = name;
             return this;

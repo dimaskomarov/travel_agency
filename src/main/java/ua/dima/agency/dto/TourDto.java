@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 
 public class TourDto {
+    private Long id;
     private Double price;
     private Integer amountDays;
     private Instant dateDeparture;
@@ -17,12 +18,21 @@ public class TourDto {
     @Override
     public String toString() {
         return "TourDto{" +
-                "price=" + price +
+                "id=" + id +
+                ", price=" + price +
                 ", amountDays=" + amountDays +
                 ", dateDeparture=" + dateDeparture +
                 ", travelTypeDto=" + travelTypeDto +
                 ", countiesDto=" + countiesDto +
                 '}';
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Double getPrice() {
@@ -73,6 +83,11 @@ public class TourDto {
 
         private Builder() {
             //empty constructor
+        }
+
+        public Builder withId(Long id) {
+            TourDto.this.id = id;
+            return this;
         }
 
         public Builder withPrice(Double price) {
