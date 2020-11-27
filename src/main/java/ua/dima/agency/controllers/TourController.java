@@ -30,18 +30,21 @@ public class TourController {
                 .body(new DataResponse(tourService.getAll()));
     }
 
-    @PostMapping
-    public ResponseEntity<StatusResponse> create(@PathVariable("id") Long companyId,
-                                                 @RequestBody TourDto tourDto) {
-        tourService.create(companyId, tourDto);
+    @PostMapping(value = "/{id}")
+    public ResponseEntity<StatusResponse> create(@RequestBody TourDto tourDto,
+                                                 @PathVariable("id") Long tourId,
+                                                 @PathVariable("id") Long companyId) {
+        tourService.create(tourDto, tourId, companyId);
         return ResponseEntity
                 .status(201)
                 .body(new StatusResponse("Tour was created."));
     }
 
-    @PutMapping
-    public ResponseEntity<StatusResponse> update(@PathVariable("id") Long companyId, @RequestBody TourDto tourDto) {
-        tourService.update(companyId, tourDto);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<StatusResponse> update(@RequestBody TourDto tourDto,
+                                                 @PathVariable("id") Long tourId,
+                                                 @PathVariable("id") Long companyId) {
+        tourService.update(tourDto, tourId, companyId);
         return ResponseEntity
                 .status(200)
                 .body(new StatusResponse("Tour was updated."));
