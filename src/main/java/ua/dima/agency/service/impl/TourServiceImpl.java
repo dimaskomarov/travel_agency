@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.dima.agency.domain.Country;
 import ua.dima.agency.domain.Tour;
+import ua.dima.agency.domain.TravelType;
 import ua.dima.agency.dto.TourDto;
 import ua.dima.agency.exceptions.NoDataException;
 import ua.dima.agency.exceptions.SQLException;
