@@ -83,11 +83,6 @@ public class Tour {
             //empty constructor
         }
 
-        public Builder withId(Long id) {
-            Tour.this.id = id;
-            return this;
-        }
-
         public Builder withPrice(Double price) {
             Tour.this.price = price;
             return this;

@@ -48,7 +48,6 @@ public class ParserUtil {
 
     private static CompanyDto collect(Company company, List<TourDto> toursDto) {
         return CompanyDto.createCompanyDTO()
-                .withId(company.getId())
                 .withName(company.getName())
                 .withAddress(company.getAddress())
                 .withAge(company.getAge())
@@ -57,7 +56,6 @@ public class ParserUtil {
 
     public static Company parse(CompanyDto companyDTO) {
         return Company.createCompany()
-                .withId(companyDTO.getId())
                 .withName(companyDTO.getName())
                 .withAddress(companyDTO.getAddress())
                 .withAge(companyDTO.getAge()).build();
@@ -93,36 +91,34 @@ public class ParserUtil {
     }
 
     public static Tour parse(TourDto tourDTO, Long companyId) {
+        Optional<TravelType> createdTravelType = travelTypeRepository.getByName(tourDTO.getTravelTypeDto().getType());
+        Long travelTypeId = createdTravelType.isPresent() ? createdTravelType.get().getId():0L;
+
         return Tour.createTour()
-                .withId(tourDTO.getId())
                 .withPrice(tourDTO.getPrice())
                 .withAmountDay(tourDTO.getAmountDays())
                 .withDateDeparture(tourDTO.getDateDeparture())
                 .withCompanyId(companyId)
-                .withTravelTypeId(tourDTO.getTravelTypeDto().getId()).build();
+                .withTravelTypeId(travelTypeId).build();
     }
 
     public static CountryDto parse(Country country) {
         return CountryDto.createCountryDTO()
-                .withId(country.getId())
                 .withName(country.getName()).build();
     }
 
     public static Country parse(CountryDto countryDTO) {
         return Country.createCountry()
-                .withId(countryDTO.getId())
                 .withName(countryDTO.getName()).build();
     }
 
     public static TravelTypeDto parse(TravelType travelType) {
         return TravelTypeDto.createTravelTypeDTO()
-                .withId(travelType.getId())
                 .withType(travelType.getType()).build();
     }
 
     public static TravelType parse(TravelTypeDto travelTypeDto) {
         return TravelType.createTravelType()
-                .withId(travelTypeDto.getId())
                 .withType(travelTypeDto.getType())
                 .build();
     }
