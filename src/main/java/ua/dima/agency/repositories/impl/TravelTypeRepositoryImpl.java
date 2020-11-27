@@ -1,5 +1,6 @@
 package ua.dima.agency.repositories.impl;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -29,12 +30,22 @@ public class TravelTypeRepositoryImpl implements TravelTypeRepository {
 
     @Override
     public Optional<TravelType> get(Long id) {
-        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM travel_types WHERE id = ?", TRAVEL_TYPE_MAPPER, id));
+        try {
+            TravelType travelType = jdbcTemplate.queryForObject("SELECT * FROM travel_types WHERE id = ?", TRAVEL_TYPE_MAPPER, id);
+            return Optional.ofNullable(travelType);
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
     public Optional<TravelType> getByName(String type) {
-        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM travel_types WHERE type=?", TRAVEL_TYPE_MAPPER, type));
+        try {
+            TravelType travelType = jdbcTemplate.queryForObject("SELECT * FROM travel_types WHERE type=?", TRAVEL_TYPE_MAPPER, type);
+            return Optional.ofNullable(travelType);
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -55,8 +66,12 @@ public class TravelTypeRepositoryImpl implements TravelTypeRepository {
 
     @Override
     public Optional<TravelType> update(Long id, TravelType travelType) {
-        jdbcTemplate.update("UPDATE travel_types SET type=? WHERE id=?", travelType.getType(), id);
-        return get(id);
+        try {
+            jdbcTemplate.update("UPDATE travel_types SET type=? WHERE id=?", travelType.getType(), id);
+            return get(id);
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.dima.agency.domain.Country;
 import ua.dima.agency.dto.CountryDto;
+import ua.dima.agency.exceptions.ExtraDataException;
 import ua.dima.agency.exceptions.NoDataException;
 import ua.dima.agency.exceptions.SQLException;
 import ua.dima.agency.repositories.CountryRepository;
@@ -31,12 +32,29 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public CountryDto create(CountryDto countryDto) {
+        checkForExistence(countryDto);
+
         Optional<Country> createdCountry = countryRepository.create(ParserUtil.parse(countryDto));
         if(createdCountry.isPresent()) {
             return ParserUtil.parse(createdCountry.get());
         }
         LOGGER.warn("{} wasn't created.", countryDto);
         throw new SQLException(String.format("%s wasn't created.", countryDto));
+    }
+
+    private void checkForExistence(CountryDto countryDto) {
+        Long countryDtoId;
+        if((countryDtoId = isAlreadyExists(countryDto)) > 0) {
+            countryDto.setId(countryDtoId);
+            LOGGER.warn("{} already exists.", countryDto);
+            throw new ExtraDataException(String.format("%s already exists.", countryDto));
+        }
+    }
+
+    private Long isAlreadyExists(CountryDto countryDto) {
+        List<Country> countries = countryRepository.getAll();
+        Optional<Country> existedCountry = countries.stream().filter(country -> country.getName().equals(countryDto.getName())).findFirst();
+        return existedCountry.isPresent() ? existedCountry.get().getId() : -1L;
     }
 
     @Override
@@ -60,8 +78,8 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public CountryDto update(Long id, CountryDto countryDTO) {
-        Optional<Country> updatedCountry = countryRepository.update(id, ParserUtil.parse(countryDTO));
+    public CountryDto update(Long id, CountryDto countryDto) {
+        Optional<Country> updatedCountry = countryRepository.update(id, ParserUtil.parse(countryDto));
         if(updatedCountry.isPresent()) {
             return ParserUtil.parse(updatedCountry.get());
         }

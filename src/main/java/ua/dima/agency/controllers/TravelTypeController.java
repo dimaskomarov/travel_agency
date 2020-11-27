@@ -2,6 +2,7 @@ package ua.dima.agency.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ua.dima.agency.controllers.responses.DataAndStatusResponse;
 import ua.dima.agency.controllers.responses.DataResponse;
 import ua.dima.agency.controllers.responses.StatusResponse;
 import ua.dima.agency.dto.TravelTypeDto;
@@ -31,19 +32,19 @@ public class TravelTypeController {
     }
 
     @PostMapping
-    public ResponseEntity<StatusResponse> create(@RequestBody TravelTypeDto travelTypeDTO) {
-        travelTypeService.create(travelTypeDTO);
+    public ResponseEntity<DataAndStatusResponse> create(@RequestBody TravelTypeDto travelTypeDto) {
+        TravelTypeDto createdTravelTypeDto = travelTypeService.create(travelTypeDto);
         return ResponseEntity
                 .status(201)
-                .body(new StatusResponse("Travel type was created."));
+                .body(new DataAndStatusResponse("Next travel type was created.", createdTravelTypeDto));
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<StatusResponse> update(@PathVariable Long id, @RequestBody TravelTypeDto travelTypeDTO) {
-        travelTypeService.update(id, travelTypeDTO);
+    public ResponseEntity<DataAndStatusResponse> update(@PathVariable Long id, @RequestBody TravelTypeDto travelTypeDTO) {
+        TravelTypeDto updatedTravelTypeDto = travelTypeService.update(id, travelTypeDTO);
         return ResponseEntity
                 .status(200)
-                .body(new StatusResponse("Travel type was updated."));
+                .body(new DataAndStatusResponse("Next travel type updated.", updatedTravelTypeDto));
     }
 
     @DeleteMapping(value = "/{id}")

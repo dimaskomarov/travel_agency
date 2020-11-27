@@ -1,5 +1,6 @@
 package ua.dima.agency.repositories.impl;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -9,7 +10,6 @@ import ua.dima.agency.domain.Country;
 import ua.dima.agency.repositories.CountryRepository;
 
 import java.sql.PreparedStatement;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,7 +31,12 @@ public class CountryRepositoryImpl implements CountryRepository {
 
     @Override
     public Optional<Country> get(Long id) {
-        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM countries WHERE id = ?", COUNTRY_MAPPER, id));
+        try {
+            Country country = jdbcTemplate.queryForObject("SELECT * FROM countries WHERE id = ?", COUNTRY_MAPPER, id);
+            return Optional.ofNullable(country);
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -58,8 +63,12 @@ public class CountryRepositoryImpl implements CountryRepository {
 
     @Override
     public Optional<Country> update(Long id, Country country) {
-        jdbcTemplate.update("UPDATE countries SET name=? WHERE id=?", country.getName(), id);
-        return get(id);
+        try {
+            jdbcTemplate.update("UPDATE countries SET name=? WHERE id=?", country.getName(), id);
+            return get(id);
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override

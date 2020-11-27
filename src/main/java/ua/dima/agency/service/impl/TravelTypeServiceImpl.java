@@ -4,8 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.dima.agency.domain.Country;
 import ua.dima.agency.domain.TravelType;
+import ua.dima.agency.dto.CountryDto;
 import ua.dima.agency.dto.TravelTypeDto;
+import ua.dima.agency.exceptions.ExtraDataException;
 import ua.dima.agency.exceptions.NoDataException;
 import ua.dima.agency.exceptions.SQLException;
 import ua.dima.agency.repositories.TourRepository;
@@ -30,13 +33,30 @@ public class TravelTypeServiceImpl implements TravelTypeService {
     }
 
     @Override
-    public TravelTypeDto create(TravelTypeDto travelTypeDTO) {
-        Optional<TravelType> createdTravelType = travelTypeRepository.create(ParserUtil.parse(travelTypeDTO));
+    public TravelTypeDto create(TravelTypeDto travelTypeDto) {
+        checkForExistence(travelTypeDto);
+
+        Optional<TravelType> createdTravelType = travelTypeRepository.create(ParserUtil.parse(travelTypeDto));
         if(createdTravelType.isPresent()) {
             return ParserUtil.parse(createdTravelType.get());
         }
-        LOGGER.warn("{} wasn't created.", travelTypeDTO);
-        throw new SQLException(String.format("%s wasn't created.", travelTypeDTO));
+        LOGGER.warn("{} wasn't created.", travelTypeDto);
+        throw new SQLException(String.format("%s wasn't created.", travelTypeDto));
+    }
+
+    private void checkForExistence(TravelTypeDto travelTypeDto) {
+        Long travelTypeDtoId;
+        if((travelTypeDtoId = isAlreadyExists(travelTypeDto)) > 0) {
+            travelTypeDto.setId(travelTypeDtoId);
+            LOGGER.warn("{} already exists.", travelTypeDto);
+            throw new ExtraDataException(String.format("%s already exists.", travelTypeDto));
+        }
+    }
+
+    private Long isAlreadyExists(TravelTypeDto travelTypeDto) {
+        List<TravelType> travelTypes = travelTypeRepository.getAll();
+        Optional<TravelType> existedTravelType = travelTypes.stream().filter(travelType -> travelType.getType().equals(travelTypeDto.getType())).findFirst();
+        return existedTravelType.isPresent() ? existedTravelType.get().getId() : -1L;
     }
 
     @Override
@@ -60,13 +80,13 @@ public class TravelTypeServiceImpl implements TravelTypeService {
     }
 
     @Override
-    public TravelTypeDto update(Long id, TravelTypeDto travelTypeDTO) {
-        Optional<TravelType> updatedTravelType = travelTypeRepository.update(id, ParserUtil.parse(travelTypeDTO));
+    public TravelTypeDto update(Long id, TravelTypeDto travelTypeDto) {
+        Optional<TravelType> updatedTravelType = travelTypeRepository.update(id, ParserUtil.parse(travelTypeDto));
         if(updatedTravelType.isPresent()) {
             return ParserUtil.parse(updatedTravelType.get());
         }
-        LOGGER.warn("{} wasn't updated.", travelTypeDTO);
-        throw new SQLException(String.format("%s wasn't updated.", travelTypeDTO));
+        LOGGER.warn("{} wasn't updated.", travelTypeDto);
+        throw new SQLException(String.format("%s wasn't updated.", travelTypeDto));
     }
 
     @Override

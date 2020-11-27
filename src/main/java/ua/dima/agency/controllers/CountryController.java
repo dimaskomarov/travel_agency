@@ -2,6 +2,7 @@ package ua.dima.agency.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ua.dima.agency.controllers.responses.DataAndStatusResponse;
 import ua.dima.agency.controllers.responses.DataResponse;
 import ua.dima.agency.controllers.responses.StatusResponse;
 import ua.dima.agency.dto.CountryDto;
@@ -31,19 +32,19 @@ public class CountryController {
     }
 
     @PostMapping
-    public ResponseEntity<StatusResponse> create(@RequestBody CountryDto countryDto) {
-        countryService.create(countryDto);
+    public ResponseEntity<DataAndStatusResponse> create(@RequestBody CountryDto countryDto) {
+        CountryDto createdCountryDto = countryService.create(countryDto);
         return ResponseEntity
                 .status(201)
-                .body(new StatusResponse("Country was created."));
+                .body(new DataAndStatusResponse("Next country was created.", createdCountryDto));
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<StatusResponse> update(@PathVariable Long id, @RequestBody CountryDto countryDto) {
-        countryService.update(id, countryDto);
+    public ResponseEntity<DataAndStatusResponse> update(@PathVariable Long id, @RequestBody CountryDto countryDto) {
+        CountryDto updatedCountryDto = countryService.update(id, countryDto);
         return ResponseEntity
                 .status(200)
-                .body(new StatusResponse("Country was updated."));
+                .body(new DataAndStatusResponse("Next country was updated.", updatedCountryDto));
     }
 
     @DeleteMapping(value = "/{id}")
