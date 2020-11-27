@@ -1,5 +1,6 @@
 package ua.dima.agency.repositories.impl;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -29,7 +30,12 @@ public class CompanyRepositoryImpl implements CompanyRepository {
 
     @Override
     public Optional<Company> get(Long id) {
-        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM companies WHERE id = ?", COMPANY_MAPPER, id));
+        try {
+            Company company = jdbcTemplate.queryForObject("SELECT * FROM companies WHERE id = ?", COMPANY_MAPPER, id);
+            return Optional.ofNullable(company);
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -52,63 +58,16 @@ public class CompanyRepositoryImpl implements CompanyRepository {
 
     @Override
     public Optional<Company> update(Long id, Company company) {
-        jdbcTemplate.update("UPDATE companies SET name=?, address=?, age=? WHERE id=?", company.getName(), company.getAddress(), company.getAge(), id);
-        return get(id);
+        try {
+            jdbcTemplate.update("UPDATE companies SET name=?, address=?, age=? WHERE id=?", company.getName(), company.getAddress(), company.getAge(), id);
+            return get(id);
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
     public void delete(Long id) {
         jdbcTemplate.update("DELETE FROM companies WHERE id = ?", id);
     }
-
-    //    @Override
-//    public Optional<TravelType> get(Long id) {
-//        try {
-//            TravelType travelType = jdbcTemplate.queryForObject("SELECT * FROM travel_types WHERE id = ?", TRAVEL_TYPE_MAPPER, id);
-//            return Optional.ofNullable(travelType);
-//        } catch(EmptyResultDataAccessException e) {
-//            return Optional.empty();
-//        }
-//    }
-//
-//    @Override
-//    public Optional<TravelType> getByName(String type) {
-//        try {
-//            TravelType travelType = jdbcTemplate.queryForObject("SELECT * FROM travel_types WHERE type=?", TRAVEL_TYPE_MAPPER, type);
-//            return Optional.ofNullable(travelType);
-//        } catch(EmptyResultDataAccessException e) {
-//            return Optional.empty();
-//        }
-//    }
-//
-//    @Override
-//    public Optional<TravelType> create(TravelType travelType) {
-//        KeyHolder keyHolder = new GeneratedKeyHolder();
-//        jdbcTemplate.update(connection -> {
-//            PreparedStatement statement = connection.prepareStatement("INSERT INTO travel_types(type) VALUES(?)", new String[] {"id"});
-//            statement.setString(1, travelType.getType());
-//            return statement;
-//        }, keyHolder);
-//        long id = 0;
-//        Optional<Number> key = Optional.ofNullable(keyHolder.getKey());
-//        if(key.isPresent()) {
-//            id = key.get().longValue();
-//        }
-//        return get(id);
-//    }
-//
-//    @Override
-//    public Optional<TravelType> update(Long id, TravelType travelType) {
-//        try {
-//            jdbcTemplate.update("UPDATE travel_types SET type=? WHERE id=?", travelType.getType(), id);
-//            return get(id);
-//        } catch(EmptyResultDataAccessException e) {
-//            return Optional.empty();
-//        }
-//    }
-//
-//    @Override
-//    public void delete(Long id) {
-//        jdbcTemplate.update("DELETE FROM travel_types WHERE id = ?", id);
-//    }
 }

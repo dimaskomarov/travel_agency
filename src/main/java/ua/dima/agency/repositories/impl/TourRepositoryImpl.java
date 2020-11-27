@@ -7,7 +7,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ua.dima.agency.domain.Tour;
-import ua.dima.agency.domain.TravelType;
 import ua.dima.agency.repositories.TourRepository;
 
 import java.sql.PreparedStatement;
@@ -31,7 +30,12 @@ public class TourRepositoryImpl implements TourRepository {
 
     @Override
     public Optional<Tour> get(Long id) {
-        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM tours WHERE id = ?", TOUR_MAPPER, id));
+        try {
+            Tour tour = jdbcTemplate.queryForObject("SELECT * FROM tours WHERE id = ?", TOUR_MAPPER, id);
+            return Optional.ofNullable(tour);
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -61,17 +65,21 @@ public class TourRepositoryImpl implements TourRepository {
 
     @Override
     public Optional<Tour> update(Long id, Tour tour) {
-        jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement("UPDATE tours SET price=?, amount_day=?, date_departure=?::timestamp, company_id=?, travel_type_id=? WHERE id=?");
-            statement.setDouble(1, tour.getPrice());
-            statement.setInt(2, tour.getAmountDay());
-            statement.setString(3, tour.getDateDeparture().toString());
-            statement.setLong(4, tour.getCompanyId());
-            statement.setLong(5, tour.getTravelTypeId());
-            statement.setLong(6, id);
-            return statement;
-        });
-        return get(id);
+        try {
+            jdbcTemplate.update(connection -> {
+                PreparedStatement statement = connection.prepareStatement("UPDATE tours SET price=?, amount_day=?, date_departure=?::timestamp, company_id=?, travel_type_id=? WHERE id=?");
+                statement.setDouble(1, tour.getPrice());
+                statement.setInt(2, tour.getAmountDay());
+                statement.setString(3, tour.getDateDeparture().toString());
+                statement.setLong(4, tour.getCompanyId());
+                statement.setLong(5, tour.getTravelTypeId());
+                statement.setLong(6, id);
+                return statement;
+            });
+            return get(id);
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -88,55 +96,4 @@ public class TourRepositoryImpl implements TourRepository {
     public void deleteByCompanyId(Long companyId) {
         jdbcTemplate.update("DELETE FROM tours WHERE company_id = ?", companyId);
     }
-
-//    @Override
-//    public Optional<TravelType> get(Long id) {
-//        try {
-//            TravelType travelType = jdbcTemplate.queryForObject("SELECT * FROM travel_types WHERE id = ?", TRAVEL_TYPE_MAPPER, id);
-//            return Optional.ofNullable(travelType);
-//        } catch(EmptyResultDataAccessException e) {
-//            return Optional.empty();
-//        }
-//    }
-//
-//    @Override
-//    public Optional<TravelType> getByName(String type) {
-//        try {
-//            TravelType travelType = jdbcTemplate.queryForObject("SELECT * FROM travel_types WHERE type=?", TRAVEL_TYPE_MAPPER, type);
-//            return Optional.ofNullable(travelType);
-//        } catch(EmptyResultDataAccessException e) {
-//            return Optional.empty();
-//        }
-//    }
-//
-//    @Override
-//    public Optional<TravelType> create(TravelType travelType) {
-//        KeyHolder keyHolder = new GeneratedKeyHolder();
-//        jdbcTemplate.update(connection -> {
-//            PreparedStatement statement = connection.prepareStatement("INSERT INTO travel_types(type) VALUES(?)", new String[] {"id"});
-//            statement.setString(1, travelType.getType());
-//            return statement;
-//        }, keyHolder);
-//        long id = 0;
-//        Optional<Number> key = Optional.ofNullable(keyHolder.getKey());
-//        if(key.isPresent()) {
-//            id = key.get().longValue();
-//        }
-//        return get(id);
-//    }
-//
-//    @Override
-//    public Optional<TravelType> update(Long id, TravelType travelType) {
-//        try {
-//            jdbcTemplate.update("UPDATE travel_types SET type=? WHERE id=?", travelType.getType(), id);
-//            return get(id);
-//        } catch(EmptyResultDataAccessException e) {
-//            return Optional.empty();
-//        }
-//    }
-//
-//    @Override
-//    public void delete(Long id) {
-//        jdbcTemplate.update("DELETE FROM travel_types WHERE id = ?", id);
-//    }
 }

@@ -28,8 +28,14 @@ public class ParserUtil {
     private static CountryRepository countryRepository;
     private static TourRepository tourRepository;
 
-    private ParserUtil() {
-        //empty constructor
+    private ParserUtil(CountryTourRepository countryTourRepository,
+                       TravelTypeRepository travelTypeRepository,
+                       CountryRepository countryRepository,
+                       TourRepository tourRepository) {
+        ParserUtil.countryTourRepository = countryTourRepository;
+        ParserUtil.travelTypeRepository = travelTypeRepository;
+        ParserUtil.countryRepository = countryRepository;
+        ParserUtil.tourRepository = tourRepository;
     }
 
     public static CompanyDto parse(Company company) {
