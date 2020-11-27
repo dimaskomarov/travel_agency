@@ -44,8 +44,6 @@ public class TourServiceImpl implements TourService {
         List<Country> countriesFromTour = tourDTO.getCountiesDto().stream().map(ParserUtil::parse).collect(Collectors.toList());
         List<Country> createdCountries = countryRepository.createAll(countriesFromTour);
 
-        createdCountries.forEach(country -> countryTourRepository.create(tourId, country.getId()));
-
         travelTypeRepository.create(ParserUtil.parse(tourDTO.getTravelTypeDto()));
 
         Tour tour = ParserUtil.parse(tourDTO, companyId);
