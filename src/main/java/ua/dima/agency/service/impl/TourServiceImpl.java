@@ -40,7 +40,7 @@ public class TourServiceImpl implements TourService {
 
     @Override
     @Transactional
-    public TourDto create(TourDto tourDTO, Long companyId) {
+    public TourDto create(Long companyId, TourDto tourDTO) {
         List<Country> countriesFromTour = tourDTO.getCountiesDto().stream().map(ParserUtil::parse).collect(Collectors.toList());
         List<Country> createdCountries = countryRepository.createAll(countriesFromTour);
 
@@ -79,8 +79,8 @@ public class TourServiceImpl implements TourService {
 
     @Override
     @Transactional
-    public TourDto update(TourDto tourDTO, Long countryId) {
-        Optional<Tour> updatedTour = tourRepository.update(tourDTO.getId(), ParserUtil.parse(tourDTO, countryId));
+    public TourDto update(Long companyId, TourDto tourDTO) {
+        Optional<Tour> updatedTour = tourRepository.update(tourDTO.getId(), ParserUtil.parse(tourDTO, companyId));
         if(updatedTour.isPresent()) {
             return ParserUtil.parse(updatedTour.get());
         }
