@@ -41,6 +41,11 @@ public class CountryTour {
             //empty constructor
         }
 
+        public Builder withCountryId(Long countryId) {
+            CountryTour.this.countryId = countryId;
+            return this;
+        }
+
         public Builder withTourId(Long tourId) {
             CountryTour.this.tourId = tourId;
             return this;
