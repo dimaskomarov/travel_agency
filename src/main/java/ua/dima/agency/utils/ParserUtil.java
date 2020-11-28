@@ -38,6 +38,10 @@ public class ParserUtil {
         ParserUtil.tourRepository = tourRepository;
     }
 
+    public static List<CompanyDto> parseCompanies(List<Company> companies) {
+        return companies.stream().map(ParserUtil::parse).collect(Collectors.toList());
+    }
+
     public static CompanyDto parse(Company company) {
         List<TourDto> toursDto = null;
 
@@ -61,12 +65,20 @@ public class ParserUtil {
                 .withToursDto(toursDto).build();
     }
 
+    public static List<Company> parseCompaniesDto(List<CompanyDto> companiesDto) {
+        return companiesDto.stream().map(ParserUtil::parse).collect(Collectors.toList());
+    }
+
     public static Company parse(CompanyDto companyDTO) {
         return Company.createCompany()
                 .withId(companyDTO.getId())
                 .withName(companyDTO.getName())
                 .withAddress(companyDTO.getAddress())
                 .withAge(companyDTO.getAge()).build();
+    }
+
+    public static List<TourDto> parseTours(List<Tour> tours) {
+        return tours.stream().map(ParserUtil::parse).collect(Collectors.toList());
     }
 
     public static TourDto parse(Tour tour) {
@@ -99,17 +111,25 @@ public class ParserUtil {
                 .withCountiesDto(countiesDto).build();
     }
 
+    public static List<Tour> parseToursDto(List<TourDto> toursDto, Long companyId) {
+        return toursDto.stream().map(tourDto -> ParserUtil.parse(tourDto, companyId)).collect(Collectors.toList());
+    }
+
     public static Tour parse(TourDto tourDTO, Long companyId) {
-        Optional<TravelType> createdTravelType = travelTypeRepository.getByName(tourDTO.getTravelTypeDto().getType());
+        Optional<TravelType> createdTravelType = travelTypeRepository.getByType(tourDTO.getTravelTypeDto().getType());
         Long travelTypeId = createdTravelType.isPresent() ? createdTravelType.get().getId():0L;
 
         return Tour.createTour()
-                .withId(tourDTO.getId())
+                .withId(travelTypeId)
                 .withPrice(tourDTO.getPrice())
                 .withAmountDay(tourDTO.getAmountDays())
                 .withDateDeparture(tourDTO.getDateDeparture())
                 .withCompanyId(companyId)
                 .withTravelTypeId(travelTypeId).build();
+    }
+
+    public static List<CountryDto> parseCountry(List<Country> countries) {
+        return countries.stream().map(ParserUtil::parse).collect(Collectors.toList());
     }
 
     public static CountryDto parse(Country country) {
@@ -118,16 +138,33 @@ public class ParserUtil {
                 .withName(country.getName()).build();
     }
 
+    public static List<Country> parseCountriesDto(List<CountryDto> countriesDto) {
+        return countriesDto.stream().map(ParserUtil::parse).collect(Collectors.toList());
+    }
+
     public static Country parse(CountryDto countryDTO) {
+        Optional<Country> country = countryRepository.get(countryDTO.getName());
+        Long countryId = null;
+        if(country.isPresent()) {
+            countryId = country.get().getId();
+        }
         return Country.createCountry()
-                .withId(countryDTO.getId())
+                .withId(countryId)
                 .withName(countryDTO.getName()).build();
+    }
+
+    public static List<TravelTypeDto> parseTravelTypes(List<TravelType> travelTypes) {
+        return travelTypes.stream().map(ParserUtil::parse).collect(Collectors.toList());
     }
 
     public static TravelTypeDto parse(TravelType travelType) {
         return TravelTypeDto.createTravelTypeDTO()
                 .withId(travelType.getId())
                 .withType(travelType.getType()).build();
+    }
+
+    public static List<TravelType> parseTravelTypesDto(List<TravelTypeDto> travelTypesDto) {
+        return travelTypesDto.stream().map(ParserUtil::parse).collect(Collectors.toList());
     }
 
     public static TravelType parse(TravelTypeDto travelTypeDto) {

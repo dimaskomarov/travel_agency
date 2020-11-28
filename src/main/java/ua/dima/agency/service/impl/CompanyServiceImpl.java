@@ -33,16 +33,6 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public CompanyDto create(CompanyDto companyDTO) {
-        Optional<Company> createdCompany = companyRepository.create(ParserUtil.parse(companyDTO));
-        if(createdCompany.isPresent()) {
-            return ParserUtil.parse(createdCompany.get());
-        }
-        LOGGER.warn("{} wasn't created.", companyDTO);
-        throw new SQLException(String.format("%s wasn't created.", companyDTO));
-    }
-
-    @Override
     public CompanyDto get(Long id) {
         Optional<Company> company = companyRepository.get(id);
         if(company.isPresent()) {
@@ -60,6 +50,16 @@ public class CompanyServiceImpl implements CompanyService {
         }
         LOGGER.warn("There aren't any companies in database.");
         throw new NoDataException("There aren't any companies in database.");
+    }
+
+    @Override
+    public CompanyDto create(CompanyDto companyDTO) {
+        Optional<Company> createdCompany = companyRepository.create(ParserUtil.parse(companyDTO));
+        if(createdCompany.isPresent()) {
+            return ParserUtil.parse(createdCompany.get());
+        }
+        LOGGER.warn("{} wasn't created.", companyDTO);
+        throw new SQLException(String.format("%s wasn't created.", companyDTO));
     }
 
     @Override

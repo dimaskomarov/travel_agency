@@ -33,6 +33,26 @@ public class TravelTypeServiceImpl implements TravelTypeService {
     }
 
     @Override
+    public TravelTypeDto get(Long id) {
+        Optional<TravelType> travelType = travelTypeRepository.get(id);
+        if(travelType.isPresent()) {
+            return ParserUtil.parse(travelType.get());
+        }
+        LOGGER.warn("TravelType with id={} doesn't exist.", id);
+        throw new NoDataException(String.format("TravelType with id=%d doesn't exist.", id));
+    }
+
+    @Override
+    public List<TravelTypeDto> getAll() {
+        List<TravelType> travelTypes = travelTypeRepository.getAll();
+        if(!travelTypes.isEmpty()) {
+            return travelTypes.stream().map(ParserUtil::parse).collect(Collectors.toList());
+        }
+        LOGGER.warn("There aren't any travelTypes in database.");
+        throw new NoDataException("There aren't any travelTypes in database.");
+    }
+
+    @Override
     public TravelTypeDto create(TravelTypeDto travelTypeDto) {
         checkForExistence(travelTypeDto);
 
@@ -57,26 +77,6 @@ public class TravelTypeServiceImpl implements TravelTypeService {
         List<TravelType> travelTypes = travelTypeRepository.getAll();
         Optional<TravelType> existedTravelType = travelTypes.stream().filter(travelType -> travelType.getType().equals(travelTypeDto.getType())).findFirst();
         return existedTravelType.isPresent() ? existedTravelType.get().getId() : -1L;
-    }
-
-    @Override
-    public TravelTypeDto get(Long id) {
-        Optional<TravelType> travelType = travelTypeRepository.get(id);
-        if(travelType.isPresent()) {
-            return ParserUtil.parse(travelType.get());
-        }
-        LOGGER.warn("TravelType with id={} doesn't exist.", id);
-        throw new NoDataException(String.format("TravelType with id=%d doesn't exist.", id));
-    }
-
-    @Override
-    public List<TravelTypeDto> getAll() {
-        List<TravelType> travelTypes = travelTypeRepository.getAll();
-        if(!travelTypes.isEmpty()) {
-            return travelTypes.stream().map(ParserUtil::parse).collect(Collectors.toList());
-        }
-        LOGGER.warn("There aren't any travelTypes in database.");
-        throw new NoDataException("There aren't any travelTypes in database.");
     }
 
     @Override

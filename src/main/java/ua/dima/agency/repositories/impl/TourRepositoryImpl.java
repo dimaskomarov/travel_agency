@@ -39,6 +39,16 @@ public class TourRepositoryImpl implements TourRepository {
     }
 
     @Override
+    public Optional<Tour> get(Long companyId, Long id) {
+        try {
+            Tour tour = jdbcTemplate.queryForObject("SELECT * FROM tours WHERE id=? AND company_id=?", TOUR_MAPPER, id, companyId);
+            return Optional.ofNullable(tour);
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public List<Tour> getByCompanyId(Long companyId) {
         return jdbcTemplate.query("SELECT * FROM tours WHERE company_id = ?", TOUR_MAPPER, companyId);
     }

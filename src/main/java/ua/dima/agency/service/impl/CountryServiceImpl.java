@@ -31,6 +31,26 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
+    public CountryDto get(Long id) {
+        Optional<Country> country = countryRepository.get(id);
+        if(country.isPresent()) {
+            return ParserUtil.parse(country.get());
+        }
+        LOGGER.warn("Country with id={} doesn't exist.", id);
+        throw new NoDataException(String.format("Country with id=%d doesn't exist.", id));
+    }
+
+    @Override
+    public List<CountryDto> getAll() {
+        List<Country> countries = countryRepository.getAll();
+        if(!countries.isEmpty()) {
+            return countries.stream().map(ParserUtil::parse).collect(Collectors.toList());
+        }
+        LOGGER.warn("There aren't any countries in database.");
+        throw new NoDataException("There aren't any countries in database.");
+    }
+
+    @Override
     public CountryDto create(CountryDto countryDto) {
         checkForExistence(countryDto);
 
@@ -55,26 +75,6 @@ public class CountryServiceImpl implements CountryService {
         List<Country> countries = countryRepository.getAll();
         Optional<Country> existedCountry = countries.stream().filter(country -> country.getName().equals(countryDto.getName())).findFirst();
         return existedCountry.isPresent() ? existedCountry.get().getId() : -1L;
-    }
-
-    @Override
-    public CountryDto get(Long id) {
-        Optional<Country> country = countryRepository.get(id);
-        if(country.isPresent()) {
-            return ParserUtil.parse(country.get());
-        }
-        LOGGER.warn("Country with id={} doesn't exist.", id);
-        throw new NoDataException(String.format("Country with id=%d doesn't exist.", id));
-    }
-
-    @Override
-    public List<CountryDto> getAll() {
-        List<Country> countries = countryRepository.getAll();
-        if(!countries.isEmpty()) {
-            return countries.stream().map(ParserUtil::parse).collect(Collectors.toList());
-        }
-        LOGGER.warn("There aren't any countries in database.");
-        throw new NoDataException("There aren't any countries in database.");
     }
 
     @Override
