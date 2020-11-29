@@ -10,12 +10,13 @@ import ua.dima.agency.dto.CompanyDto;
 import ua.dima.agency.dto.TourDto;
 import ua.dima.agency.exceptions.NoDataException;
 import ua.dima.agency.exceptions.SQLException;
-import ua.dima.agency.repositories.*;
+import ua.dima.agency.repositories.CompanyRepository;
+import ua.dima.agency.repositories.CountryTourRepository;
+import ua.dima.agency.repositories.TourRepository;
 import ua.dima.agency.service.CompanyService;
 import ua.dima.agency.utils.CreatorMissingRecords;
 import ua.dima.agency.utils.Parser;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
