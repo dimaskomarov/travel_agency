@@ -12,7 +12,7 @@ import ua.dima.agency.exceptions.SQLException;
 import ua.dima.agency.repositories.CountryRepository;
 import ua.dima.agency.repositories.CountryTourRepository;
 import ua.dima.agency.service.CountryService;
-import ua.dima.agency.utils.Parser;
+import ua.dima.agency.utils.ParserUtil;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,20 +21,23 @@ import java.util.stream.Collectors;
 @Service
 public class CountryServiceImpl implements CountryService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CountryServiceImpl.class);
-    private CountryRepository countryRepository;
     private CountryTourRepository countryTourRepository;
+    private CountryRepository countryRepository;
+    private ParserUtil parserUtil;
 
-    public CountryServiceImpl(CountryRepository countryRepository,
-                              CountryTourRepository countryTourRepository) {
-        this.countryRepository = countryRepository;
+    public CountryServiceImpl(CountryTourRepository countryTourRepository,
+                              CountryRepository countryRepository,
+                              ParserUtil parserUtil) {
         this.countryTourRepository = countryTourRepository;
+        this.countryRepository = countryRepository;
+        this.parserUtil = parserUtil;
     }
 
     @Override
     public CountryDto get(Long id) {
         Optional<Country> country = countryRepository.get(id);
         if(country.isPresent()) {
-            return Parser.parse(country.get());
+            return parserUtil.parse(country.get());
         }
         LOGGER.warn("Country with id={} doesn't exist.", id);
         throw new NoDataException(String.format("Country with id=%d doesn't exist.", id));
@@ -44,7 +47,7 @@ public class CountryServiceImpl implements CountryService {
     public List<CountryDto> getAll() {
         List<Country> countries = countryRepository.getAll();
         if(!countries.isEmpty()) {
-            return countries.stream().map(Parser::parse).collect(Collectors.toList());
+            return countries.stream().map(parserUtil::parse).collect(Collectors.toList());
         }
         LOGGER.warn("There aren't any countries in database.");
         throw new NoDataException("There aren't any countries in database.");
@@ -54,34 +57,21 @@ public class CountryServiceImpl implements CountryService {
     public CountryDto create(CountryDto countryDto) {
         checkForExistence(countryDto);
 
-        Optional<Country> createdCountry = countryRepository.create(Parser.parse(countryDto));
+        Optional<Country> createdCountry = countryRepository.create(parserUtil.parse(countryDto));
         if(createdCountry.isPresent()) {
-            return Parser.parse(createdCountry.get());
+            return parserUtil.parse(createdCountry.get());
         }
         LOGGER.warn("{} wasn't created.", countryDto);
         throw new SQLException(String.format("%s wasn't created.", countryDto));
     }
 
-    private void checkForExistence(CountryDto countryDto) {
-        Long countryDtoId;
-        if((countryDtoId = isAlreadyExists(countryDto)) > 0) {
-            countryDto.setId(countryDtoId);
-            LOGGER.warn("{} already exists.", countryDto);
-            throw new ExtraDataException(String.format("%s already exists.", countryDto));
-        }
-    }
-
-    private Long isAlreadyExists(CountryDto countryDto) {
-        List<Country> countries = countryRepository.getAll();
-        Optional<Country> existedCountry = countries.stream().filter(country -> country.getName().equals(countryDto.getName())).findFirst();
-        return existedCountry.isPresent() ? existedCountry.get().getId() : -1L;
-    }
-
     @Override
     public CountryDto update(Long id, CountryDto countryDto) {
-        Optional<Country> updatedCountry = countryRepository.update(id, Parser.parse(countryDto));
+        checkForExistence(countryDto);
+
+        Optional<Country> updatedCountry = countryRepository.update(id, parserUtil.parse(countryDto));
         if(updatedCountry.isPresent()) {
-            return Parser.parse(updatedCountry.get());
+            return parserUtil.parse(updatedCountry.get());
         }
         LOGGER.warn("{} wasn't updated.", updatedCountry);
         throw new SQLException(String.format("%s wasn't updated.", updatedCountry));
@@ -91,11 +81,23 @@ public class CountryServiceImpl implements CountryService {
     @Transactional
     public void delete(Long id) {
         try {
+            checkForExistence(id);
             countryTourRepository.deleteByCountryId(id);
             countryRepository.delete(id);
         } catch(RuntimeException e) {
             LOGGER.warn("Country with id={} wasn't deleted.", id);
             throw new SQLException(String.format("Country with id=%d wasn't deleted.", id));
         }
+    }
+
+    private void checkForExistence(CountryDto countryDto) {
+        countryRepository.get(countryDto.getName()).ifPresent(country -> {
+            LOGGER.warn("{} already exists.", country);
+            throw new ExtraDataException(String.format("%s already exists.", country));
+        });
+    }
+
+    private void checkForExistence(Long id) {
+        get(id);
     }
 }

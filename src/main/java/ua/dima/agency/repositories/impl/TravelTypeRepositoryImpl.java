@@ -39,7 +39,7 @@ public class TravelTypeRepositoryImpl implements TravelTypeRepository {
     }
 
     @Override
-    public Optional<TravelType> getByType(String type) {
+    public Optional<TravelType> get(String type) {
         try {
             TravelType travelType = jdbcTemplate.queryForObject("SELECT * FROM travel_types WHERE type=?", TRAVEL_TYPE_MAPPER, type);
             return Optional.ofNullable(travelType);

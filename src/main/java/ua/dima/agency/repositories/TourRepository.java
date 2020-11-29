@@ -10,6 +10,7 @@ public interface TourRepository {
     Optional<Tour> get(Long id);
     Optional<Tour> get(Long companyId, Long id);
     List<Tour> getByCompanyId(Long companyId);
+    List<Tour> getByTravelTypeId(Long travelTypeId);
     Optional<Tour> create(Tour tour);
     Optional<Tour> update(Long id, Tour tour);
     void delete(Long id);
