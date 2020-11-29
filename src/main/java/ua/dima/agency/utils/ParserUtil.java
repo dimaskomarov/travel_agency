@@ -19,35 +19,35 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class Parser {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Parser.class);
+public class ParserUtil {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ParserUtil.class);
     private static final String LOG_PARSING_ERROR = "The parsing of {} with id {} has been failed.";
     private static final String MSG_PARSING_ERROR = "The parsing of %s with id %d has been failed.";
-    private static CountryTourRepository countryTourRepository;
-    private static TravelTypeRepository travelTypeRepository;
-    private static CountryRepository countryRepository;
-    private static TourRepository tourRepository;
+    private CountryTourRepository countryTourRepository;
+    private TravelTypeRepository travelTypeRepository;
+    private CountryRepository countryRepository;
+    private TourRepository tourRepository;
 
-    private Parser(CountryTourRepository countryTourRepository,
-                   TravelTypeRepository travelTypeRepository,
-                   CountryRepository countryRepository,
-                   TourRepository tourRepository) {
-        Parser.countryTourRepository = countryTourRepository;
-        Parser.travelTypeRepository = travelTypeRepository;
-        Parser.countryRepository = countryRepository;
-        Parser.tourRepository = tourRepository;
+    public ParserUtil(CountryTourRepository countryTourRepository,
+                      TravelTypeRepository travelTypeRepository,
+                      CountryRepository countryRepository,
+                      TourRepository tourRepository) {
+        this.countryTourRepository = countryTourRepository;
+        this.travelTypeRepository = travelTypeRepository;
+        this.countryRepository = countryRepository;
+        this.tourRepository = tourRepository;
     }
 
-    public static List<CompanyDto> parseCompanies(List<Company> companies) {
-        return companies.stream().map(Parser::parse).collect(Collectors.toList());
+    public List<CompanyDto> parseCompanies(List<Company> companies) {
+        return companies.stream().map(this::parse).collect(Collectors.toList());
     }
 
-    public static CompanyDto parse(Company company) {
+    public CompanyDto parse(Company company) {
         List<TourDto> toursDto = null;
 
         try {
             List<Tour> tours = tourRepository.getByCompanyId(company.getId());
-            toursDto = tours.stream().map(Parser::parse).collect(Collectors.toList());
+            toursDto = tours.stream().map(this::parse).collect(Collectors.toList());
         } catch(RuntimeException e) {
             LOGGER.error(LOG_PARSING_ERROR, "Company", company.getId());
             throw new ParseException(String.format(MSG_PARSING_ERROR, "Company", company.getId()));
@@ -56,7 +56,7 @@ public class Parser {
         return collect(company, toursDto);
     }
 
-    private static CompanyDto collect(Company company, List<TourDto> toursDto) {
+    private CompanyDto collect(Company company, List<TourDto> toursDto) {
         return CompanyDto.createCompanyDTO()
                 .withId(company.getId())
                 .withName(company.getName())
@@ -65,11 +65,11 @@ public class Parser {
                 .withToursDto(toursDto).build();
     }
 
-    public static List<Company> parseCompaniesDto(List<CompanyDto> companiesDto) {
-        return companiesDto.stream().map(Parser::parse).collect(Collectors.toList());
+    public List<Company> parseCompaniesDto(List<CompanyDto> companiesDto) {
+        return companiesDto.stream().map(this::parse).collect(Collectors.toList());
     }
 
-    public static Company parse(CompanyDto companyDTO) {
+    public Company parse(CompanyDto companyDTO) {
         return Company.createCompany()
                 .withId(companyDTO.getId())
                 .withName(companyDTO.getName())
@@ -77,11 +77,11 @@ public class Parser {
                 .withAge(companyDTO.getAge()).build();
     }
 
-    public static List<TourDto> parseTours(List<Tour> tours) {
-        return tours.stream().map(Parser::parse).collect(Collectors.toList());
+    public List<TourDto> parseTours(List<Tour> tours) {
+        return tours.stream().map(this::parse).collect(Collectors.toList());
     }
 
-    public static TourDto parse(Tour tour) {
+    public TourDto parse(Tour tour) {
         TravelTypeDto travelTypeDto = null;
         List<CountryDto> countriesDto = null;
         try {
@@ -92,7 +92,7 @@ public class Parser {
 
             List<CountryTour> countryTours = countryTourRepository.getAllByTourId(tour.getId());
             List<Country> counties = countryTours.stream().map(countryTour -> countryRepository.get(countryTour.getCountryId()).get()).collect(Collectors.toList());
-            countriesDto = counties.stream().map(Parser::parse).collect(Collectors.toList());
+            countriesDto = counties.stream().map(this::parse).collect(Collectors.toList());
         } catch(RuntimeException e) {
             LOGGER.error(LOG_PARSING_ERROR, "Tour", tour.getId());
             throw new ParseException(String.format(MSG_PARSING_ERROR, "Tour", tour.getId()));
@@ -101,7 +101,7 @@ public class Parser {
         return collect(tour, travelTypeDto, countriesDto);
     }
 
-    private static TourDto collect(Tour tour, TravelTypeDto travelTypeDto, List<CountryDto> countiesDto) {
+    private TourDto collect(Tour tour, TravelTypeDto travelTypeDto, List<CountryDto> countiesDto) {
         return TourDto.createTourDTO()
                 .withId(tour.getId())
                 .withPrice(tour.getPrice())
@@ -111,12 +111,12 @@ public class Parser {
                 .withCountiesDto(countiesDto).build();
     }
 
-    public static List<Tour> parseToursDto(List<TourDto> toursDto, Long companyId) {
-        return toursDto.stream().map(tourDto -> Parser.parse(tourDto, companyId)).collect(Collectors.toList());
+    public List<Tour> parseToursDto(List<TourDto> toursDto, Long companyId) {
+        return toursDto.stream().map(tourDto -> parse(tourDto, companyId)).collect(Collectors.toList());
     }
 
-    public static Tour parse(TourDto tourDTO, Long companyId) {
-        Optional<TravelType> createdTravelType = travelTypeRepository.getByType(tourDTO.getTravelTypeDto().getType());
+    public Tour parse(TourDto tourDTO, Long companyId) {
+        Optional<TravelType> createdTravelType = travelTypeRepository.get(tourDTO.getTravelTypeDto().getType());
         Long travelTypeId = createdTravelType.isPresent() ? createdTravelType.get().getId():0L;
 
         return Tour.createTour()
@@ -128,52 +128,41 @@ public class Parser {
                 .withTravelTypeId(travelTypeId).build();
     }
 
-    public static List<CountryDto> parseCountry(List<Country> countries) {
-        return countries.stream().map(Parser::parse).collect(Collectors.toList());
+    public List<CountryDto> parseCountry(List<Country> countries) {
+        return countries.stream().map(this::parse).collect(Collectors.toList());
     }
 
-    public static CountryDto parse(Country country) {
-        Optional<Country> countryOptional = countryRepository.get(country.getName());
-        Long countryId = null;
-        if(countryOptional.isPresent()) {
-            countryId = countryOptional.get().getId();
-        }
+    public CountryDto parse(Country country) {
         return CountryDto.createCountryDTO()
-                .withId(countryId)
+                .withId(country.getId())
                 .withName(country.getName()).build();
     }
 
-    public static List<Country> parseCountriesDto(List<CountryDto> countriesDto) {
-        return countriesDto.stream().map(Parser::parse).collect(Collectors.toList());
+    public List<Country> parseCountriesDto(List<CountryDto> countriesDto) {
+        return countriesDto.stream().map(this::parse).collect(Collectors.toList());
     }
 
-    public static Country parse(CountryDto countryDTO) {
-        Optional<Country> countryOptional = countryRepository.get(countryDTO.getName());
-        Long countryId = countryOptional.isPresent() ? countryOptional.get().getId() : null;
-
+    public Country parse(CountryDto countryDTO) {
         return Country.createCountry()
-                .withId(countryId)
+                .withId(countryDTO.getId())
                 .withName(countryDTO.getName()).build();
     }
 
-    public static List<TravelTypeDto> parseTravelTypes(List<TravelType> travelTypes) {
-        return travelTypes.stream().map(Parser::parse).collect(Collectors.toList());
+    public List<TravelTypeDto> parseTravelTypes(List<TravelType> travelTypes) {
+        return travelTypes.stream().map(this::parse).collect(Collectors.toList());
     }
 
-    public static TravelTypeDto parse(TravelType travelType) {
-        Optional<TravelType> travelTypeOptional = travelTypeRepository.getByType(travelType.getType());
-        Long travelTypeId = travelTypeOptional.isPresent() ? travelTypeOptional.get().getId() : null;
-
+    public TravelTypeDto parse(TravelType travelType) {
         return TravelTypeDto.createTravelTypeDTO()
-                .withId(travelTypeId)
+                .withId(travelType.getId())
                 .withType(travelType.getType()).build();
     }
 
-    public static List<TravelType> parseTravelTypesDto(List<TravelTypeDto> travelTypesDto) {
-        return travelTypesDto.stream().map(Parser::parse).collect(Collectors.toList());
+    public List<TravelType> parseTravelTypesDto(List<TravelTypeDto> travelTypesDto) {
+        return travelTypesDto.stream().map(this::parse).collect(Collectors.toList());
     }
 
-    public static TravelType parse(TravelTypeDto travelTypeDto) {
+    public TravelType parse(TravelTypeDto travelTypeDto) {
         return TravelType.createTravelType()
                 .withId(travelTypeDto.getId())
                 .withType(travelTypeDto.getType())

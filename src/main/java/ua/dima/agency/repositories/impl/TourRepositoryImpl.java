@@ -54,6 +54,11 @@ public class TourRepositoryImpl implements TourRepository {
     }
 
     @Override
+    public List<Tour> getByTravelTypeId(Long travelTypeId) {
+        return jdbcTemplate.query("SELECT * FROM tours WHERE travel_type_id = ?", TOUR_MAPPER, travelTypeId);
+    }
+
+    @Override
     public Optional<Tour> create(Tour tour) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
