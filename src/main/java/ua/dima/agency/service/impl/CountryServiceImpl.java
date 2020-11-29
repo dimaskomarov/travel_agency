@@ -12,7 +12,7 @@ import ua.dima.agency.exceptions.SQLException;
 import ua.dima.agency.repositories.CountryRepository;
 import ua.dima.agency.repositories.CountryTourRepository;
 import ua.dima.agency.service.CountryService;
-import ua.dima.agency.utils.ParserUtil;
+import ua.dima.agency.utils.Parser;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +34,7 @@ public class CountryServiceImpl implements CountryService {
     public CountryDto get(Long id) {
         Optional<Country> country = countryRepository.get(id);
         if(country.isPresent()) {
-            return ParserUtil.parse(country.get());
+            return Parser.parse(country.get());
         }
         LOGGER.warn("Country with id={} doesn't exist.", id);
         throw new NoDataException(String.format("Country with id=%d doesn't exist.", id));
@@ -44,7 +44,7 @@ public class CountryServiceImpl implements CountryService {
     public List<CountryDto> getAll() {
         List<Country> countries = countryRepository.getAll();
         if(!countries.isEmpty()) {
-            return countries.stream().map(ParserUtil::parse).collect(Collectors.toList());
+            return countries.stream().map(Parser::parse).collect(Collectors.toList());
         }
         LOGGER.warn("There aren't any countries in database.");
         throw new NoDataException("There aren't any countries in database.");
@@ -54,9 +54,9 @@ public class CountryServiceImpl implements CountryService {
     public CountryDto create(CountryDto countryDto) {
         checkForExistence(countryDto);
 
-        Optional<Country> createdCountry = countryRepository.create(ParserUtil.parse(countryDto));
+        Optional<Country> createdCountry = countryRepository.create(Parser.parse(countryDto));
         if(createdCountry.isPresent()) {
-            return ParserUtil.parse(createdCountry.get());
+            return Parser.parse(createdCountry.get());
         }
         LOGGER.warn("{} wasn't created.", countryDto);
         throw new SQLException(String.format("%s wasn't created.", countryDto));
@@ -79,9 +79,9 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public CountryDto update(Long id, CountryDto countryDto) {
-        Optional<Country> updatedCountry = countryRepository.update(id, ParserUtil.parse(countryDto));
+        Optional<Country> updatedCountry = countryRepository.update(id, Parser.parse(countryDto));
         if(updatedCountry.isPresent()) {
-            return ParserUtil.parse(updatedCountry.get());
+            return Parser.parse(updatedCountry.get());
         }
         LOGGER.warn("{} wasn't updated.", updatedCountry);
         throw new SQLException(String.format("%s wasn't updated.", updatedCountry));

@@ -2,6 +2,7 @@ package ua.dima.agency.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ua.dima.agency.controllers.responses.DataAndStatusResponse;
 import ua.dima.agency.controllers.responses.DataResponse;
 import ua.dima.agency.controllers.responses.StatusResponse;
 import ua.dima.agency.dto.CompanyDto;
@@ -31,20 +32,20 @@ public class CompanyController {
     }
 
     @PostMapping
-    public ResponseEntity<StatusResponse> create(@RequestBody CompanyDto companyDto) {
-        companyService.create(companyDto);
+    public ResponseEntity<DataAndStatusResponse> create(@RequestBody CompanyDto companyDto) {
+        CompanyDto createdCompanyDto = companyService.create(companyDto);
         return ResponseEntity
                 .status(201)
-                .body(new StatusResponse("Company was created."));
+                .body(new DataAndStatusResponse("Next company was created.", createdCompanyDto));
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<StatusResponse> update(@PathVariable Long id,
+    public ResponseEntity<DataAndStatusResponse> update(@PathVariable Long id,
                                                  @RequestBody CompanyDto companyDTO) {
-        companyService.update(id, companyDTO);
+        CompanyDto updatedCompanyDto = companyService.update(id, companyDTO);
         return ResponseEntity
                 .status(200)
-                .body(new StatusResponse("Company was updated."));
+                .body(new DataAndStatusResponse("Next company was updated.", updatedCompanyDto));
     }
 
     @DeleteMapping(value = "/{id}")

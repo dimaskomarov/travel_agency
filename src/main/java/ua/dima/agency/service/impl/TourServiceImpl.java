@@ -15,7 +15,8 @@ import ua.dima.agency.exceptions.NoDataException;
 import ua.dima.agency.exceptions.SQLException;
 import ua.dima.agency.repositories.*;
 import ua.dima.agency.service.TourService;
-import ua.dima.agency.utils.ParserUtil;
+import ua.dima.agency.utils.CreatorMissingRecords;
+import ua.dima.agency.utils.Parser;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,7 +50,7 @@ public class TourServiceImpl implements TourService {
 
         Optional<Tour> tour = tourRepository.get(companyId, tourId);
         if(tour.isPresent()) {
-            return ParserUtil.parse(tour.get());
+            return Parser.parse(tour.get());
         }
         LOGGER.warn("The company with id={} doesn't have the tour with id={}", companyId, tourId);
         throw new NoDataException(String.format("The company with id=%d doesn't have the tour with id=%d", companyId, tourId));
@@ -65,7 +66,7 @@ public class TourServiceImpl implements TourService {
 
         List<Tour> tours = tourRepository.getByCompanyId(companyId);
         if(!tours.isEmpty()) {
-            return ParserUtil.parseTours(tours);
+            return Parser.parseTours(tours);
         }
         LOGGER.warn("The company with id={} doesn't have any tours.", companyId);
         throw new NoDataException(String.format("The company with id=%d doesn't have any tours.", companyId));
@@ -76,15 +77,15 @@ public class TourServiceImpl implements TourService {
     public TourDto create(Long companyId, TourDto tourDTO) {
         checkForExistence(companyId);
 
-        createMissingCountries(tourDTO.getCountiesDto());
-        createMissingTravelTypes(tourDTO.getTravelTypeDto());
+        CreatorMissingRecords.createMissingCountries(tourDTO.getCountiesDto());
+        CreatorMissingRecords.createMissingTravelTypes(tourDTO.getTravelTypeDto());
 
         //tour
-        Tour tour = ParserUtil.parse(tourDTO, companyId);
+        Tour tour = Parser.parse(tourDTO, companyId);
         Optional<Tour> createdTour = tourRepository.create(tour);
         if(createdTour.isPresent()) {
-            createMissingCountryTour(tourDTO.getCountiesDto(), createdTour.get().getId());
-            return ParserUtil.parse(createdTour.get());
+            CreatorMissingRecords.createMissingCountryTour(tourDTO.getCountiesDto(), createdTour.get().getId());
+            return Parser.parse(createdTour.get());
         }
         LOGGER.warn("{} wasn't created.", tourDTO);
         throw new SQLException(String.format("%s wasn't created.", tourDTO));
@@ -96,15 +97,15 @@ public class TourServiceImpl implements TourService {
         checkForExistence(companyId);
         checkIfCompanyContentsTour(companyId, tourId);
 
-        createMissingCountries(tourDTO.getCountiesDto());
-        createMissingTravelTypes(tourDTO.getTravelTypeDto());
+        CreatorMissingRecords.createMissingCountries(tourDTO.getCountiesDto());
+        CreatorMissingRecords.createMissingTravelTypes(tourDTO.getTravelTypeDto());
 
         countryTourRepository.deleteByTourId(tourId);
-        createMissingCountryTour(tourDTO.getCountiesDto(), tourId);
+        CreatorMissingRecords.createMissingCountryTour(tourDTO.getCountiesDto(), tourId);
 
-        Optional<Tour> updatedTour = tourRepository.update(tourId, ParserUtil.parse(tourDTO, companyId));
+        Optional<Tour> updatedTour = tourRepository.update(tourId, Parser.parse(tourDTO, companyId));
         if(updatedTour.isPresent()) {
-            return ParserUtil.parse(updatedTour.get());
+            return Parser.parse(updatedTour.get());
         }
         LOGGER.warn("{} wasn't updated.", tourDTO);
         throw new SQLException(String.format("%s wasn't updated.", tourDTO));
@@ -130,38 +131,6 @@ public class TourServiceImpl implements TourService {
             LOGGER.warn("Tour with id={} wasn't deleted.", tourId);
             throw new SQLException(String.format("Tour with id=%d wasn't deleted.", tourId));
         }
-    }
-
-    private void createMissingCountryTour(List<CountryDto> countriesDto, Long tourId) {
-        countriesDto.stream().map(ParserUtil::parse).forEach(country -> countryTourRepository.create(tourId, country.getId()));
-    }
-
-    private void createMissingCountries(List<CountryDto> countriesDto) {
-        List<String> countriesNameFromTour = countriesDto.stream().map(CountryDto::getName).collect(Collectors.toList());
-        List<String> allCountriesName = countryRepository.getAll().stream().map(Country::getName).collect(Collectors.toList());
-        List<String> missingCountries = countriesNameFromTour.stream()
-                .filter(countryFromTour -> !allCountriesName.contains(countryFromTour))
-                .collect(Collectors.toList());
-
-        if(!missingCountries.isEmpty()) {
-            createCountries(missingCountries);
-        }
-    }
-
-    private void createCountries(List<String> countriesName) {
-        countryRepository.createAllByName(countriesName);
-    }
-
-    private void createMissingTravelTypes(TravelTypeDto travelTypeDto) {
-        List<String> allTravelTypes = travelTypeRepository.getAll().stream().map(TravelType::getType).collect(Collectors.toList());
-        String travelTypeFromTour = travelTypeDto.getType();
-        if(!allTravelTypes.contains(travelTypeFromTour)) {
-            createTravelType(travelTypeFromTour);
-        }
-    }
-
-    private void createTravelType(String travelType) {
-        travelTypeRepository.create(TravelType.createTravelType().withType(travelType).build());
     }
 
     private void checkForExistence(Long companyId) {

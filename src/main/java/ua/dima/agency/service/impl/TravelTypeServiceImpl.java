@@ -4,9 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.dima.agency.domain.Country;
 import ua.dima.agency.domain.TravelType;
-import ua.dima.agency.dto.CountryDto;
 import ua.dima.agency.dto.TravelTypeDto;
 import ua.dima.agency.exceptions.ExtraDataException;
 import ua.dima.agency.exceptions.NoDataException;
@@ -14,7 +12,7 @@ import ua.dima.agency.exceptions.SQLException;
 import ua.dima.agency.repositories.TourRepository;
 import ua.dima.agency.repositories.TravelTypeRepository;
 import ua.dima.agency.service.TravelTypeService;
-import ua.dima.agency.utils.ParserUtil;
+import ua.dima.agency.utils.Parser;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +34,7 @@ public class TravelTypeServiceImpl implements TravelTypeService {
     public TravelTypeDto get(Long id) {
         Optional<TravelType> travelType = travelTypeRepository.get(id);
         if(travelType.isPresent()) {
-            return ParserUtil.parse(travelType.get());
+            return Parser.parse(travelType.get());
         }
         LOGGER.warn("TravelType with id={} doesn't exist.", id);
         throw new NoDataException(String.format("TravelType with id=%d doesn't exist.", id));
@@ -46,7 +44,7 @@ public class TravelTypeServiceImpl implements TravelTypeService {
     public List<TravelTypeDto> getAll() {
         List<TravelType> travelTypes = travelTypeRepository.getAll();
         if(!travelTypes.isEmpty()) {
-            return travelTypes.stream().map(ParserUtil::parse).collect(Collectors.toList());
+            return travelTypes.stream().map(Parser::parse).collect(Collectors.toList());
         }
         LOGGER.warn("There aren't any travelTypes in database.");
         throw new NoDataException("There aren't any travelTypes in database.");
@@ -56,9 +54,9 @@ public class TravelTypeServiceImpl implements TravelTypeService {
     public TravelTypeDto create(TravelTypeDto travelTypeDto) {
         checkForExistence(travelTypeDto);
 
-        Optional<TravelType> createdTravelType = travelTypeRepository.create(ParserUtil.parse(travelTypeDto));
+        Optional<TravelType> createdTravelType = travelTypeRepository.create(Parser.parse(travelTypeDto));
         if(createdTravelType.isPresent()) {
-            return ParserUtil.parse(createdTravelType.get());
+            return Parser.parse(createdTravelType.get());
         }
         LOGGER.warn("{} wasn't created.", travelTypeDto);
         throw new SQLException(String.format("%s wasn't created.", travelTypeDto));
@@ -81,9 +79,9 @@ public class TravelTypeServiceImpl implements TravelTypeService {
 
     @Override
     public TravelTypeDto update(Long id, TravelTypeDto travelTypeDto) {
-        Optional<TravelType> updatedTravelType = travelTypeRepository.update(id, ParserUtil.parse(travelTypeDto));
+        Optional<TravelType> updatedTravelType = travelTypeRepository.update(id, Parser.parse(travelTypeDto));
         if(updatedTravelType.isPresent()) {
-            return ParserUtil.parse(updatedTravelType.get());
+            return Parser.parse(updatedTravelType.get());
         }
         LOGGER.warn("{} wasn't updated.", travelTypeDto);
         throw new SQLException(String.format("%s wasn't updated.", travelTypeDto));

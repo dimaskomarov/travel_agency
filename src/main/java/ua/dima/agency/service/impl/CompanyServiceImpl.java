@@ -7,11 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.dima.agency.domain.Company;
 import ua.dima.agency.domain.Tour;
 import ua.dima.agency.dto.CompanyDto;
+import ua.dima.agency.dto.TourDto;
 import ua.dima.agency.exceptions.NoDataException;
 import ua.dima.agency.exceptions.SQLException;
 import ua.dima.agency.repositories.*;
 import ua.dima.agency.service.CompanyService;
-import ua.dima.agency.utils.ParserUtil;
+import ua.dima.agency.utils.CreatorMissingRecords;
+import ua.dima.agency.utils.Parser;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +38,7 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyDto get(Long id) {
         Optional<Company> company = companyRepository.get(id);
         if(company.isPresent()) {
-            return ParserUtil.parse(company.get());
+            return Parser.parse(company.get());
         }
         LOGGER.warn("Company with id={} doesn't exist.", id);
         throw new NoDataException(String.format("Company with id=%d doesn't exist.", id));
@@ -46,30 +48,57 @@ public class CompanyServiceImpl implements CompanyService {
     public List<CompanyDto> getAll() {
         List<Company> companies = companyRepository.getAll();
         if(!companies.isEmpty()) {
-            return companies.stream().map(ParserUtil::parse).collect(Collectors.toList());
+            return companies.stream().map(Parser::parse).collect(Collectors.toList());
         }
         LOGGER.warn("There aren't any companies in database.");
         throw new NoDataException("There aren't any companies in database.");
     }
 
     @Override
+    @Transactional
     public CompanyDto create(CompanyDto companyDTO) {
-        Optional<Company> createdCompany = companyRepository.create(ParserUtil.parse(companyDTO));
+        Optional<Company> createdCompany = companyRepository.create(Parser.parse(companyDTO));
+
         if(createdCompany.isPresent()) {
-            return ParserUtil.parse(createdCompany.get());
+            companyDTO.getToursDto()
+                    .forEach(tourDto -> createTour(createdCompany.get().getId(), tourDto));
+
+            return Parser.parse(createdCompany.get());
         }
         LOGGER.warn("{} wasn't created.", companyDTO);
         throw new SQLException(String.format("%s wasn't created.", companyDTO));
     }
 
     @Override
+    @Transactional
     public CompanyDto update(Long id, CompanyDto companyDTO) {
-        Optional<Company> updatedCompany = companyRepository.update(id, ParserUtil.parse(companyDTO));
+        Optional<Company> updatedCompany = companyRepository.update(id, Parser.parse(companyDTO));
+
         if(updatedCompany.isPresent()) {
-            return ParserUtil.parse(updatedCompany.get());
+            deleteToursOfCompany(id, companyDTO);
+            companyDTO.getToursDto().forEach(tourDto -> createTour(id, tourDto));
+
+            return Parser.parse(updatedCompany.get());
         }
+
         LOGGER.warn("{} wasn't updated.", companyDTO);
         throw new SQLException(String.format("%s wasn't updated.", companyDTO));
+    }
+
+    private void createTour(Long companyId, TourDto tourDto) {
+        CreatorMissingRecords.createMissingCountries(tourDto.getCountiesDto());
+        CreatorMissingRecords.createMissingTravelTypes(tourDto.getTravelTypeDto());
+
+        Optional<Tour> createdTour = tourRepository.create(Parser.parse(tourDto, companyId));
+        createdTour.ifPresent(tour -> CreatorMissingRecords.createMissingCountryTour(tourDto.getCountiesDto(), tour.getId()));
+    }
+
+    private void deleteToursOfCompany(Long companyId, CompanyDto companyDTO) {
+        companyDTO.getToursDto().stream().map(tourDto -> Parser.parse(tourDto, companyId))
+                .forEach(tour -> {
+                    countryTourRepository.deleteByTourId(tour.getId());
+                    tourRepository.delete(tour.getId());
+                });
     }
 
     @Override
