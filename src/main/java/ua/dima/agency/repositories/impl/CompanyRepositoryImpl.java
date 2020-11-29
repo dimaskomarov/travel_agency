@@ -1,5 +1,6 @@
 package ua.dima.agency.repositories.impl;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -29,7 +30,12 @@ public class CompanyRepositoryImpl implements CompanyRepository {
 
     @Override
     public Optional<Company> get(Long id) {
-        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM companies WHERE id = ?", COMPANY_MAPPER, id));
+        try {
+            Company company = jdbcTemplate.queryForObject("SELECT * FROM companies WHERE id = ?", COMPANY_MAPPER, id);
+            return Optional.ofNullable(company);
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -52,8 +58,12 @@ public class CompanyRepositoryImpl implements CompanyRepository {
 
     @Override
     public Optional<Company> update(Long id, Company company) {
-        jdbcTemplate.update("UPDATE companies SET name=?, address=?, age=? WHERE id=?", company.getName(), company.getAddress(), company.getAge(), id);
-        return get(id);
+        try {
+            jdbcTemplate.update("UPDATE companies SET name=?, address=?, age=? WHERE id=?", company.getName(), company.getAddress(), company.getAge(), id);
+            return get(id);
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override

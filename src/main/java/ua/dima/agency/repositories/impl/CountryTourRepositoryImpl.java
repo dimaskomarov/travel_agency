@@ -7,7 +7,6 @@ import ua.dima.agency.domain.CountryTour;
 import ua.dima.agency.repositories.CountryTourRepository;
 
 import java.sql.PreparedStatement;
-import java.util.Collections;
 import java.util.List;
 
 @Component

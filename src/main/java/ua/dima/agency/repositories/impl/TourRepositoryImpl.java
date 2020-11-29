@@ -1,5 +1,6 @@
 package ua.dima.agency.repositories.impl;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -29,7 +30,22 @@ public class TourRepositoryImpl implements TourRepository {
 
     @Override
     public Optional<Tour> get(Long id) {
-        return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM tours WHERE id = ?", TOUR_MAPPER, id));
+        try {
+            Tour tour = jdbcTemplate.queryForObject("SELECT * FROM tours WHERE id = ?", TOUR_MAPPER, id);
+            return Optional.ofNullable(tour);
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Optional<Tour> get(Long companyId, Long id) {
+        try {
+            Tour tour = jdbcTemplate.queryForObject("SELECT * FROM tours WHERE id=? AND company_id=?", TOUR_MAPPER, id, companyId);
+            return Optional.ofNullable(tour);
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -41,9 +57,9 @@ public class TourRepositoryImpl implements TourRepository {
     public Optional<Tour> create(Tour tour) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO tours(price, amount_day, date_departure, company_id, travel_type_id) VALUES(?, ?, ?::timestamp, ?, ?)", new String[] {"id"});
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO tours(price, amount_days, date_departure, company_id, travel_type_id) VALUES(?, ?, ?::timestamp, ?, ?)", new String[] {"id"});
             statement.setDouble(1, tour.getPrice());
-            statement.setInt(2, tour.getAmountDay());
+            statement.setInt(2, tour.getAmountDays());
             statement.setString(3, tour.getDateDeparture().toString());
             statement.setLong(4, tour.getCompanyId());
             statement.setLong(5, tour.getTravelTypeId());
@@ -59,17 +75,21 @@ public class TourRepositoryImpl implements TourRepository {
 
     @Override
     public Optional<Tour> update(Long id, Tour tour) {
-        jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement("UPDATE tours SET price=?, amount_day=?, date_departure=?::timestamp, company_id=?, travel_type_id=? WHERE id=?");
-            statement.setDouble(1, tour.getPrice());
-            statement.setInt(2, tour.getAmountDay());
-            statement.setString(3, tour.getDateDeparture().toString());
-            statement.setLong(4, tour.getCompanyId());
-            statement.setLong(5, tour.getTravelTypeId());
-            statement.setLong(6, id);
-            return statement;
-        });
-        return get(id);
+        try {
+            jdbcTemplate.update(connection -> {
+                PreparedStatement statement = connection.prepareStatement("UPDATE tours SET price=?, amount_days=?, date_departure=?::timestamp, company_id=?, travel_type_id=? WHERE id=?");
+                statement.setDouble(1, tour.getPrice());
+                statement.setInt(2, tour.getAmountDays());
+                statement.setString(3, tour.getDateDeparture().toString());
+                statement.setLong(4, tour.getCompanyId());
+                statement.setLong(5, tour.getTravelTypeId());
+                statement.setLong(6, id);
+                return statement;
+            });
+            return get(id);
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override

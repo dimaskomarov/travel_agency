@@ -122,7 +122,7 @@ public class ApplicationReadyEvent {
 
         Tour testTour = Tour.createTour()
                 .withPrice(2_675.0)
-                .withAmountDay(3)
+                .withAmountDays(3)
                 .withDateDeparture(instant)
                 .withCompanyId(1L)
                 .withTravelTypeId(1L)
@@ -137,7 +137,7 @@ public class ApplicationReadyEvent {
         Tour createdTour = tourRepository.create(testTour).orElse(defaultTour);
         LOGGER.info("Created tour: {}", createdTour);
 
-        createdTour.setAmountDay(666);
+        createdTour.setAmountDays(666);
         Tour updatedTour = tourRepository.update(createdTour.getId(), createdTour).orElse(defaultTour);
         LOGGER.info("Updated tour: {}", updatedTour);
 
