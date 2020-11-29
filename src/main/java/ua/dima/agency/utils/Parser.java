@@ -46,7 +46,7 @@ public class Parser {
         List<TourDto> toursDto = null;
 
         try {
-            List<Tour> tours = tourRepository.getByCompanyId(company.getId());
+            List<Tour> tours = tourRepository.getByCompanyId(company.getId());//todo why amountOfDays are nulls
             toursDto = tours.stream().map(Parser::parse).collect(Collectors.toList());
         } catch(RuntimeException e) {
             LOGGER.error(LOG_PARSING_ERROR, "Company", company.getId());
@@ -120,7 +120,7 @@ public class Parser {
         Long travelTypeId = createdTravelType.isPresent() ? createdTravelType.get().getId():0L;
 
         return Tour.createTour()
-                .withId(travelTypeId)
+                .withId(tourDTO.getId())
                 .withPrice(tourDTO.getPrice())
                 .withAmountDay(tourDTO.getAmountDays())
                 .withDateDeparture(tourDTO.getDateDeparture())

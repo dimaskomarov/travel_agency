@@ -1,7 +1,5 @@
 package ua.dima.agency.controllers.responses;
 
-import java.util.List;
-
 public class DataResponse {
     private Object data;
 

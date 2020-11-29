@@ -5,15 +5,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.dima.agency.domain.Company;
-import ua.dima.agency.domain.Country;
 import ua.dima.agency.domain.Tour;
-import ua.dima.agency.domain.TravelType;
-import ua.dima.agency.dto.CountryDto;
 import ua.dima.agency.dto.TourDto;
-import ua.dima.agency.dto.TravelTypeDto;
 import ua.dima.agency.exceptions.NoDataException;
 import ua.dima.agency.exceptions.SQLException;
-import ua.dima.agency.repositories.*;
+import ua.dima.agency.repositories.CompanyRepository;
+import ua.dima.agency.repositories.CountryTourRepository;
+import ua.dima.agency.repositories.TourRepository;
 import ua.dima.agency.service.TourService;
 import ua.dima.agency.utils.CreatorMissingRecords;
 import ua.dima.agency.utils.Parser;
@@ -26,20 +24,14 @@ import java.util.stream.Collectors;
 public class TourServiceImpl implements TourService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TourServiceImpl.class);
     private CountryTourRepository countryTourRepository;
-    private TravelTypeRepository travelTypeRepository;
     private CompanyRepository companyRepository;
-    private CountryRepository countryRepository;
     private TourRepository tourRepository;
 
     public TourServiceImpl(CountryTourRepository countryTourRepository,
-                           TravelTypeRepository travelTypeRepository,
                            CompanyRepository companyRepository,
-                           CountryRepository countryRepository,
                            TourRepository tourRepository) {
         this.countryTourRepository = countryTourRepository;
-        this.travelTypeRepository = travelTypeRepository;
         this.companyRepository = companyRepository;
-        this.countryRepository = countryRepository;
         this.tourRepository = tourRepository;
     }
 

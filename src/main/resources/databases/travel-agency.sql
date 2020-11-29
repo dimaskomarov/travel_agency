@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS tours
 (
     id             SERIAL PRIMARY KEY,
     price          NUMERIC(8, 2) NOT NULL CHECK (price > 0.0),
-    amount_day     INT           NOT NULL CHECK (amount_day > 0),
+    amount_days     INT           NOT NULL CHECK (amount_days > 0),
     date_departure TIMESTAMP,
     company_id     INT,
     travel_type_id INT,
@@ -67,7 +67,7 @@ VALUES ('by plane'),
        ('by car'),
        ('by ship');
 
-INSERT INTO tours (price, amount_day, date_departure, company_id, travel_type_id)
+INSERT INTO tours (price, amount_days, date_departure, company_id, travel_type_id)
 VALUES (14670.00, 7, '2020-11-04 17:30:00', 1, 1),
        (18680.00, 7, '2020-11-01 10:00:00', 1, 2),
        (20100.00, 7, '2020-11-08 12:00:00', 1, 3),

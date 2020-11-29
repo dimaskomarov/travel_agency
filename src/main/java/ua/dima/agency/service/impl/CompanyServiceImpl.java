@@ -15,6 +15,7 @@ import ua.dima.agency.service.CompanyService;
 import ua.dima.agency.utils.CreatorMissingRecords;
 import ua.dima.agency.utils.Parser;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -72,15 +73,13 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     @Transactional
     public CompanyDto update(Long id, CompanyDto companyDTO) {
+        deleteToursOfCompany(id);
         Optional<Company> updatedCompany = companyRepository.update(id, Parser.parse(companyDTO));
 
         if(updatedCompany.isPresent()) {
-            deleteToursOfCompany(id, companyDTO);
             companyDTO.getToursDto().forEach(tourDto -> createTour(id, tourDto));
-
             return Parser.parse(updatedCompany.get());
         }
-
         LOGGER.warn("{} wasn't updated.", companyDTO);
         throw new SQLException(String.format("%s wasn't updated.", companyDTO));
     }
@@ -93,12 +92,10 @@ public class CompanyServiceImpl implements CompanyService {
         createdTour.ifPresent(tour -> CreatorMissingRecords.createMissingCountryTour(tourDto.getCountiesDto(), tour.getId()));
     }
 
-    private void deleteToursOfCompany(Long companyId, CompanyDto companyDTO) {
-        companyDTO.getToursDto().stream().map(tourDto -> Parser.parse(tourDto, companyId))
-                .forEach(tour -> {
-                    countryTourRepository.deleteByTourId(tour.getId());
-                    tourRepository.delete(tour.getId());
-                });
+    private void deleteToursOfCompany(Long companyId) {
+        get(companyId).getToursDto().stream()
+                .forEach(tourDto -> countryTourRepository.deleteByTourId(tourDto.getId()));
+        tourRepository.deleteByCompanyId(companyId);
     }
 
     @Override
