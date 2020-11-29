@@ -105,7 +105,7 @@ public class Parser {
         return TourDto.createTourDTO()
                 .withId(tour.getId())
                 .withPrice(tour.getPrice())
-                .withAmountDays(tour.getAmountDay())
+                .withAmountDays(tour.getAmountDays())
                 .withDateDeparture(tour.getDateDeparture())
                 .withTravelTypeDto(travelTypeDto)
                 .withCountiesDto(countiesDto).build();
@@ -122,7 +122,7 @@ public class Parser {
         return Tour.createTour()
                 .withId(tourDTO.getId())
                 .withPrice(tourDTO.getPrice())
-                .withAmountDay(tourDTO.getAmountDays())
+                .withAmountDays(tourDTO.getAmountDays())
                 .withDateDeparture(tourDTO.getDateDeparture())
                 .withCompanyId(companyId)
                 .withTravelTypeId(travelTypeId).build();

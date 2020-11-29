@@ -5,7 +5,7 @@ import java.time.Instant;
 public class Tour {
     private Long id;
     private Double price;
-    private Integer amountDay;
+    private Integer amountDays;
     private Instant dateDeparture;
     private Long companyId;
     private Long travelTypeId;
@@ -19,7 +19,7 @@ public class Tour {
         return "Tour{" +
                 "id=" + id +
                 ", price=" + price +
-                ", amountDay=" + amountDay +
+                ", amountDay=" + amountDays +
                 ", dateDeparture=" + dateDeparture +
                 ", companyId=" + companyId +
                 ", travelTypeId=" + travelTypeId +
@@ -42,12 +42,12 @@ public class Tour {
         this.price = price;
     }
 
-    public Integer getAmountDay() {
-        return amountDay;
+    public Integer getAmountDays() {
+        return amountDays;
     }
 
-    public void setAmountDay(Integer amountDay) {
-        this.amountDay = amountDay;
+    public void setAmountDays(Integer amountDays) {
+        this.amountDays = amountDays;
     }
 
     public Instant getDateDeparture() {
@@ -93,8 +93,8 @@ public class Tour {
             return this;
         }
 
-        public Builder withAmountDay(Integer amountDay) {
-            Tour.this.amountDay = amountDay;
+        public Builder withAmountDays(Integer amountDays) {
+            Tour.this.amountDays = amountDays;
             return this;
         }
 

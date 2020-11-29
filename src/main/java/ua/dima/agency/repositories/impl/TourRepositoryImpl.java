@@ -59,7 +59,7 @@ public class TourRepositoryImpl implements TourRepository {
         jdbcTemplate.update(connection -> {
             PreparedStatement statement = connection.prepareStatement("INSERT INTO tours(price, amount_days, date_departure, company_id, travel_type_id) VALUES(?, ?, ?::timestamp, ?, ?)", new String[] {"id"});
             statement.setDouble(1, tour.getPrice());
-            statement.setInt(2, tour.getAmountDay());
+            statement.setInt(2, tour.getAmountDays());
             statement.setString(3, tour.getDateDeparture().toString());
             statement.setLong(4, tour.getCompanyId());
             statement.setLong(5, tour.getTravelTypeId());
@@ -79,7 +79,7 @@ public class TourRepositoryImpl implements TourRepository {
             jdbcTemplate.update(connection -> {
                 PreparedStatement statement = connection.prepareStatement("UPDATE tours SET price=?, amount_days=?, date_departure=?::timestamp, company_id=?, travel_type_id=? WHERE id=?");
                 statement.setDouble(1, tour.getPrice());
-                statement.setInt(2, tour.getAmountDay());
+                statement.setInt(2, tour.getAmountDays());
                 statement.setString(3, tour.getDateDeparture().toString());
                 statement.setLong(4, tour.getCompanyId());
                 statement.setLong(5, tour.getTravelTypeId());
