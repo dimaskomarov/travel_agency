@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface TravelTypeService {
     TravelTypeDto get(Long id);
+    TravelTypeDto get(String type);
     List<TravelTypeDto> getAll();
     TravelTypeDto create(TravelTypeDto travelTypeDTO);
     TravelTypeDto update(Long id, TravelTypeDto travelTypeDTO);

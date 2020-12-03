@@ -6,6 +6,7 @@ import java.util.List;
 
 public interface CountryService {
     CountryDto get(Long id);
+    CountryDto get(String name);
     List<CountryDto> getAll();
     CountryDto create(CountryDto countryDTO);
     CountryDto update(Long id, CountryDto countryDTO);
