@@ -91,7 +91,7 @@ public class CountryServiceImpl implements CountryService {
             countryTourRepository.deleteByCountryId(id);
             countryRepository.delete(id);
         } catch(SQLException e) {
-            LOGGER.warn("Country with id={} wasn't deleted.", id);
+            LOGGER.debug("Country with id={} wasn't deleted.", id);
             throw new SQLException(String.format("Country with id=%d wasn't deleted.", id));
         }
     }

@@ -1,6 +1,5 @@
 package ua.dima.agency.service.impl;
 
-import org.postgresql.util.PSQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -98,7 +97,7 @@ public class TravelTypeServiceImpl implements TravelTypeService {
             tourRepository.deleteByTourTypeId(id);
             travelTypeRepository.delete(id);
         } catch(SQLException e) {
-            LOGGER.warn("TravelType with id={} wasn't deleted.", id);
+            LOGGER.debug("TravelType with id={} wasn't deleted.", id);
             throw new SQLException(String.format("TravelType with id=%d wasn't deleted.", id));
         }
     }
@@ -116,6 +115,6 @@ public class TravelTypeServiceImpl implements TravelTypeService {
     }
 
     private void checkForExistence(Long id) {
-//        get(id);
+        get(id);
     }
 }

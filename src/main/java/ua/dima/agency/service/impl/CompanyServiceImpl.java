@@ -101,7 +101,7 @@ public class CompanyServiceImpl implements CompanyService {
             tourService.delete(id);
             companyRepository.delete(id);
         } catch(SQLException e) {
-            LOGGER.warn("Company with id={} wasn't deleted.", id);
+            LOGGER.debug("Company with id={} wasn't deleted.", id);
             throw new SQLException(String.format("Company with id=%d wasn't deleted.", id));
         }
     }
