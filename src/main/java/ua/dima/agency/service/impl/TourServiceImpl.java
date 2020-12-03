@@ -170,7 +170,7 @@ public class TourServiceImpl implements TourService {
             countryTourRepository.deleteByTourId(tourId);
             tourRepository.delete(tourId);
         } catch(SQLException e) {
-            LOGGER.warn("Tour with id={} wasn't deleted.", tourId);
+            LOGGER.debug("Tour with id={} wasn't deleted.", tourId);
             throw new SQLException(String.format("Tour with id=%d wasn't deleted.", tourId));
         }
     }

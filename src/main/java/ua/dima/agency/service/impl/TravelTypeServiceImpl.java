@@ -98,7 +98,7 @@ public class TravelTypeServiceImpl implements TravelTypeService {
             tourRepository.deleteByTourTypeId(id);
             travelTypeRepository.delete(id);
         } catch(SQLException e) {
-            LOGGER.warn("TravelType with id={} wasn't deleted.", id);
+            LOGGER.debug("TravelType with id={} wasn't deleted.", id);
             throw new SQLException(String.format("TravelType with id=%d wasn't deleted.", id));
         }
     }
