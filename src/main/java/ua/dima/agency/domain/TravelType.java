@@ -1,11 +1,20 @@
 package ua.dima.agency.domain;
 
+import ua.dima.agency.dto.TravelTypeDto;
+
 public class TravelType {
     private Long id;
     private String type;
 
     private TravelType() {
         //empty constructor
+    }
+
+    public static TravelType parse(TravelTypeDto travelTypeDto) {
+        return TravelType.createTravelType()
+                .withId(travelTypeDto.getId())
+                .withType(travelTypeDto.getType())
+                .build();
     }
 
     @Override

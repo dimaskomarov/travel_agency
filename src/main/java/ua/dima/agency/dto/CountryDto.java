@@ -1,11 +1,19 @@
 package ua.dima.agency.dto;
 
+import ua.dima.agency.domain.Country;
+
 public class CountryDto {
     private Long id;
     private String name;
 
     public CountryDto() {
         //empty constructor
+    }
+
+    public static CountryDto parse(Country country) {
+        return CountryDto.createCountryDTO()
+                .withId(country.getId())
+                .withName(country.getName()).build();
     }
 
     @Override

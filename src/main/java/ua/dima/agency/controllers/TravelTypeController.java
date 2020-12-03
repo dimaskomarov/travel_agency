@@ -2,11 +2,10 @@ package ua.dima.agency.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ua.dima.agency.controllers.responses.DataAndStatusResponse;
-import ua.dima.agency.controllers.responses.DataResponse;
-import ua.dima.agency.controllers.responses.StatusResponse;
 import ua.dima.agency.dto.TravelTypeDto;
 import ua.dima.agency.service.TravelTypeService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "travelTypes")
@@ -18,40 +17,40 @@ public class TravelTypeController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<DataResponse> get(@PathVariable Long id) {
+    public ResponseEntity<TravelTypeDto> get(@PathVariable Long id) {
         return ResponseEntity
                 .status(200)
-                .body(new DataResponse(travelTypeService.get(id)));
+                .body(travelTypeService.get(id));
     }
 
     @GetMapping
-    public ResponseEntity<DataResponse> getAll() {
+    public ResponseEntity<List<TravelTypeDto>> getAll() {
         return ResponseEntity
                 .status(200)
-                .body(new DataResponse(travelTypeService.getAll()));
+                .body(travelTypeService.getAll());
     }
 
     @PostMapping
-    public ResponseEntity<DataAndStatusResponse> create(@RequestBody TravelTypeDto travelTypeDto) {
+    public ResponseEntity<TravelTypeDto> create(@RequestBody TravelTypeDto travelTypeDto) {
         TravelTypeDto createdTravelTypeDto = travelTypeService.create(travelTypeDto);
         return ResponseEntity
                 .status(201)
-                .body(new DataAndStatusResponse("Next travel type was created.", createdTravelTypeDto));
+                .body(createdTravelTypeDto);
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<DataAndStatusResponse> update(@PathVariable Long id, @RequestBody TravelTypeDto travelTypeDTO) {
+    public ResponseEntity<TravelTypeDto> update(@PathVariable Long id, @RequestBody TravelTypeDto travelTypeDTO) {
         TravelTypeDto updatedTravelTypeDto = travelTypeService.update(id, travelTypeDTO);
         return ResponseEntity
                 .status(200)
-                .body(new DataAndStatusResponse("Next travel type updated.", updatedTravelTypeDto));
+                .body(updatedTravelTypeDto);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<StatusResponse> delete(@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         travelTypeService.delete(id);
         return ResponseEntity
                 .status(200)
-                .body(new StatusResponse("Travel type was deleted."));
+                .body("Travel type was deleted.");
     }
 }
