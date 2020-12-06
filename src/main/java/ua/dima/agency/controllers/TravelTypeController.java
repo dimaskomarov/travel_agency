@@ -50,7 +50,7 @@ public class TravelTypeController {
     public ResponseEntity<String> delete(@PathVariable Long id) {
         travelTypeService.delete(id);
         return ResponseEntity
-                .status(200)
-                .body("Travel type was deleted.");
+                .status(204)
+                .build();
     }
 }

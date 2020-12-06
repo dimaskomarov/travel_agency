@@ -51,7 +51,6 @@ public class CompanyController {
     public ResponseEntity<String> delete(@PathVariable Long id) {
         companyService.delete(id);
         return ResponseEntity
-                .status(200)
-                .body("Company was deleted.");
+                .status(204).build();
     }
 }

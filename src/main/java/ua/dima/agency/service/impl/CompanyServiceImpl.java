@@ -37,7 +37,7 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyDto get(Long id) {
         Optional<Company> company = companyRepository.get(id);
         if(company.isPresent()) {
-            return getCompanyWithMissingParts(company.get());
+            return getCompanyWithTours(company.get());
         }
         LOGGER.debug("Company with id={} doesn't exist.", id);
         throw new NoDataException(String.format("Company with id=%d doesn't exist.", id));
@@ -47,7 +47,7 @@ public class CompanyServiceImpl implements CompanyService {
     public List<CompanyDto> getAll() {
         List<Company> companies = companyRepository.getAll();
         if(!companies.isEmpty()) {
-            return companies.stream().map(this::getCompanyWithMissingParts).collect(Collectors.toList());
+            return companies.stream().map(this::getCompanyWithTours).collect(Collectors.toList());
         }
         LOGGER.debug("There aren't any companies in database.");
         throw new NoDataException("There aren't any companies in database.");
@@ -62,7 +62,7 @@ public class CompanyServiceImpl implements CompanyService {
             companyDTO.getToursDto()
                     .forEach(tourDto -> tourService.create(createdCompany.get().getId(), tourDto));
 
-            return getCompanyWithMissingParts(createdCompany.get());
+            return getCompanyWithTours(createdCompany.get());
         }
         LOGGER.debug("{} wasn't created.", companyDTO);
         throw new SQLException(String.format("%s wasn't created.", companyDTO));
@@ -78,7 +78,7 @@ public class CompanyServiceImpl implements CompanyService {
 
         if(updatedCompany.isPresent()) {
             companyDTO.getToursDto().forEach(tourDto -> tourService.create(id, tourDto));
-            return getCompanyWithMissingParts(updatedCompany.get());
+            return getCompanyWithTours(updatedCompany.get());
         }
         LOGGER.debug("{} wasn't updated.", companyDTO);
         throw new SQLException(String.format("%s wasn't updated.", companyDTO));
@@ -114,7 +114,7 @@ public class CompanyServiceImpl implements CompanyService {
         }
     }
 
-    public CompanyDto getCompanyWithMissingParts(Company company) {
+    public CompanyDto getCompanyWithTours(Company company) {
         List<TourDto> toursDto = tourService.getAll(company.getId());
         return CompanyDto.parse(company, toursDto);
     }

@@ -43,7 +43,7 @@ public class TourController {
     public ResponseEntity<TourDto> update(@RequestBody TourDto tourDto,
                                                  @PathVariable("id") Long id,
                                                  @PathVariable("companyId") Long companyId) {
-        TourDto createdTourDto = tourService.update(companyId, tourDto, id);
+        TourDto createdTourDto = tourService.update(tourDto, id);
         return ResponseEntity
                 .status(200)
                 .body(createdTourDto);
@@ -54,7 +54,7 @@ public class TourController {
                                                  @PathVariable("companyId") Long companyId) {
         tourService.delete(companyId, id);
         return ResponseEntity
-                .status(200)
-                .body("Tour was deleted.");
+                .status(204)
+                .build();
     }
 }

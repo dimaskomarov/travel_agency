@@ -50,7 +50,7 @@ public class CountryController {
     public ResponseEntity<String> delete(@PathVariable Long id) {
         countryService.delete(id);
         return ResponseEntity
-                .status(200)
-                .body("Country was deleted.");
+                .status(204)
+                .build();
     }
 }
