@@ -8,7 +8,7 @@ public interface TourService {
     TourDto get(Long companyId, Long id);
     List<TourDto> getAll(Long companyId);
     TourDto create(Long companyId, TourDto tourDTO);
-    TourDto update(Long companyId, TourDto tourDTO, Long tourId);
+    TourDto update(TourDto tourDTO, Long tourId);
     void delete(Long companyId, Long id);
     void delete(Long companyId);
 }

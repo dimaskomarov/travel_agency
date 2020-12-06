@@ -48,12 +48,12 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public TourDto get(Long companyId, Long tourId) {
-        checkForExistence(companyId);
+        checkIfCompanyExists(companyId);
         checkIfCompanyHasAnyTours(companyId);
 
         Optional<Tour> tour = tourRepository.get(companyId, tourId);
         if(tour.isPresent()) {
-            return getTourDtoWithTypeAndCountry(tour.get());
+            return buildTourDtoWithTypeAndCountry(tour.get());
         }
         LOGGER.debug("The company with id={} doesn't have the tour with id={}", companyId, tourId);
         throw new NoDataException(String.format("The company with id=%d doesn't have the tour with id=%d", companyId, tourId));
@@ -65,11 +65,11 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public List<TourDto> getAll(Long companyId) {
-        checkForExistence(companyId);
+        checkIfCompanyExists(companyId);
 
         List<Tour> tours = tourRepository.getByCompanyId(companyId);
         if(!tours.isEmpty()) {
-            return tours.stream().map(this::getTourDtoWithTypeAndCountry).collect(Collectors.toList());
+            return tours.stream().map(this::buildTourDtoWithTypeAndCountry).collect(Collectors.toList());
         }
         LOGGER.debug("The company with id={} doesn't have any tours.", companyId);
         throw new NoDataException(String.format("The company with id=%d doesn't have any tours.", companyId));
@@ -78,16 +78,16 @@ public class TourServiceImpl implements TourService {
     @Override
     @Transactional
     public TourDto create(Long companyId, TourDto tourDto) {
-        checkForExistence(companyId);
+        checkIfCompanyExists(companyId);
 
         createMissingCounties(tourDto);
         createMissingTravelType(tourDto);
 
-        Tour tour = getTourWithTypeAndCountry(tourDto, companyId);
+        Tour tour = buildTourWithTypeAndCountry(tourDto, companyId);
         Optional<Tour> createdTour = tourRepository.create(tour);
         if(createdTour.isPresent()) {
             createMissingCountryTour(tourDto.getCountiesDto(), createdTour.get().getId());
-            return getTourDtoWithTypeAndCountry(createdTour.get());
+            return buildTourDtoWithTypeAndCountry(createdTour.get());
         }
         LOGGER.debug("{} wasn't created.", tourDto);
         throw new SQLException(String.format("%s wasn't created.", tourDto));
@@ -95,9 +95,8 @@ public class TourServiceImpl implements TourService {
 
     @Override
     @Transactional
-    public TourDto update(Long companyId, TourDto tourDto, Long tourId) {
-        checkForExistence(companyId);
-        checkIfCompanyHasTheTour(companyId, tourId);
+    public TourDto update(TourDto tourDto, Long tourId) {
+        checkIfTourExists(tourId);
 
         createMissingCounties(tourDto);
         createMissingTravelType(tourDto);
@@ -105,12 +104,21 @@ public class TourServiceImpl implements TourService {
         countryTourRepository.deleteByTourId(tourId);
         createMissingCountryTour(tourDto.getCountiesDto(), tourId);
 
-        Optional<Tour> updatedTour = tourRepository.update(tourId, getTourWithTypeAndCountry(tourDto, companyId));
+        Optional<Tour> updatedTour = tourRepository.update(tourId, getTourFromDB(tourId));
         if(updatedTour.isPresent()) {
-            return getTourDtoWithTypeAndCountry(updatedTour.get());
+            return buildTourDtoWithTypeAndCountry(updatedTour.get());
         }
         LOGGER.debug("{} wasn't updated.", tourDto);
         throw new SQLException(String.format("%s wasn't updated.", tourDto));
+    }
+
+    private void checkIfTourExists(Long tourId) {
+        Optional<Tour> tour = tourRepository.get(tourId);
+
+        if(tour.isEmpty()) {
+            LOGGER.debug("The tour with id={} doesn't exist", tourId);
+            throw new NoDataException(String.format("The tour with id=%d doesn't exist", tourId));
+        }
     }
 
     private void createMissingCounties(TourDto tourDto) {
@@ -131,7 +139,7 @@ public class TourServiceImpl implements TourService {
         }
     }
 
-    public TourDto getTourDtoWithTypeAndCountry(Tour tour) {
+    public TourDto buildTourDtoWithTypeAndCountry(Tour tour) {
         TravelTypeDto travelTypeDto = travelTypeService.get(tour.getTravelTypeId());
         List<CountryDto> countriesDto = getCountriesDto(tour.getId());
 
@@ -144,11 +152,17 @@ public class TourServiceImpl implements TourService {
         return countryIds.stream().map(countryService::get).collect(Collectors.toList());
     }
 
-    private Tour getTourWithTypeAndCountry(TourDto tourDTO, Long companyId) {
+    private Tour buildTourWithTypeAndCountry(TourDto tourDTO, Long companyId) {
         String typeFromTour = tourDTO.getTravelTypeDto().getType();
         TravelTypeDto receivedTravelType = travelTypeService.get(typeFromTour);
 
         return Tour.parse(tourDTO, companyId, receivedTravelType.getId());
+    }
+
+    private Tour getTourFromDB(Long tourId) {
+        Optional<Tour> tour = tourRepository.get(tourId);
+
+        return tour.orElseGet(() -> Tour.createTour().build());
     }
 
     public void createMissingCountryTour(List<CountryDto> countriesDto, Long tourId) {
@@ -163,7 +177,7 @@ public class TourServiceImpl implements TourService {
     @Override
     @Transactional
     public void delete(Long companyId, Long tourId) {
-        checkForExistence(companyId);
+        checkIfCompanyExists(companyId);
         checkIfCompanyHasTheTour(companyId, tourId);
 
         try{
@@ -181,12 +195,12 @@ public class TourServiceImpl implements TourService {
 
     @Override
     public void delete(Long companyId) {
-        checkForExistence(companyId);
+        checkIfCompanyExists(companyId);
 
         tourRepository.deleteByCompanyId(companyId);
     }
 
-    private void checkForExistence(Long companyId) {
+    private void checkIfCompanyExists(Long companyId) {
         Optional<Company> company = companyRepository.get(companyId);
         if(company.isEmpty()) {
             LOGGER.debug("The company with id={} doesn't exist", companyId);
