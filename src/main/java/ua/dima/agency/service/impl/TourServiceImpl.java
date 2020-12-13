@@ -162,7 +162,7 @@ public class TourServiceImpl implements TourService {
     private Tour getTourFromDB(Long tourId) {
         Optional<Tour> tour = tourRepository.get(tourId);
 
-        return tour.orElseGet(() -> Tour.createTour().build());
+        return tour.orElseGet(() -> Tour.create().build());
     }
 
     public void createMissingCountryTour(List<CountryDto> countriesDto, Long tourId) {

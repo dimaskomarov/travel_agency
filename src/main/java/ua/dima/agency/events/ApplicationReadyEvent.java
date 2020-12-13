@@ -36,9 +36,9 @@ public class ApplicationReadyEvent {
 
     @EventListener(ApplicationReadyEvent.class)
     public void testCompanyRepository() {
-        Company defaultCompany = Company.createCompany().build();
+        Company defaultCompany = Company.create().build();
 
-        Company testCompany = Company.createCompany()
+        Company testCompany = Company.create()
                 .withName("Travel for everyone")
                 .withAddress("Kharkov, st. Free 101")
                 .withAge(10)
@@ -63,9 +63,9 @@ public class ApplicationReadyEvent {
 
     @EventListener(ApplicationReadyEvent.class)
     public void testCountryRepository() {
-        Country defaultCountry = Country.createCountry().build();
+        Country defaultCountry = Country.create().build();
 
-        Country uganda = Country.createCountry()
+        Country uganda = Country.create()
                 .withName("Uganda")
                 .build();
 
@@ -90,9 +90,9 @@ public class ApplicationReadyEvent {
 
     @EventListener(ApplicationReadyEvent.class)
     public void testCountryTourRepository() {
-        CountryTour defaultCountryTour = CountryTour.createCountryTour().build();
+        CountryTour defaultCountryTour = CountryTour.create().build();
 
-        CountryTour testCountryTour = CountryTour.createCountryTour()
+        CountryTour testCountryTour = CountryTour.create()
                 .withCountryId(5L)
                 .withTourId(6L)
                 .build();
@@ -115,12 +115,12 @@ public class ApplicationReadyEvent {
 
     @EventListener(ApplicationReadyEvent.class)
     public void testTourRepository() {
-        Tour defaultTour = Tour.createTour().build();
+        Tour defaultTour = Tour.create().build();
 
         LocalDateTime localDateTime = LocalDateTime.parse("1990-11-22T10:00:00");
         Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
 
-        Tour testTour = Tour.createTour()
+        Tour testTour = Tour.create()
                 .withPrice(2_675.0)
                 .withAmountDays(3)
                 .withDateDeparture(instant)
@@ -148,9 +148,9 @@ public class ApplicationReadyEvent {
 
     @EventListener(ApplicationReadyEvent.class)
     public void testTravelTypeRepository() {
-        TravelType defaultTravelType = TravelType.createTravelType().build();
+        TravelType defaultTravelType = TravelType.create().build();
 
-        TravelType travelType = TravelType.createTravelType()
+        TravelType travelType = TravelType.create()
                 .withType("By banana")
                 .build();
 

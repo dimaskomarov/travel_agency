@@ -13,7 +13,7 @@ public class Company {
     }
 
     public static Company parse(CompanyDto companyDTO) {
-        return Company.createCompany()
+        return Company.create()
                 .withId(companyDTO.getId())
                 .withName(companyDTO.getName())
                 .withAddress(companyDTO.getAddress())
@@ -21,13 +21,25 @@ public class Company {
     }
 
     @Override
-    public String toString() {
-        return "Company{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", age=" + age +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Company company = (Company) o;
+
+        if (age != company.age) return false;
+        if (id != null ? !id.equals(company.id) : company.id != null) return false;
+        if (!name.equals(company.name)) return false;
+        return address.equals(company.address);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + address.hashCode();
+        result = 31 * result + age;
+        return result;
     }
 
     public Long getId() {
@@ -62,7 +74,7 @@ public class Company {
         this.age = age;
     }
 
-    public static Builder createCompany() {
+    public static Builder create() {
         return new Company().new Builder();
     }
 

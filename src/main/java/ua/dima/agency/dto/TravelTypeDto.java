@@ -2,6 +2,8 @@ package ua.dima.agency.dto;
 
 import ua.dima.agency.domain.TravelType;
 
+import java.util.Objects;
+
 public class TravelTypeDto {
     private Long id;
     private String type;
@@ -11,9 +13,27 @@ public class TravelTypeDto {
     }
 
     public static TravelTypeDto parse(TravelType travelType) {
-        return TravelTypeDto.createTravelTypeDTO()
+        return TravelTypeDto.create()
                 .withId(travelType.getId())
                 .withType(travelType.getType()).build();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TravelTypeDto that = (TravelTypeDto) o;
+
+        if (!Objects.equals(id, that.id)) return false;
+        return type.equals(that.type);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + type.hashCode();
+        return result;
     }
 
     @Override
@@ -40,7 +60,7 @@ public class TravelTypeDto {
         this.type = type;
     }
 
-    public static Builder createTravelTypeDTO(){
+    public static Builder create(){
         return new TravelTypeDto().new Builder();
     }
 
