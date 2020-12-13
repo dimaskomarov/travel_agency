@@ -88,6 +88,13 @@ public class TravelTypeServiceImpl implements TravelTypeService {
         throw new SQLException(String.format("%s wasn't updated.", travelTypeDto));
     }
 
+    private void checkForExistence(TravelTypeDto travelTypeDto) {
+        travelTypeRepository.get(travelTypeDto.getType()).ifPresent(travelType -> {
+            LOGGER.debug("{} already exists.", travelType);
+            throw new ExtraDataException(String.format("%s already exists.", travelType));
+        });
+    }
+
     @Override
     @Transactional
     public void delete(Long id) {
@@ -105,13 +112,6 @@ public class TravelTypeServiceImpl implements TravelTypeService {
     private void deleteCountryTour(Long travelTypeId) {
         List<Tour> toursByTravelTypeId = tourRepository.getByTravelTypeId(travelTypeId);
         toursByTravelTypeId.forEach(tourId -> countryTourRepository.deleteByTourId(tourId.getId()));
-    }
-
-    private void checkForExistence(TravelTypeDto travelTypeDto) {
-        travelTypeRepository.get(travelTypeDto.getType()).ifPresent(travelType -> {
-            LOGGER.debug("{} already exists.", travelType);
-            throw new ExtraDataException(String.format("%s already exists.", travelType));
-        });
     }
 
     private void checkForExistence(Long id) {

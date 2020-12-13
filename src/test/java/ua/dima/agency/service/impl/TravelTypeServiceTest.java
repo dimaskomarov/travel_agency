@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import ua.dima.agency.domain.Tour;
 import ua.dima.agency.domain.TravelType;
@@ -23,7 +22,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.*;
 
 class TravelTypeServiceTest {
 
@@ -45,7 +44,7 @@ class TravelTypeServiceTest {
     void getById_existedTravelTypeId_shouldReturnTravelType() {
         Long id = 1L;
         String type = "by magic carpet";
-        Mockito.when(travelTypeRepository.get(id))
+        when(travelTypeRepository.get(id))
                 .then(invocation -> Optional.of(TravelType.create()
                         .withId(invocation.getArgument(0))
                         .withType(type).build())
@@ -61,7 +60,7 @@ class TravelTypeServiceTest {
     @Test
     void getById_notExistedTravelTypeId_shouldThrowException() {
         Long id = 1L;
-        Mockito.when(travelTypeRepository.get(id)).thenReturn(Optional.empty());
+        when(travelTypeRepository.get(id)).thenReturn(Optional.empty());
 
         assertThrows(NoDataException.class, () -> travelTypeServiceImpl.get(id));
     }
@@ -70,7 +69,7 @@ class TravelTypeServiceTest {
     void getByType_existedTravelType_shouldReturnTravelType() {
         Long id = 1L;
         String type = "by magic carpet";
-        Mockito.when(travelTypeRepository.get(type))
+        when(travelTypeRepository.get(type))
                 .then(invocation -> Optional.of(TravelType.create()
                         .withId(id)
                         .withType(invocation.getArgument(0)).build())
@@ -86,7 +85,7 @@ class TravelTypeServiceTest {
     @Test
     void getByType_notExistedTravelType_shouldThrowException() {
         String type = "by magic carpet";
-        Mockito.when(travelTypeRepository.get(type)).thenReturn(Optional.empty());
+        when(travelTypeRepository.get(type)).thenReturn(Optional.empty());
 
         assertThrows(NoDataException.class, () -> travelTypeServiceImpl.get(type));
     }
@@ -95,7 +94,7 @@ class TravelTypeServiceTest {
     void getAll_Nothing_shouldReturnAllTravelTypes() {
         TravelType tt = TravelType.create().withId(1L).withType("by magic carpet").build();
         TravelType tt1 = TravelType.create().withId(2L).withType("by banana").build();
-        Mockito.when(travelTypeRepository.getAll()).thenReturn(Arrays.asList(tt, tt1));
+        when(travelTypeRepository.getAll()).thenReturn(Arrays.asList(tt, tt1));
 
         List<TravelTypeDto> travelTypesDto = travelTypeServiceImpl.getAll();
 
@@ -109,7 +108,7 @@ class TravelTypeServiceTest {
 
     @Test
     void getAll_Nothing_shouldReturnException() {
-        Mockito.when(travelTypeRepository.getAll()).thenReturn(Collections.emptyList());
+        when(travelTypeRepository.getAll()).thenReturn(Collections.emptyList());
 
         assertThrows(NoDataException.class, () -> travelTypeServiceImpl.getAll());
     }
@@ -119,7 +118,7 @@ class TravelTypeServiceTest {
         Long id = 1L;
         String type = "by magic carpet";
         TravelType travelType = TravelType.create().withType(type).build();
-        Mockito.when(travelTypeRepository.create(travelType))
+        when(travelTypeRepository.create(travelType))
                 .then(invocation -> (Optional.of(TravelType.create()
                         .withId(id)
                         .withType(((TravelType) invocation.getArgument(0)).getType())
@@ -138,7 +137,7 @@ class TravelTypeServiceTest {
     void create_AlreadyExistedTravelTypeDto_shouldThrowException() {
         Long id = 1L;
         String type = "by magic carpet";
-        Mockito.when(travelTypeRepository.get(type))
+        when(travelTypeRepository.get(type))
                 .then(invocation -> (Optional.of(TravelType.create()
                         .withId(id)
                         .withType(invocation.getArgument(0))
@@ -155,7 +154,7 @@ class TravelTypeServiceTest {
     void create_TravelTypeDto_shouldThrowException() {
         String type = "by magic carpet";
         TravelType travelType = TravelType.create().withType(type).build();
-        Mockito.when(travelTypeRepository.create(travelType))
+        when(travelTypeRepository.create(travelType))
                 .then(invocation -> Optional.empty());
 
         TravelTypeDto travelTypeDto = TravelTypeDto.create().withType(type).build();
@@ -169,7 +168,7 @@ class TravelTypeServiceTest {
         Long id = 1L;
         String type = "by magic carpet";
         TravelType travelType = TravelType.create().withType(type).build();
-        Mockito.when(travelTypeRepository.update(id, travelType))
+        when(travelTypeRepository.update(id, travelType))
                 .then(invocation -> (Optional.of(TravelType.create()
                         .withId(invocation.getArgument(0))
                         .withType(((TravelType) invocation.getArgument(1)).getType())
@@ -189,7 +188,7 @@ class TravelTypeServiceTest {
     void update_AlreadyExistedTravelTypeDto_shouldThrowException() {
         Long id = 1L;
         String type = "by magic carpet";
-        Mockito.when(travelTypeRepository.get(type))
+        when(travelTypeRepository.get(type))
                 .then(invocation -> (Optional.of(TravelType.create()
                         .withId(id)
                         .withType(invocation.getArgument(0))
@@ -207,7 +206,7 @@ class TravelTypeServiceTest {
         Long id = 1L;
         String type = "by magic carpet";
         TravelType travelType = TravelType.create().withType(type).build();
-        Mockito.when(travelTypeRepository.update(id, travelType))
+        when(travelTypeRepository.update(id, travelType))
                 .then(invocation -> Optional.empty());
 
         TravelTypeDto travelTypeDto = TravelTypeDto.create().withType(type).build();
@@ -217,15 +216,15 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void delete_TravelTypeDto_shouldExecuteDeleteMethods() {
+    void delete_usedByTourTravelTypeDtoId_shouldExecuteDeleteMethods() {
         Long id = 1L;
         String type = "by magic carpet";
-        Mockito.when(travelTypeRepository.get(id))
+        when(travelTypeRepository.get(id))
                 .then(invocation -> Optional.of(TravelType.create()
                         .withId(invocation.getArgument(0))
                         .withType(type).build())
                 );
-        Mockito.when(tourRepository.getByTravelTypeId(id))
+        when(tourRepository.getByTravelTypeId(id))
                 .then(invocation -> Arrays.asList(
                         Tour.create().build(),
                         Tour.create().build())
@@ -233,18 +232,54 @@ class TravelTypeServiceTest {
 
         travelTypeServiceImpl.delete(id);
 
-        Mockito.verify(countryTourRepository, times(2)).deleteByTourId(any());
-        Mockito.verify(tourRepository, times(1)).deleteByTourTypeId(id);
-        Mockito.verify(travelTypeRepository, times(1)).delete(id);
+        verify(countryTourRepository, times(2)).deleteByTourId(any());
+        verify(tourRepository, times(1)).deleteByTourTypeId(id);
+        verify(travelTypeRepository, times(1)).delete(id);
     }
 
     @Test
-    void delete_AlreadyExistedTravelTypeDto_shouldThrowException() {
+    void delete_unusedByTourTravelTypeDtoId_shouldExecuteDeleteMethods() {
+        Long id = 1L;
+        String type = "by magic carpet";
+        when(travelTypeRepository.get(id))
+                .then(invocation -> Optional.of(TravelType.create()
+                        .withId(invocation.getArgument(0))
+                        .withType(type).build())
+                );
+        when(tourRepository.getByTravelTypeId(id))
+                .then(invocation -> Collections.emptyList());
 
+        travelTypeServiceImpl.delete(id);
+
+        verify(countryTourRepository, never()).deleteByTourId(any());
+        verify(tourRepository, times(1)).deleteByTourTypeId(id);
+        verify(travelTypeRepository, times(1)).delete(id);
+    }
+
+    @Test
+    void delete_AlreadyExistedTravelTypeDtoId_shouldThrowException() {
+        Long id = 1L;
+        when(travelTypeRepository.get(id))
+                .then(invocation -> Optional.empty());
+
+        assertThrows(NoDataException.class, () -> travelTypeServiceImpl.delete(id));
+
+        verify(countryTourRepository, never()).deleteByTourId(any());
+        verify(tourRepository, never()).deleteByTourTypeId(id);
+        verify(travelTypeRepository, never()).delete(id);
     }
 
     @Test
     void delete_TravelTypeDto_shouldThrowException() {
+        Long id = 1L;
+        String type = "by magic carpet";
+        when(travelTypeRepository.get(id))
+                .then(invocation -> Optional.of(TravelType.create()
+                        .withId(invocation.getArgument(0))
+                        .withType(type).build())
+                );
+        doThrow(new SQLException("")).when(travelTypeRepository).delete(id);
 
+        assertThrows(SQLException.class, () -> travelTypeServiceImpl.delete(id));
     }
 }
