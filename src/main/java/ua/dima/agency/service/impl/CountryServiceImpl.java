@@ -61,7 +61,7 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public CountryDto create(CountryDto countryDto) {
-        checkForExistence(countryDto);
+        checkIfCountryNew(countryDto.getName());
 
         Optional<Country> createdCountry = countryRepository.create(Country.parse(countryDto));
         if(createdCountry.isPresent()) {
@@ -73,7 +73,7 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public CountryDto update(Long id, CountryDto countryDto) {
-        checkForExistence(countryDto);
+        checkIfCountryNew(countryDto.getName());
 
         Optional<Country> updatedCountry = countryRepository.update(id, Country.parse(countryDto));
         if(updatedCountry.isPresent()) {
@@ -83,11 +83,18 @@ public class CountryServiceImpl implements CountryService {
         throw new SQLException(String.format("%s wasn't updated.", updatedCountry));
     }
 
+    private void checkIfCountryNew(String name) {
+        countryRepository.get(name).ifPresent(country -> {
+            LOGGER.debug("{} already exists.", country);
+            throw new ExtraDataException(String.format("%s already exists.", country));
+        });
+    }
+
     @Override
     @Transactional
     public void delete(Long id) {
         try {
-            checkForExistence(id);
+            checkIfCountryExist(id);
             countryTourRepository.deleteByCountryId(id);
             countryRepository.delete(id);
         } catch(SQLException e) {
@@ -96,14 +103,7 @@ public class CountryServiceImpl implements CountryService {
         }
     }
 
-    private void checkForExistence(CountryDto countryDto) {
-        countryRepository.get(countryDto.getName()).ifPresent(country -> {
-            LOGGER.debug("{} already exists.", country);
-            throw new ExtraDataException(String.format("%s already exists.", country));
-        });
-    }
-
-    private void checkForExistence(Long id) {
+    private void checkIfCountryExist(Long id) {
         get(id);
     }
 }

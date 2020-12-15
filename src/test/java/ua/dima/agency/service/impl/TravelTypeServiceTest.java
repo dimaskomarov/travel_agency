@@ -41,16 +41,13 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void getById_existedTravelTypeId_shouldReturnTravelType() {
+    void getById_existedTravelType_shouldReturnTravelType() {
         Long id = 1L;
-        String type = "by magic carpet";
-        when(travelTypeRepository.get(id))
-                .then(invocation -> Optional.of(TravelType.create()
-                        .withId(invocation.getArgument(0))
-                        .withType(type).build())
-                );
+        String type = "by banana";
+        TravelType banana = TravelType.create().withId(id).withType(type).build();
+        when(travelTypeRepository.get(id)).thenReturn(Optional.of(banana));
 
-        TravelTypeDto receivedTravelTypeDto = travelTypeServiceImpl.get(1L);
+        TravelTypeDto receivedTravelTypeDto = travelTypeServiceImpl.get(id);
 
         assertNotNull(receivedTravelTypeDto);
         assertEquals(id, receivedTravelTypeDto.getId());
@@ -58,7 +55,7 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void getById_notExistedTravelTypeId_shouldThrowException() {
+    void getById_notExistedTravelType_shouldThrowNoDataException() {
         Long id = 1L;
         when(travelTypeRepository.get(id)).thenReturn(Optional.empty());
 
@@ -68,12 +65,9 @@ class TravelTypeServiceTest {
     @Test
     void getByType_existedTravelType_shouldReturnTravelType() {
         Long id = 1L;
-        String type = "by magic carpet";
-        when(travelTypeRepository.get(type))
-                .then(invocation -> Optional.of(TravelType.create()
-                        .withId(id)
-                        .withType(invocation.getArgument(0)).build())
-                );
+        String type = "by banana";
+        TravelType banana = TravelType.create().withId(id).withType(type).build();
+        when(travelTypeRepository.get(type)).thenReturn(Optional.of(banana));
 
         TravelTypeDto receivedTravelTypeDto = travelTypeServiceImpl.get(type);
 
@@ -83,50 +77,51 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void getByType_notExistedTravelType_shouldThrowException() {
-        String type = "by magic carpet";
+    void getByType_notExistedTravelType_shouldThrowNoDataException() {
+        String type = "by banana";
         when(travelTypeRepository.get(type)).thenReturn(Optional.empty());
 
         assertThrows(NoDataException.class, () -> travelTypeServiceImpl.get(type));
     }
 
     @Test
-    void getAll_Nothing_shouldReturnAllTravelTypes() {
-        TravelType tt = TravelType.create().withId(1L).withType("by magic carpet").build();
-        TravelType tt1 = TravelType.create().withId(2L).withType("by banana").build();
-        when(travelTypeRepository.getAll()).thenReturn(Arrays.asList(tt, tt1));
+    void getAll_nothing_shouldReturnTwoTravelTypes() {
+        Long idMC = 1L;
+        String typeMC = "by magic carpet";
+        TravelType magicCarpet = TravelType.create().withId(idMC).withType(typeMC).build();
+        Long idB = 2L;
+        String typeB = "by banana";
+        TravelType banana = TravelType.create().withId(idB).withType(typeB).build();
+        when(travelTypeRepository.getAll()).thenReturn(Arrays.asList(magicCarpet, banana));
 
         List<TravelTypeDto> travelTypesDto = travelTypeServiceImpl.getAll();
 
         assertFalse(travelTypesDto.isEmpty());
         assertEquals(2, travelTypesDto.size());
-        assertEquals(tt.getId(), travelTypesDto.get(0).getId());
-        assertEquals(tt.getType(), travelTypesDto.get(0).getType());
-        assertEquals(tt1.getId(), travelTypesDto.get(1).getId());
-        assertEquals(tt1.getType(), travelTypesDto.get(1).getType());
+        assertEquals(idMC, travelTypesDto.get(0).getId());
+        assertEquals(typeMC, travelTypesDto.get(0).getType());
+        assertEquals(idB, travelTypesDto.get(1).getId());
+        assertEquals(typeB, travelTypesDto.get(1).getType());
     }
 
     @Test
-    void getAll_Nothing_shouldReturnException() {
+    void getAll_nothing_shouldThrowNoDataException() {
         when(travelTypeRepository.getAll()).thenReturn(Collections.emptyList());
 
         assertThrows(NoDataException.class, () -> travelTypeServiceImpl.getAll());
     }
 
     @Test
-    void create_TravelTypeDto_shouldReturnNewTravelType() {
+    void create_newTravelTypeDto_shouldReturnNewTravelType() {
         Long id = 1L;
-        String type = "by magic carpet";
-        TravelType travelType = TravelType.create().withType(type).build();
-        when(travelTypeRepository.create(travelType))
-                .then(invocation -> (Optional.of(TravelType.create()
-                        .withId(id)
-                        .withType(((TravelType) invocation.getArgument(0)).getType())
-                        .build()))
-                );
+        String type = "by banana";
+        TravelType bananaWithoutId = TravelType.create().withType(type).build();
+        TravelType banana = TravelType.create().withId(id).withType(type).build();
+        when(travelTypeRepository.get(type)).thenReturn(Optional.empty());
+        when(travelTypeRepository.create(bananaWithoutId)).thenReturn(Optional.of(banana));
 
-        TravelTypeDto travelTypeDto = TravelTypeDto.create().withType(type).build();
-        TravelTypeDto createdTravelTypeDto = travelTypeServiceImpl.create(travelTypeDto);
+        TravelTypeDto travelTypeDtoWithoutId = TravelTypeDto.create().withType(type).build();
+        TravelTypeDto createdTravelTypeDto = travelTypeServiceImpl.create(travelTypeDtoWithoutId);
 
         assertNotNull(createdTravelTypeDto);
         assertNotNull(createdTravelTypeDto.getId());
@@ -134,46 +129,37 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void create_AlreadyExistedTravelTypeDto_shouldThrowException() {
+    void create_existedTravelTypeDto_shouldThrowExtraDataException() {
         Long id = 1L;
-        String type = "by magic carpet";
-        when(travelTypeRepository.get(type))
-                .then(invocation -> (Optional.of(TravelType.create()
-                        .withId(id)
-                        .withType(invocation.getArgument(0))
-                        .build()))
-                );
+        String type = "by banana";
+        TravelType banana = TravelType.create().withId(id).withType(type).build();
+        when(travelTypeRepository.get(type)).thenReturn(Optional.of(banana));
 
         TravelTypeDto travelTypeDto = TravelTypeDto.create().withType(type).build();
 
-        assertThrows(ExtraDataException.class,
-                () -> travelTypeServiceImpl.create(travelTypeDto));
+        assertThrows(ExtraDataException.class, () -> travelTypeServiceImpl.create(travelTypeDto));
     }
 
     @Test
-    void create_TravelTypeDto_shouldThrowException() {
-        String type = "by magic carpet";
-        TravelType travelType = TravelType.create().withType(type).build();
-        when(travelTypeRepository.create(travelType))
-                .then(invocation -> Optional.empty());
+    void create_newTravelTypeDto_shouldThrowSQLException() {
+        String type = "by banana";
+        TravelType bananaWithoutId = TravelType.create().withType(type).build();
+        when(travelTypeRepository.get(type)).thenReturn(Optional.empty());
+        when(travelTypeRepository.create(bananaWithoutId)).thenReturn(Optional.empty());
 
         TravelTypeDto travelTypeDto = TravelTypeDto.create().withType(type).build();
 
-        assertThrows(SQLException.class,
-                () -> travelTypeServiceImpl.create(travelTypeDto));
+        assertThrows(SQLException.class, () -> travelTypeServiceImpl.create(travelTypeDto));
     }
 
     @Test
-    void update_TravelTypeDto_shouldReturnUpdatedTravelType() {
+    void update_newTravelTypeDto_shouldReturnUpdatedTravelType() {
         Long id = 1L;
-        String type = "by magic carpet";
-        TravelType travelType = TravelType.create().withType(type).build();
-        when(travelTypeRepository.update(id, travelType))
-                .then(invocation -> (Optional.of(TravelType.create()
-                        .withId(invocation.getArgument(0))
-                        .withType(((TravelType) invocation.getArgument(1)).getType())
-                        .build()))
-                );
+        String type = "by banana";
+        TravelType bananaWithoutId = TravelType.create().withType(type).build();
+        TravelType banana = TravelType.create().withId(id).withType(type).build();
+        when(travelTypeRepository.get(type)).thenReturn(Optional.empty());
+        when(travelTypeRepository.update(id, bananaWithoutId)).thenReturn(Optional.of(banana));
 
         TravelTypeDto travelTypeDto = TravelTypeDto.create().withType(type).build();
         TravelTypeDto updatedTravelTypeDto = travelTypeServiceImpl.update(id, travelTypeDto);
@@ -185,50 +171,38 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void update_AlreadyExistedTravelTypeDto_shouldThrowException() {
+    void update_existedTravelTypeDto_shouldThrowExtraDataException() {
         Long id = 1L;
-        String type = "by magic carpet";
-        when(travelTypeRepository.get(type))
-                .then(invocation -> (Optional.of(TravelType.create()
-                        .withId(id)
-                        .withType(invocation.getArgument(0))
-                        .build()))
-                );
+        String type = "by banana";
+        TravelType banana = TravelType.create().withId(id).withType(type).build();
+        when(travelTypeRepository.get(type)).thenReturn(Optional.of(banana));
 
         TravelTypeDto travelTypeDto = TravelTypeDto.create().withType(type).build();
 
-        assertThrows(ExtraDataException.class,
-                () -> travelTypeServiceImpl.update(id, travelTypeDto));
+        assertThrows(ExtraDataException.class, () -> travelTypeServiceImpl.update(id, travelTypeDto));
     }
 
     @Test
-    void update_TravelTypeDto_shouldThrowException() {
+    void update_newTravelTypeDto_shouldThrowSQLException() {
         Long id = 1L;
-        String type = "by magic carpet";
-        TravelType travelType = TravelType.create().withType(type).build();
-        when(travelTypeRepository.update(id, travelType))
-                .then(invocation -> Optional.empty());
+        String type = "by banana";
+        TravelType bananaWithoutId = TravelType.create().withType(type).build();
+        when(travelTypeRepository.get(type)).thenReturn(Optional.empty());
+        when(travelTypeRepository.update(id, bananaWithoutId)).then(invocation -> Optional.empty());
 
         TravelTypeDto travelTypeDto = TravelTypeDto.create().withType(type).build();
 
-        assertThrows(SQLException.class,
-                () -> travelTypeServiceImpl.update(id, travelTypeDto));
+        assertThrows(SQLException.class, () -> travelTypeServiceImpl.update(id, travelTypeDto));
     }
 
     @Test
-    void delete_usedByTourTravelTypeDtoId_shouldExecuteDeleteMethods() {
+    void delete_existedTravelTypeDtoThatIsContainedTour_shouldExecuteDeleteMethods() {
         Long id = 1L;
-        String type = "by magic carpet";
-        when(travelTypeRepository.get(id))
-                .then(invocation -> Optional.of(TravelType.create()
-                        .withId(invocation.getArgument(0))
-                        .withType(type).build())
-                );
-        when(tourRepository.getByTravelTypeId(id))
-                .then(invocation -> Arrays.asList(
-                        Tour.create().build(),
-                        Tour.create().build())
-                );
+        String type = "by banana";
+        TravelType banana = TravelType.create().withId(id).withType(type).build();
+        when(travelTypeRepository.get(id)).thenReturn(Optional.of(banana));
+        Tour emptyTour = Tour.create().build();
+        when(tourRepository.getByTravelTypeId(id)).thenReturn(Arrays.asList(emptyTour, emptyTour));
 
         travelTypeServiceImpl.delete(id);
 
@@ -238,16 +212,12 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void delete_unusedByTourTravelTypeDtoId_shouldExecuteDeleteMethods() {
+    void delete_existedTravelTypeDtoThatIsNotContainedTour_shouldExecuteDeleteMethods() {
         Long id = 1L;
-        String type = "by magic carpet";
-        when(travelTypeRepository.get(id))
-                .then(invocation -> Optional.of(TravelType.create()
-                        .withId(invocation.getArgument(0))
-                        .withType(type).build())
-                );
-        when(tourRepository.getByTravelTypeId(id))
-                .then(invocation -> Collections.emptyList());
+        String type = "by banana";
+        TravelType banana = TravelType.create().withId(id).withType(type).build();
+        when(travelTypeRepository.get(id)).thenReturn(Optional.of(banana));
+        when(tourRepository.getByTravelTypeId(id)).thenReturn(Collections.emptyList());
 
         travelTypeServiceImpl.delete(id);
 
@@ -257,10 +227,9 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void delete_AlreadyExistedTravelTypeDtoId_shouldThrowException() {
+    void delete_notExistedTravelTypeDto_shouldThrowNoDataException() {
         Long id = 1L;
-        when(travelTypeRepository.get(id))
-                .then(invocation -> Optional.empty());
+        when(travelTypeRepository.get(id)).thenReturn(Optional.empty());
 
         assertThrows(NoDataException.class, () -> travelTypeServiceImpl.delete(id));
 
@@ -270,14 +239,11 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void delete_TravelTypeDto_shouldThrowException() {
+    void delete_existedTravelTypeDto_shouldThrowSQLException() {
         Long id = 1L;
-        String type = "by magic carpet";
-        when(travelTypeRepository.get(id))
-                .then(invocation -> Optional.of(TravelType.create()
-                        .withId(invocation.getArgument(0))
-                        .withType(type).build())
-                );
+        String type = "by banana";
+        TravelType banana = TravelType.create().withId(id).withType(type).build();
+        when(travelTypeRepository.get(id)).thenReturn(Optional.of(banana));
         doThrow(new SQLException("")).when(travelTypeRepository).delete(id);
 
         assertThrows(SQLException.class, () -> travelTypeServiceImpl.delete(id));

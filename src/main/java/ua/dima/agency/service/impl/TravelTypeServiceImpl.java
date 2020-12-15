@@ -66,7 +66,7 @@ public class TravelTypeServiceImpl implements TravelTypeService {
 
     @Override
     public TravelTypeDto create(TravelTypeDto travelTypeDto) {
-        checkForExistence(travelTypeDto);
+        checkIfTypeNew(travelTypeDto.getType());
 
         Optional<TravelType> createdTravelType = travelTypeRepository.create(TravelType.parse(travelTypeDto));
         if(createdTravelType.isPresent()) {
@@ -78,7 +78,7 @@ public class TravelTypeServiceImpl implements TravelTypeService {
 
     @Override
     public TravelTypeDto update(Long id, TravelTypeDto travelTypeDto) {
-        checkForExistence(travelTypeDto);
+        checkIfTypeNew(travelTypeDto.getType());
 
         Optional<TravelType> updatedTravelType = travelTypeRepository.update(id, TravelType.parse(travelTypeDto));
         if(updatedTravelType.isPresent()) {
@@ -88,8 +88,8 @@ public class TravelTypeServiceImpl implements TravelTypeService {
         throw new SQLException(String.format("%s wasn't updated.", travelTypeDto));
     }
 
-    private void checkForExistence(TravelTypeDto travelTypeDto) {
-        travelTypeRepository.get(travelTypeDto.getType()).ifPresent(travelType -> {
+    private void checkIfTypeNew(String type) {
+        travelTypeRepository.get(type).ifPresent(travelType -> {
             LOGGER.debug("{} already exists.", travelType);
             throw new ExtraDataException(String.format("%s already exists.", travelType));
         });
@@ -99,7 +99,7 @@ public class TravelTypeServiceImpl implements TravelTypeService {
     @Transactional
     public void delete(Long id) {
         try {
-            checkForExistence(id);
+            checkIfTravelTypeExist(id);
             deleteCountryTour(id);
             tourRepository.deleteByTourTypeId(id);
             travelTypeRepository.delete(id);
@@ -114,7 +114,7 @@ public class TravelTypeServiceImpl implements TravelTypeService {
         toursByTravelTypeId.forEach(tourId -> countryTourRepository.deleteByTourId(tourId.getId()));
     }
 
-    private void checkForExistence(Long id) {
+    private void checkIfTravelTypeExist(Long id) {
         get(id);
     }
 }
