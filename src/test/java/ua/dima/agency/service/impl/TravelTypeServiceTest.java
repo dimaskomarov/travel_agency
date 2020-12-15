@@ -41,7 +41,7 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void getById_existedTravelType_shouldReturnTravelType() {
+    void getById_existedTravelType_shouldReturnTravelTypeDto() {
         Long id = 1L;
         String type = "by banana";
         TravelType banana = TravelType.create().withId(id).withType(type).build();
@@ -63,7 +63,7 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void getByType_existedTravelType_shouldReturnTravelType() {
+    void getByType_existedTravelType_shouldReturnTravelTypeDto() {
         Long id = 1L;
         String type = "by banana";
         TravelType banana = TravelType.create().withId(id).withType(type).build();
@@ -85,7 +85,7 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void getAll_nothing_shouldReturnTwoTravelTypes() {
+    void getAll_nothing_shouldReturnTwoTravelTypesDto() {
         Long idMC = 1L;
         String typeMC = "by magic carpet";
         TravelType magicCarpet = TravelType.create().withId(idMC).withType(typeMC).build();
@@ -112,7 +112,7 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void create_newTravelTypeDto_shouldReturnNewTravelType() {
+    void create_newTravelTypeDto_shouldReturnNewTravelTypeDto() {
         Long id = 1L;
         String type = "by banana";
         TravelType bananaWithoutId = TravelType.create().withType(type).build();
@@ -153,7 +153,7 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void update_newTravelTypeDto_shouldReturnUpdatedTravelType() {
+    void update_newTravelTypeDto_shouldReturnUpdatedTravelTypeDto() {
         Long id = 1L;
         String type = "by banana";
         TravelType bananaWithoutId = TravelType.create().withType(type).build();
@@ -196,7 +196,7 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void delete_existedTravelTypeDtoThatIsContainedTour_shouldExecuteDeleteMethods() {
+    void delete_existedTravelTypeDtoThatIsContainedTour_shouldDeleteTravelTypeDto() {
         Long id = 1L;
         String type = "by banana";
         TravelType banana = TravelType.create().withId(id).withType(type).build();
@@ -212,7 +212,7 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void delete_existedTravelTypeDtoThatIsNotContainedTour_shouldExecuteDeleteMethods() {
+    void delete_existedTravelTypeDtoThatIsNotContainedTour_shouldDeleteTravelTypeDto() {
         Long id = 1L;
         String type = "by banana";
         TravelType banana = TravelType.create().withId(id).withType(type).build();

@@ -36,7 +36,7 @@ class CountryServiceTest {
     }
 
     @Test
-    void getById_existedCountry_shouldReturnCountry() {
+    void getById_existedCountry_shouldReturnCountryDto() {
         Long id = 1L;
         String name = "Ukraine";
         Country ukraine = Country.create().withId(id).withName(name).build();
@@ -50,7 +50,7 @@ class CountryServiceTest {
     }
 
     @Test
-    void getById_notExistedCountry_shouldReturnCountry() {
+    void getById_notExistedCountry_shouldReturnCountryDto() {
         Long id = 1L;
         when(countryRepository.get(id)).thenReturn(Optional.empty());
 
@@ -58,7 +58,7 @@ class CountryServiceTest {
     }
 
     @Test
-    void getByName_existedCountry_shouldReturnCountry() {
+    void getByName_existedCountry_shouldReturnCountryDto() {
         Long id = 1L;
         String name = "Ukraine";
         Country ukraine = Country.create().withId(id).withName(name).build();
@@ -80,7 +80,7 @@ class CountryServiceTest {
     }
 
     @Test
-    void getAll_nothing_shouldReturnTwoCountries() {
+    void getAll_nothing_shouldReturnTwoCountriesDto() {
         Long ukrId = 1L;
         String ukr = "Ukraine";
         Country ukraine = Country.create().withId(ukrId).withName(ukr).build();
