@@ -107,10 +107,9 @@ class CountryServiceTest {
 
     @Test
     void create_newCountryDto_shouldReturnNewCountryDto() {
-        Long id = 1L;
         String name = "Ukraine";
         Country ukraineWithoutId = Country.create().withName(name).build();
-        Country ukraine = Country.create().withId(id).withName(name).build();
+        Country ukraine = Country.create().withId(1L).withName(name).build();
         when(countryRepository.get(name)).thenReturn(Optional.empty());
         when(countryRepository.create(ukraineWithoutId)).thenReturn(Optional.of(ukraine));
 
@@ -124,9 +123,8 @@ class CountryServiceTest {
 
     @Test
     void create_existedCountryDto_shouldThrowExtraDataException() {
-        Long id = 1L;
         String name = "Ukraine";
-        Country ukraine = Country.create().withId(id).withName(name).build();
+        Country ukraine = Country.create().withId(1L).withName(name).build();
         when(countryRepository.get(name)).thenReturn(Optional.of(ukraine));
 
         CountryDto countryDtoForCreating = CountryDto.create().withName(name).build();
@@ -187,8 +185,7 @@ class CountryServiceTest {
     @Test
     void delete_existedCountryDto_shouldDeleteCountryDto() {
         Long id = 1L;
-        String name = "Ukraine";
-        Country ukraine = Country.create().withId(id).withName(name).build();
+        Country ukraine = Country.create().withId(id).withName("Ukraine").build();
         when(countryRepository.get(id)).thenReturn(Optional.of(ukraine));
 
         countryServiceImpl.delete(id);
@@ -211,8 +208,7 @@ class CountryServiceTest {
     @Test
     void delete_notExistedCountryDto_shouldThrowSQLException() {
         Long id = 1L;
-        String name = "Ukraine";
-        Country ukraine = Country.create().withId(id).withName(name).build();
+        Country ukraine = Country.create().withId(id).withName("Ukraine").build();
         when(countryRepository.get(id)).thenReturn(Optional.of(ukraine));
         doThrow(new SQLException("")).when(countryTourRepository).deleteByCountryId(id);
 

@@ -104,11 +104,14 @@ public class TourServiceImpl implements TourService {
         countryTourRepository.deleteByTourId(tourId);
         createMissingCountryTour(tourDto.getCountiesDto(), tourId);
 
-        Tour notUpdatedTour = getTourFromDB(tourId);
-        notUpdatedTour.setPrice(tourDto.getPrice());
-        notUpdatedTour.setAmountDays(tourDto.getAmountDays());
-        notUpdatedTour.setDateDeparture(tourDto.getDateDeparture());
-        Optional<Tour> updatedTour = tourRepository.update(tourId, notUpdatedTour);
+        Tour oldTour = getTourFromDB(tourId);
+        Tour newTour = Tour.create()
+                .withPrice(tourDto.getPrice())
+                .withAmountDays(tourDto.getAmountDays())
+                .withDateDeparture(tourDto.getDateDeparture())
+                .withCompanyId(oldTour.getCompanyId())
+                .withTravelTypeId(oldTour.getTravelTypeId()).build();
+        Optional<Tour> updatedTour = tourRepository.update(tourId, newTour);
         if (updatedTour.isPresent()) {
             return buildTourDtoWithTypeAndCountry(updatedTour.get());
         }

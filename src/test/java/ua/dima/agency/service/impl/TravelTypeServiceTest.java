@@ -86,22 +86,22 @@ class TravelTypeServiceTest {
 
     @Test
     void getAll_nothing_shouldReturnTwoTravelTypesDto() {
-        Long idMC = 1L;
-        String typeMC = "by magic carpet";
-        TravelType magicCarpet = TravelType.create().withId(idMC).withType(typeMC).build();
-        Long idB = 2L;
-        String typeB = "by banana";
-        TravelType banana = TravelType.create().withId(idB).withType(typeB).build();
+        Long carpetId = 1L;
+        String carpetType = "by magic carpet";
+        TravelType magicCarpet = TravelType.create().withId(carpetId).withType(carpetType).build();
+        Long bananaId = 2L;
+        String bananaType = "by banana";
+        TravelType banana = TravelType.create().withId(bananaId).withType(bananaType).build();
         when(travelTypeRepository.getAll()).thenReturn(Arrays.asList(magicCarpet, banana));
 
         List<TravelTypeDto> travelTypesDto = travelTypeServiceImpl.getAll();
 
         assertFalse(travelTypesDto.isEmpty());
         assertEquals(2, travelTypesDto.size());
-        assertEquals(idMC, travelTypesDto.get(0).getId());
-        assertEquals(typeMC, travelTypesDto.get(0).getType());
-        assertEquals(idB, travelTypesDto.get(1).getId());
-        assertEquals(typeB, travelTypesDto.get(1).getType());
+        assertEquals(carpetId, travelTypesDto.get(0).getId());
+        assertEquals(carpetType, travelTypesDto.get(0).getType());
+        assertEquals(bananaId, travelTypesDto.get(1).getId());
+        assertEquals(bananaType, travelTypesDto.get(1).getType());
     }
 
     @Test
@@ -113,10 +113,9 @@ class TravelTypeServiceTest {
 
     @Test
     void create_newTravelTypeDto_shouldReturnNewTravelTypeDto() {
-        Long id = 1L;
         String type = "by banana";
         TravelType bananaWithoutId = TravelType.create().withType(type).build();
-        TravelType banana = TravelType.create().withId(id).withType(type).build();
+        TravelType banana = TravelType.create().withId(1L).withType(type).build();
         when(travelTypeRepository.get(type)).thenReturn(Optional.empty());
         when(travelTypeRepository.create(bananaWithoutId)).thenReturn(Optional.of(banana));
 
@@ -130,9 +129,8 @@ class TravelTypeServiceTest {
 
     @Test
     void create_existedTravelTypeDto_shouldThrowExtraDataException() {
-        Long id = 1L;
         String type = "by banana";
-        TravelType banana = TravelType.create().withId(id).withType(type).build();
+        TravelType banana = TravelType.create().withId(1L).withType(type).build();
         when(travelTypeRepository.get(type)).thenReturn(Optional.of(banana));
 
         TravelTypeDto travelTypeDto = TravelTypeDto.create().withType(type).build();
@@ -198,8 +196,7 @@ class TravelTypeServiceTest {
     @Test
     void delete_existedTravelTypeDtoThatIsContainedTour_shouldDeleteTravelTypeDto() {
         Long id = 1L;
-        String type = "by banana";
-        TravelType banana = TravelType.create().withId(id).withType(type).build();
+        TravelType banana = TravelType.create().withId(id).withType("by banana").build();
         when(travelTypeRepository.get(id)).thenReturn(Optional.of(banana));
         Tour emptyTour = Tour.create().build();
         when(tourRepository.getByTravelTypeId(id)).thenReturn(Arrays.asList(emptyTour, emptyTour));
@@ -214,8 +211,7 @@ class TravelTypeServiceTest {
     @Test
     void delete_existedTravelTypeDtoThatIsNotContainedTour_shouldDeleteTravelTypeDto() {
         Long id = 1L;
-        String type = "by banana";
-        TravelType banana = TravelType.create().withId(id).withType(type).build();
+        TravelType banana = TravelType.create().withId(id).withType("by banana").build();
         when(travelTypeRepository.get(id)).thenReturn(Optional.of(banana));
         when(tourRepository.getByTravelTypeId(id)).thenReturn(Collections.emptyList());
 
@@ -241,8 +237,7 @@ class TravelTypeServiceTest {
     @Test
     void delete_existedTravelTypeDto_shouldThrowSQLException() {
         Long id = 1L;
-        String type = "by banana";
-        TravelType banana = TravelType.create().withId(id).withType(type).build();
+        TravelType banana = TravelType.create().withId(id).withType("by banana").build();
         when(travelTypeRepository.get(id)).thenReturn(Optional.of(banana));
         doThrow(new SQLException("")).when(travelTypeRepository).delete(id);
 
