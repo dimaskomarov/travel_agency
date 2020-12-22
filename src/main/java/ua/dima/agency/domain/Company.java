@@ -2,6 +2,8 @@ package ua.dima.agency.domain;
 
 import ua.dima.agency.dto.CompanyDto;
 
+import java.util.Objects;
+
 public class Company {
     private Long id;
     private String name;
@@ -23,23 +25,17 @@ public class Company {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof Company)) return false;
         Company company = (Company) o;
-
-        if (age != company.age) return false;
-        if (id != null ? !id.equals(company.id) : company.id != null) return false;
-        if (!name.equals(company.name)) return false;
-        return address.equals(company.address);
+        return age == company.age &&
+                Objects.equals(id, company.id) &&
+                Objects.equals(name, company.name) &&
+                Objects.equals(address, company.address);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + name.hashCode();
-        result = 31 * result + address.hashCode();
-        result = 31 * result + age;
-        return result;
+        return Objects.hash(id, name, address, age);
     }
 
     public Long getId() {

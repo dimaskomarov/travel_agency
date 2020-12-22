@@ -109,7 +109,7 @@ class TourServiceTest {
     }
 
     @Test
-    void get_notExistedCompany_shouldThrowNoDataException() {
+    void get_notExistedCompanyDto_shouldThrowNoDataException() {
         Long companyId = 1L;
         Long tourId = 1L;
         when(companyRepository.get(companyId)).thenReturn(Optional.empty());
@@ -150,7 +150,7 @@ class TourServiceTest {
     }
 
     @Test
-    void getAll_existedCompany_shouldReturnToursDto() {
+    void getAll_existedCompanyDto_shouldReturnToursDto() {
         Long companyId = 1L;
         Company company = Company.create()
                 .withId(companyId).withName("Goodwin")
@@ -206,7 +206,7 @@ class TourServiceTest {
     }
 
     @Test
-    void getAll_notExistedCompany_shouldThrowNoDataException() {
+    void getAll_notExistedCompanyDto_shouldThrowNoDataException() {
         Long companyId = 1L;
         when(companyRepository.get(companyId)).thenReturn(Optional.empty());
 
@@ -214,7 +214,7 @@ class TourServiceTest {
     }
 
     @Test
-    void getAll_existedCompany_shouldThrowNoDataException() {
+    void getAll_existedCompanyDto_shouldThrowNoDataException() {
         Long companyId = 1L;
         Company company = Company.create()
                 .withId(companyId).withName("Goodwin")
@@ -226,7 +226,7 @@ class TourServiceTest {
     }
 
     @Test
-    void create_existedCompany_shouldReturnNewTourDto() {
+    void create_existedCompanyDto_shouldReturnNewTourDto() {
         Long companyId = 1L;
         Company company = Company.create()
                 .withId(companyId).withName("Goodwin")
@@ -302,7 +302,7 @@ class TourServiceTest {
     }
 
     @Test
-    void create_notExistedCompany_shouldThrowNoDataException() {
+    void create_notExistedCompanyDto_shouldThrowNoDataException() {
         Long companyId = 1L;
         String type = "by banana";
         TravelTypeDto travelTypeDto = TravelTypeDto.create()
@@ -331,7 +331,7 @@ class TourServiceTest {
     }
 
     @Test
-    void create_existedCompany_shouldThrowSQLException() {
+    void create_existedCompanyDto_shouldThrowSQLException() {
         Long companyId = 1L;
         Company company = Company.create()
                 .withId(companyId).withName("Goodwin")
@@ -377,7 +377,7 @@ class TourServiceTest {
     }
 
     @Test
-    void create_tourWithExistedTravelTypeAndCountriesAndCountryTour_shouldReturnNewTourDto() {
+    void create_tourWithExistedTravelTypeDtoAndCountriesDtoAndCountryTourDto_shouldReturnNewTourDto() {
         Long companyId = 1L;
         Company company = Company.create()
                 .withId(companyId).withName("Goodwin")
@@ -453,7 +453,7 @@ class TourServiceTest {
     }
 
     @Test
-    void update_existedCompany_shouldReturnUpdatedTourDto() {
+    void update_existedCompanyDto_shouldReturnUpdatedTourDto() {
         Long companyId = 1L;
         Long typeId = 1L;
         String type = "by banana";
@@ -533,7 +533,7 @@ class TourServiceTest {
     }
 
     @Test
-    void update_notExistedTour_shouldThrowNoDataException() {
+    void update_notExistedTourDto_shouldThrowNoDataException() {
         TravelTypeDto travelTypeDto = TravelTypeDto.create()
                 .withId(1L).withType("by banana")
                 .build();
@@ -561,7 +561,7 @@ class TourServiceTest {
     }
 
     @Test
-    void update_tourWithUpdatedTravelTypeAndCountriesAndCountryTour_shouldReturnNewTourDto() {
+    void update_tourWithUpdatedTravelTypeDtoAndCountriesDtoAndCountryTourDto_shouldReturnNewTourDto() {
         Long companyId = 1L;
         Long typeId = 1L;
         String type = "by banana";
@@ -640,7 +640,7 @@ class TourServiceTest {
     }
 
     @Test
-    void update_existedTour_shouldThrowSQLException() {
+    void update_existedTourDto_shouldThrowSQLException() {
         Long companyId = 1L;
         Long typeId = 1L;
         TravelTypeDto travelTypeDto = TravelTypeDto.create()
@@ -689,7 +689,7 @@ class TourServiceTest {
     }
 
     @Test
-    void deleteByCompanyIdAndTourId_existedTour_shouldRemoveCurrentTour() {
+    void deleteByCompanyIdAndTourId_existedTourDto_shouldDeleteCurrentTourDto() {
         Long companyId = 1L;
         Company company = Company.create()
                 .withId(companyId).withName("Goodwin")
@@ -712,7 +712,7 @@ class TourServiceTest {
     }
 
     @Test
-    void deleteByCompanyIdAndTourId_notExistedCompany_shouldThrowNoDataException() {
+    void deleteByCompanyIdAndTourId_notExistedCompanyDto_shouldThrowNoDataException() {
         Long companyId = 1L;
         Long tourId = 1L;
         when(companyRepository.get(companyId)).thenReturn(Optional.empty());
@@ -724,7 +724,7 @@ class TourServiceTest {
     }
 
     @Test
-    void deleteByCompanyIdAndTourId_existedCompanyWithoutAnyTours_shouldThrowNoDataException() {
+    void deleteByCompanyIdAndTourId_existedCompanyDtoWithoutAnyToursDto_shouldThrowNoDataException() {
         Long companyId = 1L;
         Company company = Company.create()
                 .withId(companyId).withName("Goodwin")
@@ -740,7 +740,7 @@ class TourServiceTest {
     }
 
     @Test
-    void deleteByCompanyIdAndTourId_existedTour_shouldThrowSQLException() {
+    void deleteByCompanyIdAndTourId_existedTourDto_shouldThrowSQLException() {
         Long companyId = 1L;
         Company company = Company.create()
                 .withId(companyId).withName("Goodwin")
@@ -763,7 +763,7 @@ class TourServiceTest {
     }
 
     @Test
-    void deleteByCompanyId_existedCompany_shouldRemoveAllTourByCompanyId() {
+    void deleteByCompanyId_existedCompanyDto_shouldDeleteAllTourByCompanyId() {
         Long companyId = 1L;
         Company company = Company.create()
                 .withId(companyId).withName("Goodwin")
@@ -776,7 +776,7 @@ class TourServiceTest {
     }
 
     @Test
-    void deleteByCompanyId_notExistedCompany_shouldThrowNoDataException() {
+    void deleteByCompanyId_notExistedCompanyDto_shouldThrowNoDataException() {
         Long companyId = 1L;
         when(companyRepository.get(companyId)).thenReturn(Optional.empty());
 
@@ -785,7 +785,7 @@ class TourServiceTest {
     }
 
     @Test
-    void deleteByCompanyId_existedCompany_shouldThrowSQLException() {
+    void deleteByCompanyId_existedCompanyDto_shouldThrowSQLException() {
         Long companyId = 1L;
         Company company = Company.create()
                 .withId(companyId).withName("Goodwin")

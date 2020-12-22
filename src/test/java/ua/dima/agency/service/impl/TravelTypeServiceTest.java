@@ -41,7 +41,7 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void getById_existedTravelType_shouldReturnTravelTypeDto() {
+    void getById_existedTravelTypeDto_shouldReturnTravelTypeDto() {
         Long id = 1L;
         String type = "by banana";
         TravelType banana = TravelType.create().withId(id).withType(type).build();
@@ -55,7 +55,7 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void getById_notExistedTravelType_shouldThrowNoDataException() {
+    void getById_notExistedTravelTypeDto_shouldThrowNoDataException() {
         Long id = 1L;
         when(travelTypeRepository.get(id)).thenReturn(Optional.empty());
 
@@ -63,7 +63,7 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void getByType_existedTravelType_shouldReturnTravelTypeDto() {
+    void getByType_existedTravelTypeDto_shouldReturnTravelTypeDto() {
         Long id = 1L;
         String type = "by banana";
         TravelType banana = TravelType.create().withId(id).withType(type).build();
@@ -77,7 +77,7 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void getByType_notExistedTravelType_shouldThrowNoDataException() {
+    void getByType_notExistedTravelTypeDto_shouldThrowNoDataException() {
         String type = "by banana";
         when(travelTypeRepository.get(type)).thenReturn(Optional.empty());
 
@@ -194,7 +194,7 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void delete_existedTravelTypeDtoThatIsContainedTour_shouldDeleteTravelTypeDto() {
+    void delete_existedTravelTypeDtoThatIsContainedTourDto_shouldDeleteTravelTypeDto() {
         Long id = 1L;
         TravelType banana = TravelType.create().withId(id).withType("by banana").build();
         when(travelTypeRepository.get(id)).thenReturn(Optional.of(banana));
@@ -209,7 +209,7 @@ class TravelTypeServiceTest {
     }
 
     @Test
-    void delete_existedTravelTypeDtoThatIsNotContainedTour_shouldDeleteTravelTypeDto() {
+    void delete_existedTravelTypeDtoThatIsNotContainedTourDto_shouldDeleteTravelTypeDto() {
         Long id = 1L;
         TravelType banana = TravelType.create().withId(id).withType("by banana").build();
         when(travelTypeRepository.get(id)).thenReturn(Optional.of(banana));
