@@ -6,8 +6,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ua.dima.agency.domain.Company;
-import ua.dima.agency.domain.Country;
-import ua.dima.agency.domain.Tour;
 import ua.dima.agency.dto.CompanyDto;
 import ua.dima.agency.dto.CountryDto;
 import ua.dima.agency.dto.TourDto;
@@ -153,13 +151,6 @@ class CompanyServiceTest {
 
     @Test
     void create_newCompanyDto_shouldReturnNewCompanyDto() {
-        Long companyId = 1L;
-        String name  = "Goodwin";
-        Integer age = 10;
-        Company companyToCreate = Company.create()
-                .withName("Goodwin").withAge(age).build();
-        Company createdCompany = Company.create()
-                .withId(companyId).withName("Goodwin").withAge(age).build();
         Long itaId = 2L;
         String ita = "Italy";
         CountryDto italy = CountryDto.create().withId(itaId).withName(ita).build();
@@ -177,6 +168,13 @@ class CompanyServiceTest {
                 .withDateDeparture(dateDeparture)
                 .withTravelTypeDto(travelTypeDto)
                 .withCountiesDto(Arrays.asList(italy)).build();
+        Long companyId = 1L;
+        String name  = "Goodwin";
+        Integer age = 10;
+        Company companyToCreate = Company.create()
+                .withName("Goodwin").withAge(age).build();
+        Company createdCompany = Company.create()
+                .withId(companyId).withName("Goodwin").withAge(age).build();
         CompanyDto companyDtoToCreate = CompanyDto.create()
                 .withName("Goodwin").withAge(age).withToursDto(Arrays.asList(tourDto)).build();
         when(companyRepository.create(companyToCreate)).thenReturn(Optional.of(createdCompany));
@@ -203,29 +201,20 @@ class CompanyServiceTest {
 
     @Test
     void create_newCompanyDto_shouldThrowSQLException() {
-        Long companyId = 1L;
-        Integer age = 10;
-        Company companyToCreate = Company.create()
-                .withName("Goodwin").withAge(age).build();
-        Long itaId = 2L;
-        String ita = "Italy";
-        CountryDto italy = CountryDto.create().withId(itaId).withName(ita).build();
-        Long typeId = 1L;
-        String type = "by banana";
-        TravelTypeDto travelTypeDto = TravelTypeDto.create().withId(typeId)
-                .withType(type).build();
-        Long tourId = 1L;
-        Double price = 200.0;
-        Integer amountDays = 5;
+        CountryDto italy = CountryDto.create().withId(2L).withName("Italy").build();
+        TravelTypeDto travelTypeDto = TravelTypeDto.create().withId(1L)
+                .withType("by banana").build();
         Instant dateDeparture = createInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
-        TourDto tourDto = TourDto.create().withId(tourId)
-                .withPrice(price)
-                .withAmountDays(amountDays)
+        TourDto tourDto = TourDto.create().withId(1L)
+                .withPrice(200.0).withAmountDays(5)
                 .withDateDeparture(dateDeparture)
                 .withTravelTypeDto(travelTypeDto)
                 .withCountiesDto(Arrays.asList(italy)).build();
+        Long companyId = 1L;
+        Company companyToCreate = Company.create()
+                .withName("Goodwin").withAge(10).build();
         CompanyDto companyDtoToCreate = CompanyDto.create()
-                .withName("Goodwin").withAge(age).withToursDto(Arrays.asList(tourDto)).build();
+                .withName("Goodwin").withAge(10).withToursDto(Arrays.asList(tourDto)).build();
         when(companyRepository.create(companyToCreate)).thenReturn(Optional.empty());
 
         assertThrows(SQLException.class, () -> companyService.create(companyDtoToCreate));
@@ -290,27 +279,19 @@ class CompanyServiceTest {
 
     @Test
     void updated_notExistedCompanyDto_shouldThrowNoDataException() {
-        Long itaId = 2L;
-        String ita = "Italy";
-        CountryDto italy = CountryDto.create().withId(itaId).withName(ita).build();
-        Long typeId = 1L;
-        String type = "by banana";
-        TravelTypeDto travelTypeDto = TravelTypeDto.create().withId(typeId)
-                .withType(type).build();
+        CountryDto italy = CountryDto.create().withId(2L).withName("Italy").build();
+        TravelTypeDto travelTypeDto = TravelTypeDto.create().withId(1L)
+                .withType("by banana").build();
         Long tourId = 1L;
-        Double price = 200.0;
-        Integer amountDays = 5;
         Instant dateDeparture = createInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
         TourDto tourDto = TourDto.create().withId(tourId)
-                .withPrice(price)
-                .withAmountDays(amountDays)
+                .withPrice(200.0).withAmountDays(5)
                 .withDateDeparture(dateDeparture)
                 .withTravelTypeDto(travelTypeDto)
                 .withCountiesDto(Arrays.asList(italy)).build();
         Long companyId = 1L;
-        Integer age = 10;
         CompanyDto companyDtoToUpdate = CompanyDto.create()
-                .withName("Goodwin").withAge(age).withToursDto(Arrays.asList(tourDto)).build();
+                .withName("Goodwin").withAge(10).withToursDto(Arrays.asList(tourDto)).build();
         when(companyRepository.get(companyId)).thenReturn(Optional.empty());
 
         assertThrows(NoDataException.class, () -> companyService.update(companyId, companyDtoToUpdate));
@@ -322,57 +303,39 @@ class CompanyServiceTest {
 
     @Test
     void updated_existedCompanyDto_shouldThrowSQLException() {
-        Long itaId = 2L;
-        String ita = "Italy";
-        CountryDto italy = CountryDto.create().withId(itaId).withName(ita).build();
-        Long typeId = 1L;
-        String type = "by banana";
-        TravelTypeDto travelTypeDto = TravelTypeDto.create().withId(typeId)
-                .withType(type).build();
-        Long tourId = 1L;
-        Double price = 200.0;
-        Integer amountDays = 5;
+        CountryDto italy = CountryDto.create().withId(2L).withName("Italy").build();
+        TravelTypeDto travelTypeDto = TravelTypeDto.create().withId(1L)
+                .withType("by banana").build();
         Instant dateDeparture = createInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
-        TourDto tourDto = TourDto.create().withId(tourId)
-                .withPrice(price)
-                .withAmountDays(amountDays)
+        TourDto tourDto = TourDto.create().withId(1L)
+                .withPrice(200.0).withAmountDays(5)
                 .withDateDeparture(dateDeparture)
                 .withTravelTypeDto(travelTypeDto)
                 .withCountiesDto(Arrays.asList(italy)).build();
         Long companyId = 1L;
-        Integer age = 10;
         Company oldCompany = Company.create()
                 .withId(companyId).withName("NightCity").withAge(20).build();
         Company companyToUpdate = Company.create()
-                .withName("Goodwin").withAge(age).build();
+                .withName("Goodwin").withAge(10).build();
         CompanyDto companyDtoToUpdate = CompanyDto.create()
-                .withName("Goodwin").withAge(age).withToursDto(Arrays.asList(tourDto)).build();
+                .withName("Goodwin").withAge(10).withToursDto(Arrays.asList(tourDto)).build();
         when(companyRepository.get(companyId)).thenReturn(Optional.of(oldCompany));
         when(companyRepository.update(companyId, companyToUpdate)).thenReturn(Optional.empty());
 
         assertThrows(SQLException.class, () -> companyService.update(companyId, companyDtoToUpdate));
 
-        verify(countryTourRepository, never()).deleteByTourId(tourId);
-        verify(tourService, times(1)).delete(companyId);//TODO why execute ones instead of never????
         verify(tourService, never()).create(companyId, tourDto);
     }
 
     @Test
     void delete_existedCompanyDto_shouldDeleteCompanyDto() {
-        Long itaId = 2L;
-        String ita = "Italy";
-        CountryDto italy = CountryDto.create().withId(itaId).withName(ita).build();
-        Long typeId = 1L;
-        String type = "by banana";
-        TravelTypeDto travelTypeDto = TravelTypeDto.create().withId(typeId)
-                .withType(type).build();
+        CountryDto italy = CountryDto.create().withId(2L).withName("Italy").build();
+        TravelTypeDto travelTypeDto = TravelTypeDto.create().withId(1L)
+                .withType("by banana").build();
         Long tourId = 1L;
-        Double price = 200.0;
-        Integer amountDays = 5;
         Instant dateDeparture = createInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
         TourDto tourDto = TourDto.create().withId(tourId)
-                .withPrice(price)
-                .withAmountDays(amountDays)
+                .withPrice(200.0).withAmountDays(5)
                 .withDateDeparture(dateDeparture)
                 .withTravelTypeDto(travelTypeDto)
                 .withCountiesDto(Arrays.asList(italy)).build();
@@ -391,33 +354,25 @@ class CompanyServiceTest {
 
     @Test
     void delete_notExistedCompanyDto_shouldThrowNoDataException() {
-        Long tourId = 1L;
         Long companyId = 1L;
         when(companyRepository.get(companyId)).thenReturn(Optional.empty());
 
         assertThrows(NoDataException.class, () -> companyService.delete(companyId));
 
-        verify(countryTourRepository, never()).deleteByTourId(tourId);
+        verify(countryTourRepository, never()).deleteByTourId(any());
         verify(tourService, never()).delete(companyId);
         verify(companyRepository, never()).delete(companyId);
     }
 
     @Test
     void delete_existedCompanyDto_shouldThrowSQLException() {
-        Long itaId = 2L;
-        String ita = "Italy";
-        CountryDto italy = CountryDto.create().withId(itaId).withName(ita).build();
-        Long typeId = 1L;
-        String type = "by banana";
-        TravelTypeDto travelTypeDto = TravelTypeDto.create().withId(typeId)
-                .withType(type).build();
+        CountryDto italy = CountryDto.create().withId(2L).withName("Italy").build();
+        TravelTypeDto travelTypeDto = TravelTypeDto.create().withId(1L)
+                .withType("by banana").build();
         Long tourId = 1L;
-        Double price = 200.0;
-        Integer amountDays = 5;
         Instant dateDeparture = createInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
         TourDto tourDto = TourDto.create().withId(tourId)
-                .withPrice(price)
-                .withAmountDays(amountDays)
+                .withPrice(200.0).withAmountDays(5)
                 .withDateDeparture(dateDeparture)
                 .withTravelTypeDto(travelTypeDto)
                 .withCountiesDto(Arrays.asList(italy)).build();

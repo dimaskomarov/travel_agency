@@ -85,7 +85,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     private void deleteToursOfCompany(Long companyId) {
-        get(companyId).getToursDto().stream()
+        get(companyId).getToursDto()
                 .forEach(tourDto -> countryTourRepository.deleteByTourId(tourDto.getId()));
         tourService.delete(companyId);
     }
