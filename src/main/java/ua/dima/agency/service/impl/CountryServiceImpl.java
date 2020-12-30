@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.dima.agency.domain.Country;
 import ua.dima.agency.dto.CountryDto;
+import ua.dima.agency.exceptions.ExecuteException;
 import ua.dima.agency.exceptions.ExtraDataException;
 import ua.dima.agency.exceptions.NoDataException;
-import ua.dima.agency.exceptions.SQLException;
 import ua.dima.agency.repositories.CountryRepository;
 import ua.dima.agency.repositories.CountryTourRepository;
 import ua.dima.agency.service.CountryService;
@@ -68,7 +68,7 @@ public class CountryServiceImpl implements CountryService {
             return CountryDto.parse(createdCountry.get());
         }
         LOGGER.debug("{} wasn't created.", countryDto);
-        throw new SQLException(String.format("%s wasn't created.", countryDto));
+        throw new ExecuteException(String.format("%s wasn't created.", countryDto));
     }
 
     @Override
@@ -80,7 +80,7 @@ public class CountryServiceImpl implements CountryService {
             return CountryDto.parse(updatedCountry.get());
         }
         LOGGER.debug("{} wasn't updated.", updatedCountry);
-        throw new SQLException(String.format("%s wasn't updated.", updatedCountry));
+        throw new ExecuteException(String.format("%s wasn't updated.", updatedCountry));
     }
 
     private void checkIfCountryNew(String name) {
@@ -93,14 +93,18 @@ public class CountryServiceImpl implements CountryService {
     @Override
     @Transactional
     public void delete(Long id) {
-        try {
-            checkIfCountryExist(id);
-            countryTourRepository.deleteByCountryId(id);
-            countryRepository.delete(id);
-        } catch(SQLException e) {
+        checkIfCountryExist(id);
+        countryTourRepository.deleteByCountryId(id);
+        countryRepository.delete(id);
+
+        if(isCountryExisting(id)) {
             LOGGER.debug("Country with id={} wasn't deleted.", id);
-            throw new SQLException(String.format("Country with id=%d wasn't deleted.", id));
+            throw new ExecuteException(String.format("Country with id=%d wasn't deleted.", id));
         }
+    }
+
+    private boolean isCountryExisting(Long countryId) {
+        return countryRepository.get(countryId).isPresent();
     }
 
     private void checkIfCountryExist(Long id) {

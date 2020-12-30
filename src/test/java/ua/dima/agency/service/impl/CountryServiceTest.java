@@ -7,9 +7,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import ua.dima.agency.domain.Country;
 import ua.dima.agency.dto.CountryDto;
+import ua.dima.agency.exceptions.ExecuteException;
 import ua.dima.agency.exceptions.ExtraDataException;
 import ua.dima.agency.exceptions.NoDataException;
-import ua.dima.agency.exceptions.SQLException;
 import ua.dima.agency.repositories.CountryRepository;
 import ua.dima.agency.repositories.CountryTourRepository;
 
@@ -36,7 +36,7 @@ class CountryServiceTest {
     }
 
     @Test
-    void getById_existedCountryDto_shouldReturnCountryDto() {
+    void getById_existedCountry_shouldReturnCountry() {
         Long id = 1L;
         String name = "Ukraine";
         Country ukraine = Country.create().withId(id).withName(name).build();
@@ -50,7 +50,7 @@ class CountryServiceTest {
     }
 
     @Test
-    void getById_notExistedCountryDto_shouldReturnCountryDto() {
+    void getById_notExistedCountry_shouldReturnCountry() {
         Long id = 1L;
         when(countryRepository.get(id)).thenReturn(Optional.empty());
 
@@ -58,7 +58,7 @@ class CountryServiceTest {
     }
 
     @Test
-    void getByName_existedCountryDto_shouldReturnCountryDto() {
+    void getByName_existedCountry_shouldReturnCountry() {
         Long id = 1L;
         String name = "Ukraine";
         Country ukraine = Country.create().withId(id).withName(name).build();
@@ -72,7 +72,7 @@ class CountryServiceTest {
     }
 
     @Test
-    void getByName_notExistedCountryDto_shouldThrowNoDataException() {
+    void getByName_notExistedCountry_shouldThrowNoDataException() {
         String name = "Ukraine";
         when(countryRepository.get(name)).thenReturn(Optional.empty());
 
@@ -80,7 +80,7 @@ class CountryServiceTest {
     }
 
     @Test
-    void getAll_nothing_shouldReturnTwoCountriesDto() {
+    void getAll_validData_shouldReturnTwoCountries() {
         Long ukrId = 1L;
         String ukr = "Ukraine";
         Country ukraine = Country.create().withId(ukrId).withName(ukr).build();
@@ -92,6 +92,7 @@ class CountryServiceTest {
         List<CountryDto> countriesDto = countryServiceImpl.getAll();
 
         assertFalse(countriesDto.isEmpty());
+        assertEquals(2, countriesDto.size());
         assertEquals(ukrId, countriesDto.get(0).getId());
         assertEquals(ukr, countriesDto.get(0).getName());
         assertEquals(itaId, countriesDto.get(1).getId());
@@ -99,17 +100,18 @@ class CountryServiceTest {
     }
 
     @Test
-    void getAll_nothing_shouldThrowNoDataException() {
+    void getAll_validData_shouldThrowNoDataException() {
         when(countryRepository.getAll()).thenReturn(Collections.emptyList());
 
         assertThrows(NoDataException.class, () -> countryServiceImpl.getAll());
     }
 
     @Test
-    void create_newCountryDto_shouldReturnNewCountryDto() {
+    void create_newCountry_shouldReturnNewCountry() {
+        Long id = 1L;
         String name = "Ukraine";
         Country ukraineWithoutId = Country.create().withName(name).build();
-        Country ukraine = Country.create().withId(1L).withName(name).build();
+        Country ukraine = Country.create().withId(id).withName(name).build();
         when(countryRepository.get(name)).thenReturn(Optional.empty());
         when(countryRepository.create(ukraineWithoutId)).thenReturn(Optional.of(ukraine));
 
@@ -118,11 +120,12 @@ class CountryServiceTest {
 
         assertNotNull(createdCountryDto);
         assertNotNull(createdCountryDto.getId());
+        assertEquals(id, createdCountryDto.getId());
         assertEquals(name, createdCountryDto.getName());
     }
 
     @Test
-    void create_existedCountryDto_shouldThrowExtraDataException() {
+    void create_existedCountry_shouldThrowExtraDataException() {
         String name = "Ukraine";
         Country ukraine = Country.create().withId(1L).withName(name).build();
         when(countryRepository.get(name)).thenReturn(Optional.of(ukraine));
@@ -132,18 +135,18 @@ class CountryServiceTest {
     }
 
     @Test
-    void create_newCountryDto_shouldThrowSQLException() {
+    void create_newCountry_shouldThrowExecuteException() {
         String name = "Ukraine";
         Country ukraineWithoutId = Country.create().withName(name).build();
         when(countryRepository.get(name)).thenReturn(Optional.empty());
         when(countryRepository.create(ukraineWithoutId)).thenReturn(Optional.empty());
 
         CountryDto countryDtoForCreating = CountryDto.create().withName(name).build();
-        assertThrows(SQLException.class, () -> countryServiceImpl.create(countryDtoForCreating));
+        assertThrows(ExecuteException.class, () -> countryServiceImpl.create(countryDtoForCreating));
     }
 
     @Test
-    void update_newCountryDto_shouldReturnUpdatedCountryDto() {
+    void update_newCountry_shouldReturnUpdatedCountry() {
         Long id = 1L;
         String name = "Ukraine";
         Country ukraineWithoutId = Country.create().withName(name).build();
@@ -160,7 +163,7 @@ class CountryServiceTest {
     }
 
     @Test
-    void update_existedCountryDto_shouldThrowExtraDataException() {
+    void update_existedCountry_shouldThrowExtraDataException() {
         Long id = 1L;
         String name = "Ukraine";
         Country ukraine = Country.create().withId(id).withName(name).build();
@@ -171,7 +174,7 @@ class CountryServiceTest {
     }
 
     @Test
-    void update_newCountryDto_shouldThrowSQLException() {
+    void update_newCountry_shouldThrowExecuteException() {
         Long id = 1L;
         String name = "Ukraine";
         Country ukraineWithoutId = Country.create().withName(name).build();
@@ -179,14 +182,15 @@ class CountryServiceTest {
         when(countryRepository.update(id,  ukraineWithoutId)).thenReturn(Optional.empty());
 
         CountryDto countryDtoForUpdating = CountryDto.create().withName(name).build();
-        assertThrows(SQLException.class, () -> countryServiceImpl.update(id, countryDtoForUpdating));
+        assertThrows(ExecuteException.class, () -> countryServiceImpl.update(id, countryDtoForUpdating));
     }
 
     @Test
-    void delete_existedCountryDto_shouldDeleteCountryDto() {
+    void delete_existedCountry_shouldDeleteCountry() {
         Long id = 1L;
         Country ukraine = Country.create().withId(id).withName("Ukraine").build();
-        when(countryRepository.get(id)).thenReturn(Optional.of(ukraine));
+        when(countryRepository.get(id)).thenReturn(Optional.of(ukraine))
+                .thenReturn(Optional.empty());
 
         countryServiceImpl.delete(id);
 
@@ -195,7 +199,7 @@ class CountryServiceTest {
     }
 
     @Test
-    void delete_notExistedCountryDto_shouldThrowNoDataException() {
+    void delete_notExistedCountry_shouldThrowNoDataException() {
         Long id = 1L;
         when(countryRepository.get(id)).thenReturn(Optional.empty());
 
@@ -206,12 +210,11 @@ class CountryServiceTest {
     }
 
     @Test
-    void delete_notExistedCountryDto_shouldThrowSQLException() {
+    void delete_notExistedCountry_shouldThrowExecuteException() {
         Long id = 1L;
         Country ukraine = Country.create().withId(id).withName("Ukraine").build();
         when(countryRepository.get(id)).thenReturn(Optional.of(ukraine));
-        doThrow(new SQLException("")).when(countryTourRepository).deleteByCountryId(id);
 
-        assertThrows(SQLException.class, () -> countryServiceImpl.delete(id));
+        assertThrows(ExecuteException.class, () -> countryServiceImpl.delete(id));
     }
 }

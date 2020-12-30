@@ -10,8 +10,8 @@ import ua.dima.agency.dto.CompanyDto;
 import ua.dima.agency.dto.CountryDto;
 import ua.dima.agency.dto.TourDto;
 import ua.dima.agency.dto.TravelTypeDto;
+import ua.dima.agency.exceptions.ExecuteException;
 import ua.dima.agency.exceptions.NoDataException;
-import ua.dima.agency.exceptions.SQLException;
 import ua.dima.agency.repositories.CompanyRepository;
 import ua.dima.agency.repositories.CountryTourRepository;
 import ua.dima.agency.service.TourService;
@@ -45,7 +45,7 @@ class CompanyServiceTest {
     }
 
     @Test
-    void get_existedCompanyDto_shouldReturnCompanyDto() {
+    void get_existedCompany_shouldReturnCompany() {
         Long companyId = 1L;
         String name  = "Goodwin";
         Integer age = 10;
@@ -90,7 +90,7 @@ class CompanyServiceTest {
     }
 
     @Test
-    void get_notExistedCompanyDto_shouldThrowNoDataException() {
+    void get_notExistedCompany_shouldThrowNoDataException() {
         Long companyId = 1L;
         when(companyRepository.get(companyId)).thenReturn(Optional.empty());
 
@@ -98,7 +98,7 @@ class CompanyServiceTest {
     }
 
     @Test
-    void getAll_nothing_shouldReturnAllCompaniesDto() {
+    void getAll_validData_shouldReturnAllCompanies() {
         Long companyId = 1L;
         String name  = "Goodwin";
         Integer age = 10;
@@ -143,14 +143,14 @@ class CompanyServiceTest {
     }
 
     @Test
-    void getAll_nothing_shouldThrowNoDataException() {
+    void getAll_validData_shouldThrowNoDataException() {
         when(companyRepository.getAll()).thenReturn(Collections.emptyList());
 
         assertThrows(NoDataException.class, () -> companyService.getAll());
     }
 
     @Test
-    void create_newCompanyDto_shouldReturnNewCompanyDto() {
+    void create_newCompany_shouldReturnNewCompany() {
         Long itaId = 2L;
         String ita = "Italy";
         CountryDto italy = CountryDto.create().withId(itaId).withName(ita).build();
@@ -200,7 +200,7 @@ class CompanyServiceTest {
     }
 
     @Test
-    void create_newCompanyDto_shouldThrowSQLException() {
+    void create_newCompany_shouldThrowExecuteException() {
         CountryDto italy = CountryDto.create().withId(2L).withName("Italy").build();
         TravelTypeDto travelTypeDto = TravelTypeDto.create().withId(1L)
                 .withType("by banana").build();
@@ -217,13 +217,13 @@ class CompanyServiceTest {
                 .withName("Goodwin").withAge(10).withToursDto(Arrays.asList(tourDto)).build();
         when(companyRepository.create(companyToCreate)).thenReturn(Optional.empty());
 
-        assertThrows(SQLException.class, () -> companyService.create(companyDtoToCreate));
+        assertThrows(ExecuteException.class, () -> companyService.create(companyDtoToCreate));
 
         verify(tourService, never()).create(companyId, tourDto);
     }
 
     @Test
-    void updated_existedCompanyDto_shouldReturnUpdatedCompanyDto() {
+    void updated_existedCompany_shouldReturnUpdatedCompany() {
         Long itaId = 2L;
         String ita = "Italy";
         CountryDto italy = CountryDto.create().withId(itaId).withName(ita).build();
@@ -259,7 +259,7 @@ class CompanyServiceTest {
         CompanyDto createdCompanyDto = companyService.update(companyId, companyDtoToUpdate);
 
         verify(countryTourRepository, times(1)).deleteByTourId(tourId);
-        verify(tourService, times(1)).delete(companyId);
+        verify(tourService, times(1)).deleteAll(companyId);
         verify(tourService, times(1)).create(companyId, tourDto);
         assertNotNull(createdCompanyDto);
         assertEquals(companyId, createdCompanyDto.getId());
@@ -278,7 +278,7 @@ class CompanyServiceTest {
     }
 
     @Test
-    void updated_notExistedCompanyDto_shouldThrowNoDataException() {
+    void updated_notExistedCompany_shouldThrowNoDataException() {
         CountryDto italy = CountryDto.create().withId(2L).withName("Italy").build();
         TravelTypeDto travelTypeDto = TravelTypeDto.create().withId(1L)
                 .withType("by banana").build();
@@ -297,12 +297,12 @@ class CompanyServiceTest {
         assertThrows(NoDataException.class, () -> companyService.update(companyId, companyDtoToUpdate));
 
         verify(countryTourRepository, never()).deleteByTourId(tourId);
-        verify(tourService, never()).delete(companyId);
+        verify(tourService, never()).deleteAll(companyId);
         verify(tourService, never()).create(companyId, tourDto);
     }
 
     @Test
-    void updated_existedCompanyDto_shouldThrowSQLException() {
+    void updated_existedCompany_shouldThrowExecuteException() {
         CountryDto italy = CountryDto.create().withId(2L).withName("Italy").build();
         TravelTypeDto travelTypeDto = TravelTypeDto.create().withId(1L)
                 .withType("by banana").build();
@@ -322,13 +322,13 @@ class CompanyServiceTest {
         when(companyRepository.get(companyId)).thenReturn(Optional.of(oldCompany));
         when(companyRepository.update(companyId, companyToUpdate)).thenReturn(Optional.empty());
 
-        assertThrows(SQLException.class, () -> companyService.update(companyId, companyDtoToUpdate));
+        assertThrows(ExecuteException.class, () -> companyService.update(companyId, companyDtoToUpdate));
 
         verify(tourService, never()).create(companyId, tourDto);
     }
 
     @Test
-    void delete_existedCompanyDto_shouldDeleteCompanyDto() {
+    void delete_existedCompany_shouldDeleteCompany() {
         CountryDto italy = CountryDto.create().withId(2L).withName("Italy").build();
         TravelTypeDto travelTypeDto = TravelTypeDto.create().withId(1L)
                 .withType("by banana").build();
@@ -342,30 +342,31 @@ class CompanyServiceTest {
         Long companyId = 1L;
         Company company = Company.create()
                 .withId(companyId).withName("NightCity").withAge(20).build();
-        when(companyRepository.get(companyId)).thenReturn(Optional.of(company));
+        when(companyRepository.get(companyId)).thenReturn(Optional.of(company))
+                .thenReturn(Optional.empty());
         when(tourService.getAll(companyId)).thenReturn(Arrays.asList(tourDto));
 
         companyService.delete(companyId);
 
         verify(countryTourRepository, times(1)).deleteByTourId(tourId);
-        verify(tourService, times(1)).delete(companyId);
+        verify(tourService, times(1)).deleteAll(companyId);
         verify(companyRepository, times(1)).delete(companyId);
     }
 
     @Test
-    void delete_notExistedCompanyDto_shouldThrowNoDataException() {
+    void delete_notExistedCompany_shouldThrowNoDataException() {
         Long companyId = 1L;
         when(companyRepository.get(companyId)).thenReturn(Optional.empty());
 
         assertThrows(NoDataException.class, () -> companyService.delete(companyId));
 
         verify(countryTourRepository, never()).deleteByTourId(any());
-        verify(tourService, never()).delete(companyId);
+        verify(tourService, never()).deleteAll(companyId);
         verify(companyRepository, never()).delete(companyId);
     }
 
     @Test
-    void delete_existedCompanyDto_shouldThrowSQLException() {
+    void delete_existedCompany_shouldThrowExecuteException() {
         CountryDto italy = CountryDto.create().withId(2L).withName("Italy").build();
         TravelTypeDto travelTypeDto = TravelTypeDto.create().withId(1L)
                 .withType("by banana").build();
@@ -381,12 +382,11 @@ class CompanyServiceTest {
                 .withId(companyId).withName("NightCity").withAge(20).build();
         when(companyRepository.get(companyId)).thenReturn(Optional.of(company));
         when(tourService.getAll(companyId)).thenReturn(Arrays.asList(tourDto));
-        doThrow(new SQLException("")).when(countryTourRepository).deleteByTourId(tourId);
 
-        assertThrows(SQLException.class, () -> companyService.delete(companyId));
+        assertThrows(ExecuteException.class, () -> companyService.delete(companyId));
 
-        verify(tourService, never()).delete(companyId);
-        verify(companyRepository, never()).delete(companyId);
+        verify(tourService, times(1)).deleteAll(companyId);
+        verify(companyRepository, times(1)).delete(companyId);
     }
 
     private Instant createInstance(String time, String pattern) {
