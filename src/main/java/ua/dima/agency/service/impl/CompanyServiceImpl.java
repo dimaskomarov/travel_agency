@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.dima.agency.domain.Company;
 import ua.dima.agency.dto.CompanyDto;
 import ua.dima.agency.dto.TourDto;
+import ua.dima.agency.exceptions.ExecuteException;
 import ua.dima.agency.exceptions.NoDataException;
-import ua.dima.agency.exceptions.SQLException;
 import ua.dima.agency.repositories.CompanyRepository;
 import ua.dima.agency.repositories.CountryTourRepository;
 import ua.dima.agency.service.CompanyService;
@@ -65,7 +65,7 @@ public class CompanyServiceImpl implements CompanyService {
             return getCompanyWithTours(createdCompany.get());
         }
         LOGGER.debug("{} wasn't created.", companyDTO);
-        throw new SQLException(String.format("%s wasn't created.", companyDTO));
+        throw new ExecuteException(String.format("%s wasn't created.", companyDTO));
     }
 
     @Override
@@ -81,13 +81,13 @@ public class CompanyServiceImpl implements CompanyService {
             return getCompanyWithTours(updatedCompany.get());
         }
         LOGGER.debug("{} wasn't updated.", companyDTO);
-        throw new SQLException(String.format("%s wasn't updated.", companyDTO));
+        throw new ExecuteException(String.format("%s wasn't updated.", companyDTO));
     }
 
     private void deleteToursOfCompany(Long companyId) {
-        get(companyId).getToursDto().stream()
+        get(companyId).getToursDto()
                 .forEach(tourDto -> countryTourRepository.deleteByTourId(tourDto.getId()));
-        tourService.delete(companyId);
+        tourService.deleteAll(companyId);
     }
 
     @Override
@@ -95,15 +95,19 @@ public class CompanyServiceImpl implements CompanyService {
     public void delete(Long id) {
         checkForExistence(id);
 
-        try {
-            List<TourDto> toursDto = tourService.getAll(id);
-            toursDto.forEach(tourDto -> countryTourRepository.deleteByTourId(tourDto.getId()));
-            tourService.delete(id);
-            companyRepository.delete(id);
-        } catch(SQLException e) {
+        List<TourDto> toursDto = tourService.getAll(id);
+        toursDto.forEach(tourDto -> countryTourRepository.deleteByTourId(tourDto.getId()));
+        tourService.deleteAll(id);
+        companyRepository.delete(id);
+
+        if(isCompanyExisting(id)) {
             LOGGER.debug("Company with id={} wasn't deleted.", id);
-            throw new SQLException(String.format("Company with id=%d wasn't deleted.", id));
+            throw new ExecuteException(String.format("Company with id=%d wasn't deleted.", id));
         }
+    }
+
+    private boolean isCompanyExisting(Long companyId) {
+        return companyRepository.get(companyId).isPresent();
     }
 
     private void checkForExistence(Long companyId) {

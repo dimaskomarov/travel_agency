@@ -9,6 +9,24 @@ public class CountryTour {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CountryTour that = (CountryTour) o;
+
+        if (!countryId.equals(that.countryId)) return false;
+        return tourId.equals(that.tourId);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = countryId.hashCode();
+        result = 31 * result + tourId.hashCode();
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "CountryTour{" +
                 "CountryId=" + countryId +
@@ -32,7 +50,7 @@ public class CountryTour {
         this.tourId = tourId;
     }
 
-    public static Builder createCountryTour() {
+    public static Builder create() {
         return new CountryTour().new Builder();
     }
 

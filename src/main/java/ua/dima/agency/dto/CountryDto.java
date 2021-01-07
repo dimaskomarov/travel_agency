@@ -2,6 +2,8 @@ package ua.dima.agency.dto;
 
 import ua.dima.agency.domain.Country;
 
+import java.util.Objects;
+
 public class CountryDto {
     private Long id;
     private String name;
@@ -11,9 +13,27 @@ public class CountryDto {
     }
 
     public static CountryDto parse(Country country) {
-        return CountryDto.createCountryDTO()
+        return CountryDto.create()
                 .withId(country.getId())
                 .withName(country.getName()).build();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CountryDto that = (CountryDto) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        return name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + name.hashCode();
+        return result;
     }
 
     @Override
@@ -40,7 +60,7 @@ public class CountryDto {
         this.name = name;
     }
 
-    public static Builder createCountryDTO(){
+    public static Builder create(){
         return new CountryDto().new Builder();
     }
 

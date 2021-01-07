@@ -10,9 +10,9 @@ import ua.dima.agency.domain.Tour;
 import ua.dima.agency.dto.CountryDto;
 import ua.dima.agency.dto.TourDto;
 import ua.dima.agency.dto.TravelTypeDto;
+import ua.dima.agency.exceptions.ExecuteException;
 import ua.dima.agency.exceptions.ExtraDataException;
 import ua.dima.agency.exceptions.NoDataException;
-import ua.dima.agency.exceptions.SQLException;
 import ua.dima.agency.repositories.CompanyRepository;
 import ua.dima.agency.repositories.CountryTourRepository;
 import ua.dima.agency.repositories.TourRepository;
@@ -52,7 +52,7 @@ public class TourServiceImpl implements TourService {
         checkIfCompanyHasAnyTours(companyId);
 
         Optional<Tour> tour = tourRepository.get(companyId, tourId);
-        if(tour.isPresent()) {
+        if (tour.isPresent()) {
             return buildTourDtoWithTypeAndCountry(tour.get());
         }
         LOGGER.debug("The company with id={} doesn't have the tour with id={}", companyId, tourId);
@@ -68,7 +68,7 @@ public class TourServiceImpl implements TourService {
         checkIfCompanyExists(companyId);
 
         List<Tour> tours = tourRepository.getByCompanyId(companyId);
-        if(!tours.isEmpty()) {
+        if (!tours.isEmpty()) {
             return tours.stream().map(this::buildTourDtoWithTypeAndCountry).collect(Collectors.toList());
         }
         LOGGER.debug("The company with id={} doesn't have any tours.", companyId);
@@ -85,12 +85,12 @@ public class TourServiceImpl implements TourService {
 
         Tour tour = buildTourWithTypeAndCountry(tourDto, companyId);
         Optional<Tour> createdTour = tourRepository.create(tour);
-        if(createdTour.isPresent()) {
+        if (createdTour.isPresent()) {
             createMissingCountryTour(tourDto.getCountiesDto(), createdTour.get().getId());
             return buildTourDtoWithTypeAndCountry(createdTour.get());
         }
         LOGGER.debug("{} wasn't created.", tourDto);
-        throw new SQLException(String.format("%s wasn't created.", tourDto));
+        throw new ExecuteException(String.format("%s wasn't created.", tourDto));
     }
 
     @Override
@@ -104,18 +104,25 @@ public class TourServiceImpl implements TourService {
         countryTourRepository.deleteByTourId(tourId);
         createMissingCountryTour(tourDto.getCountiesDto(), tourId);
 
-        Optional<Tour> updatedTour = tourRepository.update(tourId, getTourFromDB(tourId));
-        if(updatedTour.isPresent()) {
+        Tour oldTour = getTourFromDB(tourId);
+        Tour newTour = Tour.create()
+                .withPrice(tourDto.getPrice())
+                .withAmountDays(tourDto.getAmountDays())
+                .withDateDeparture(tourDto.getDateDeparture())
+                .withCompanyId(oldTour.getCompanyId())
+                .withTravelTypeId(oldTour.getTravelTypeId()).build();
+        Optional<Tour> updatedTour = tourRepository.update(tourId, newTour);
+        if (updatedTour.isPresent()) {
             return buildTourDtoWithTypeAndCountry(updatedTour.get());
         }
         LOGGER.debug("{} wasn't updated.", tourDto);
-        throw new SQLException(String.format("%s wasn't updated.", tourDto));
+        throw new ExecuteException(String.format("%s wasn't updated.", tourDto));
     }
 
     private void checkIfTourExists(Long tourId) {
         Optional<Tour> tour = tourRepository.get(tourId);
 
-        if(tour.isEmpty()) {
+        if (tour.isEmpty()) {
             LOGGER.debug("The tour with id={} doesn't exist", tourId);
             throw new NoDataException(String.format("The tour with id=%d doesn't exist", tourId));
         }
@@ -125,7 +132,7 @@ public class TourServiceImpl implements TourService {
         tourDto.getCountiesDto().forEach(countryDto -> {
             try {
                 countryService.create(countryDto);
-            } catch(ExtraDataException e) {
+            } catch (ExtraDataException e) {
                 LOGGER.debug(e.getMessage());
             }
         });
@@ -134,7 +141,7 @@ public class TourServiceImpl implements TourService {
     private void createMissingTravelType(TourDto tourDto) {
         try {
             travelTypeService.create(tourDto.getTravelTypeDto());
-        } catch(ExtraDataException e) {
+        } catch (ExtraDataException e) {
             LOGGER.debug(e.getMessage());
         }
     }
@@ -162,14 +169,14 @@ public class TourServiceImpl implements TourService {
     private Tour getTourFromDB(Long tourId) {
         Optional<Tour> tour = tourRepository.get(tourId);
 
-        return tour.orElseGet(() -> Tour.createTour().build());
+        return tour.orElseGet(() -> Tour.create().build());
     }
 
     public void createMissingCountryTour(List<CountryDto> countriesDto, Long tourId) {
         List<CountryDto> countriesDtoWithId = countriesDto.stream().map(countryDto -> countryService.get(countryDto.getName())).collect(Collectors.toList());
         try {
             countriesDtoWithId.forEach(countryDto -> countryTourRepository.create(tourId, countryDto.getId()));
-        } catch(ExtraDataException e) {
+        } catch (ExtraDataException e) {
             LOGGER.debug(e.getMessage());
         }
     }
@@ -180,29 +187,46 @@ public class TourServiceImpl implements TourService {
         checkIfCompanyExists(companyId);
         checkIfCompanyHasTheTour(companyId, tourId);
 
-        try{
-            countryTourRepository.deleteByTourId(tourId);
-            tourRepository.delete(tourId);
-        } catch(SQLException e) {
+        countryTourRepository.deleteByTourId(tourId);
+        tourRepository.delete(tourId);
+
+        if(isTourExisting(tourId)) {
             LOGGER.debug("Tour with id={} wasn't deleted.", tourId);
-            throw new SQLException(String.format("Tour with id=%d wasn't deleted.", tourId));
+            throw new ExecuteException(String.format("Tour with id=%d wasn't deleted.", tourId));
         }
     }
 
+    private boolean isTourExisting(Long tourId) {
+        return !tourRepository.get(tourId).isEmpty();
+    }
+
     private void checkIfCompanyHasTheTour(Long companyId, Long tourId) {
-        get(companyId, tourId);
+        Optional<Tour> tour = tourRepository.get(companyId, tourId);
+        if(tour.isEmpty()) {
+            LOGGER.debug("The company with id={} doesn't have the tour with id={}", companyId, tourId);
+            throw new NoDataException(String.format("The company with id=%d doesn't have the tour with id=%d", companyId, tourId));
+        }
     }
 
     @Override
-    public void delete(Long companyId) {
+    public void deleteAll(Long companyId) {
         checkIfCompanyExists(companyId);
 
         tourRepository.deleteByCompanyId(companyId);
+
+        if(areToursExisting(companyId)) {
+            LOGGER.debug("Tours belong company with id={} weren't deleted.", companyId);
+            throw new ExecuteException(String.format("Tours belong company with id=%d weren't deleted.", companyId));
+        }
+    }
+
+    private boolean areToursExisting(Long companyId) {
+        return !tourRepository.getByCompanyId(companyId).isEmpty();
     }
 
     private void checkIfCompanyExists(Long companyId) {
         Optional<Company> company = companyRepository.get(companyId);
-        if(company.isEmpty()) {
+        if (company.isEmpty()) {
             LOGGER.debug("The company with id={} doesn't exist", companyId);
             throw new NoDataException(String.format("The company with id=%d doesn't exist", companyId));
         }

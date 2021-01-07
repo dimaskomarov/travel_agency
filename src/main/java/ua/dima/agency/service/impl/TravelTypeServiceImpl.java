@@ -7,9 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.dima.agency.domain.Tour;
 import ua.dima.agency.domain.TravelType;
 import ua.dima.agency.dto.TravelTypeDto;
+import ua.dima.agency.exceptions.ExecuteException;
 import ua.dima.agency.exceptions.ExtraDataException;
 import ua.dima.agency.exceptions.NoDataException;
-import ua.dima.agency.exceptions.SQLException;
 import ua.dima.agency.repositories.CountryTourRepository;
 import ua.dima.agency.repositories.TourRepository;
 import ua.dima.agency.repositories.TravelTypeRepository;
@@ -66,40 +66,51 @@ public class TravelTypeServiceImpl implements TravelTypeService {
 
     @Override
     public TravelTypeDto create(TravelTypeDto travelTypeDto) {
-        checkForExistence(travelTypeDto);
+        checkIfTypeNew(travelTypeDto.getType());
 
         Optional<TravelType> createdTravelType = travelTypeRepository.create(TravelType.parse(travelTypeDto));
         if(createdTravelType.isPresent()) {
             return TravelTypeDto.parse(createdTravelType.get());
         }
         LOGGER.debug("{} wasn't created.", travelTypeDto);
-        throw new SQLException(String.format("%s wasn't created.", travelTypeDto));
+        throw new ExecuteException(String.format("%s wasn't created.", travelTypeDto));
     }
 
     @Override
     public TravelTypeDto update(Long id, TravelTypeDto travelTypeDto) {
-        checkForExistence(travelTypeDto);
+        checkIfTypeNew(travelTypeDto.getType());
 
         Optional<TravelType> updatedTravelType = travelTypeRepository.update(id, TravelType.parse(travelTypeDto));
         if(updatedTravelType.isPresent()) {
             return TravelTypeDto.parse(updatedTravelType.get());
         }
         LOGGER.debug("{} wasn't updated.", travelTypeDto);
-        throw new SQLException(String.format("%s wasn't updated.", travelTypeDto));
+        throw new ExecuteException(String.format("%s wasn't updated.", travelTypeDto));
+    }
+
+    private void checkIfTypeNew(String type) {
+        travelTypeRepository.get(type).ifPresent(travelType -> {
+            LOGGER.debug("{} already exists.", travelType);
+            throw new ExtraDataException(String.format("%s already exists.", travelType));
+        });
     }
 
     @Override
     @Transactional
     public void delete(Long id) {
-        try {
-            checkForExistence(id);
-            deleteCountryTour(id);
-            tourRepository.deleteByTourTypeId(id);
-            travelTypeRepository.delete(id);
-        } catch(SQLException e) {
+        checkIfTravelTypeExist(id);
+        deleteCountryTour(id);
+        tourRepository.deleteByTourTypeId(id);
+        travelTypeRepository.delete(id);
+
+        if(isTravelTypeExisting(id)) {
             LOGGER.debug("TravelType with id={} wasn't deleted.", id);
-            throw new SQLException(String.format("TravelType with id=%d wasn't deleted.", id));
+            throw new ExecuteException(String.format("TravelType with id=%d wasn't deleted.", id));
         }
+    }
+
+    private boolean isTravelTypeExisting(Long travelTypeId) {
+        return travelTypeRepository.get(travelTypeId).isPresent();
     }
 
     private void deleteCountryTour(Long travelTypeId) {
@@ -107,14 +118,7 @@ public class TravelTypeServiceImpl implements TravelTypeService {
         toursByTravelTypeId.forEach(tourId -> countryTourRepository.deleteByTourId(tourId.getId()));
     }
 
-    private void checkForExistence(TravelTypeDto travelTypeDto) {
-        travelTypeRepository.get(travelTypeDto.getType()).ifPresent(travelType -> {
-            LOGGER.debug("{} already exists.", travelType);
-            throw new ExtraDataException(String.format("%s already exists.", travelType));
-        });
-    }
-
-    private void checkForExistence(Long id) {
+    private void checkIfTravelTypeExist(Long id) {
         get(id);
     }
 }

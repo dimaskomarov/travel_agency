@@ -18,13 +18,40 @@ public class TourDto {
     }
 
     public static TourDto parse(Tour tour, TravelTypeDto travelTypeDto, List<CountryDto> countiesDto) {
-        return TourDto.createTourDTO()
+        return TourDto.create()
                 .withId(tour.getId())
                 .withPrice(tour.getPrice())
                 .withAmountDays(tour.getAmountDays())
                 .withDateDeparture(tour.getDateDeparture())
                 .withTravelTypeDto(travelTypeDto)
                 .withCountiesDto(countiesDto).build();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TourDto tourDto = (TourDto) o;
+
+        if (id != null ? !id.equals(tourDto.id) : tourDto.id != null) return false;
+        if (!price.equals(tourDto.price)) return false;
+        if (!amountDays.equals(tourDto.amountDays)) return false;
+        if (!dateDeparture.equals(tourDto.dateDeparture)) return false;
+        if (travelTypeDto != null ? !travelTypeDto.equals(tourDto.travelTypeDto) : tourDto.travelTypeDto != null)
+            return false;
+        return countiesDto != null ? countiesDto.equals(tourDto.countiesDto) : tourDto.countiesDto == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + price.hashCode();
+        result = 31 * result + amountDays.hashCode();
+        result = 31 * result + dateDeparture.hashCode();
+        result = 31 * result + (travelTypeDto != null ? travelTypeDto.hashCode() : 0);
+        result = 31 * result + (countiesDto != null ? countiesDto.hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -87,7 +114,7 @@ public class TourDto {
         this.countiesDto = countiesDto;
     }
 
-    public static Builder createTourDTO(){
+    public static Builder create(){
         return new TourDto().new Builder();
     }
 

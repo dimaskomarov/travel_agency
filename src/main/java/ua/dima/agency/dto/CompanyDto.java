@@ -16,12 +16,36 @@ public class CompanyDto {
     }
 
     public static CompanyDto parse(Company company, List<TourDto> toursDto) {
-        return CompanyDto.createCompanyDTO()
+        return CompanyDto.create()
                 .withId(company.getId())
                 .withName(company.getName())
                 .withAddress(company.getAddress())
                 .withAge(company.getAge())
                 .withToursDto(toursDto).build();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CompanyDto that = (CompanyDto) o;
+
+        if (id != null ? !id.equals(that.id) : that.id != null) return false;
+        if (!name.equals(that.name)) return false;
+        if (!address.equals(that.address)) return false;
+        if (!age.equals(that.age)) return false;
+        return toursDto != null ? toursDto.equals(that.toursDto) : that.toursDto == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + address.hashCode();
+        result = 31 * result + age.hashCode();
+        result = 31 * result + (toursDto != null ? toursDto.hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -75,7 +99,7 @@ public class CompanyDto {
         this.toursDto = toursDto;
     }
 
-    public static Builder createCompanyDTO() {
+    public static Builder create() {
         return new CompanyDto().new Builder();
     }
 

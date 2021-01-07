@@ -10,5 +10,5 @@ public interface TourService {
     TourDto create(Long companyId, TourDto tourDTO);
     TourDto update(TourDto tourDTO, Long tourId);
     void delete(Long companyId, Long id);
-    void delete(Long companyId);
+    void deleteAll(Long companyId);
 }

@@ -11,17 +11,27 @@ public class Country {
     }
 
     public static Country parse(CountryDto countryDTO) {
-        return Country.createCountry()
+        return Country.create()
                 .withId(countryDTO.getId())
                 .withName(countryDTO.getName()).build();
     }
 
     @Override
-    public String toString() {
-        return "Country{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Country country = (Country) o;
+
+        if (id != null ? !id.equals(country.id) : country.id != null) return false;
+        return name.equals(country.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + name.hashCode();
+        return result;
     }
 
     public Long getId() {
@@ -40,7 +50,7 @@ public class Country {
         this.name = name;
     }
 
-    public static Builder createCountry() {
+    public static Builder create() {
         return new Country().new Builder();
     }
 

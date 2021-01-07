@@ -17,13 +17,39 @@ public class Tour {
     }
 
     public static Tour parse(TourDto tourDTO, Long companyId, Long travelTypeId) {
-        return Tour.createTour()
+        return Tour.create()
                 .withId(tourDTO.getId())
                 .withPrice(tourDTO.getPrice())
                 .withAmountDays(tourDTO.getAmountDays())
                 .withDateDeparture(tourDTO.getDateDeparture())
                 .withCompanyId(companyId)
                 .withTravelTypeId(travelTypeId).build();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Tour tour = (Tour) o;
+
+        if (id != null ? !id.equals(tour.id) : tour.id != null) return false;
+        if (!price.equals(tour.price)) return false;
+        if (!amountDays.equals(tour.amountDays)) return false;
+        if (!dateDeparture.equals(tour.dateDeparture)) return false;
+        if (!companyId.equals(tour.companyId)) return false;
+        return travelTypeId != null ? travelTypeId.equals(tour.travelTypeId) : tour.travelTypeId == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + price.hashCode();
+        result = 31 * result + amountDays.hashCode();
+        result = 31 * result + dateDeparture.hashCode();
+        result = 31 * result + companyId.hashCode();
+        result = 31 * result + (travelTypeId != null ? travelTypeId.hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -86,7 +112,7 @@ public class Tour {
         this.travelTypeId = travelTypeId;
     }
 
-    public static Builder createTour() {
+    public static Builder create() {
         return new Tour().new Builder();
     }
 
