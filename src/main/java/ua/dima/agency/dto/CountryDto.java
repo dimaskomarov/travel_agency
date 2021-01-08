@@ -21,19 +21,15 @@ public class CountryDto {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof CountryDto)) return false;
         CountryDto that = (CountryDto) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        return name.equals(that.name);
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + name.hashCode();
-        return result;
+        return Objects.hash(id, name);
     }
 
     @Override

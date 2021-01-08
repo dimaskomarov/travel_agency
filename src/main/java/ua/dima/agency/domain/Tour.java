@@ -3,6 +3,7 @@ package ua.dima.agency.domain;
 import ua.dima.agency.dto.TourDto;
 
 import java.time.Instant;
+import java.util.Objects;
 
 public class Tour {
     private Long id;
@@ -29,27 +30,19 @@ public class Tour {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof Tour)) return false;
         Tour tour = (Tour) o;
-
-        if (id != null ? !id.equals(tour.id) : tour.id != null) return false;
-        if (!price.equals(tour.price)) return false;
-        if (!amountDays.equals(tour.amountDays)) return false;
-        if (!dateDeparture.equals(tour.dateDeparture)) return false;
-        if (!companyId.equals(tour.companyId)) return false;
-        return travelTypeId != null ? travelTypeId.equals(tour.travelTypeId) : tour.travelTypeId == null;
+        return Objects.equals(id, tour.id) &&
+                Objects.equals(price, tour.price) &&
+                Objects.equals(amountDays, tour.amountDays) &&
+                Objects.equals(dateDeparture, tour.dateDeparture) &&
+                Objects.equals(companyId, tour.companyId) &&
+                Objects.equals(travelTypeId, tour.travelTypeId);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + price.hashCode();
-        result = 31 * result + amountDays.hashCode();
-        result = 31 * result + dateDeparture.hashCode();
-        result = 31 * result + companyId.hashCode();
-        result = 31 * result + (travelTypeId != null ? travelTypeId.hashCode() : 0);
-        return result;
+        return Objects.hash(id, price, amountDays, dateDeparture, companyId, travelTypeId);
     }
 
     @Override

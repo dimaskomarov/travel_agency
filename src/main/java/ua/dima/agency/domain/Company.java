@@ -38,6 +38,16 @@ public class Company {
         return Objects.hash(id, name, address, age);
     }
 
+    @Override
+    public String toString() {
+        return "Company{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", age=" + age +
+                '}';
+    }
+
     public Long getId() {
         return id;
     }

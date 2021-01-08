@@ -3,6 +3,7 @@ package ua.dima.agency.dto;
 import ua.dima.agency.domain.Company;
 
 import java.util.List;
+import java.util.Objects;
 
 public class CompanyDto {
     private Long id;
@@ -27,25 +28,18 @@ public class CompanyDto {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof CompanyDto)) return false;
         CompanyDto that = (CompanyDto) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (!name.equals(that.name)) return false;
-        if (!address.equals(that.address)) return false;
-        if (!age.equals(that.age)) return false;
-        return toursDto != null ? toursDto.equals(that.toursDto) : that.toursDto == null;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(address, that.address) &&
+                Objects.equals(age, that.age) &&
+                Objects.equals(toursDto, that.toursDto);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + name.hashCode();
-        result = 31 * result + address.hashCode();
-        result = 31 * result + age.hashCode();
-        result = 31 * result + (toursDto != null ? toursDto.hashCode() : 0);
-        return result;
+        return Objects.hash(id, name, address, age, toursDto);
     }
 
     @Override

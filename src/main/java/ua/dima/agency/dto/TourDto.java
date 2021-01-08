@@ -4,6 +4,7 @@ import ua.dima.agency.domain.Tour;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
 public class TourDto {
     private Long id;
@@ -30,28 +31,19 @@ public class TourDto {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof TourDto)) return false;
         TourDto tourDto = (TourDto) o;
-
-        if (id != null ? !id.equals(tourDto.id) : tourDto.id != null) return false;
-        if (!price.equals(tourDto.price)) return false;
-        if (!amountDays.equals(tourDto.amountDays)) return false;
-        if (!dateDeparture.equals(tourDto.dateDeparture)) return false;
-        if (travelTypeDto != null ? !travelTypeDto.equals(tourDto.travelTypeDto) : tourDto.travelTypeDto != null)
-            return false;
-        return countiesDto != null ? countiesDto.equals(tourDto.countiesDto) : tourDto.countiesDto == null;
+        return Objects.equals(id, tourDto.id) &&
+                Objects.equals(price, tourDto.price) &&
+                Objects.equals(amountDays, tourDto.amountDays) &&
+                Objects.equals(dateDeparture, tourDto.dateDeparture) &&
+                Objects.equals(travelTypeDto, tourDto.travelTypeDto) &&
+                Objects.equals(countiesDto, tourDto.countiesDto);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + price.hashCode();
-        result = 31 * result + amountDays.hashCode();
-        result = 31 * result + dateDeparture.hashCode();
-        result = 31 * result + (travelTypeDto != null ? travelTypeDto.hashCode() : 0);
-        result = 31 * result + (countiesDto != null ? countiesDto.hashCode() : 0);
-        return result;
+        return Objects.hash(id, price, amountDays, dateDeparture, travelTypeDto, countiesDto);
     }
 
     @Override

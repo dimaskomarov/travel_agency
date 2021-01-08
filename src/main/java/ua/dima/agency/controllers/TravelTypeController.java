@@ -8,7 +8,7 @@ import ua.dima.agency.service.TravelTypeService;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "travelTypes")
+@RequestMapping(value = "/travelTypes")
 public class TravelTypeController {
     private final TravelTypeService travelTypeService;
 

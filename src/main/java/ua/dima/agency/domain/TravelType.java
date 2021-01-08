@@ -22,19 +22,15 @@ public class TravelType {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof TravelType)) return false;
         TravelType that = (TravelType) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        return type.equals(that.type);
+        return Objects.equals(id, that.id) &&
+                Objects.equals(type, that.type);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + type.hashCode();
-        return result;
+        return Objects.hash(id, type);
     }
 
     @Override
