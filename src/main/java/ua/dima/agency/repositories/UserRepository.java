@@ -5,5 +5,5 @@ import ua.dima.agency.domain.User;
 import java.util.Optional;
 
 public interface UserRepository {
-    Optional<User> getByName(String userName);
+    Optional<User> getByLogin(String login);
 }

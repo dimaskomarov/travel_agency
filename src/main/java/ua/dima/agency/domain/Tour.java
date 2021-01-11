@@ -18,13 +18,13 @@ public class Tour {
     }
 
     public static Tour parse(TourDto tourDTO, Long companyId, Long travelTypeId) {
-        return Tour.create()
-                .withId(tourDTO.getId())
-                .withPrice(tourDTO.getPrice())
-                .withAmountDays(tourDTO.getAmountDays())
-                .withDateDeparture(tourDTO.getDateDeparture())
-                .withCompanyId(companyId)
-                .withTravelTypeId(travelTypeId).build();
+        return Tour.builder()
+                .id(tourDTO.getId())
+                .price(tourDTO.getPrice())
+                .amountDays(tourDTO.getAmountDays())
+                .dateDeparture(tourDTO.getDateDeparture())
+                .companyId(companyId)
+                .travelTypeId(travelTypeId).build();
     }
 
     @Override
@@ -105,7 +105,7 @@ public class Tour {
         this.travelTypeId = travelTypeId;
     }
 
-    public static Builder create() {
+    public static Builder builder() {
         return new Tour().new Builder();
     }
 
@@ -114,32 +114,32 @@ public class Tour {
             //empty constructor
         }
 
-        public Builder withId(Long id) {
+        public Builder id(Long id) {
             Tour.this.id = id;
             return this;
         }
 
-        public Builder withPrice(Double price) {
+        public Builder price(Double price) {
             Tour.this.price = price;
             return this;
         }
 
-        public Builder withAmountDays(Integer amountDays) {
+        public Builder amountDays(Integer amountDays) {
             Tour.this.amountDays = amountDays;
             return this;
         }
 
-        public Builder withDateDeparture(Instant dateDeparture) {
+        public Builder dateDeparture(Instant dateDeparture) {
             Tour.this.dateDeparture = dateDeparture;
             return this;
         }
 
-        public Builder withCompanyId(Long companyId) {
+        public Builder companyId(Long companyId) {
             Tour.this.companyId = companyId;
             return this;
         }
 
-        public Builder withTravelTypeId(Long travelTypeId) {
+        public Builder travelTypeId(Long travelTypeId) {
             Tour.this.travelTypeId = travelTypeId;
             return this;
         }

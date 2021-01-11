@@ -15,11 +15,11 @@ public class Company {
     }
 
     public static Company parse(CompanyDto companyDTO) {
-        return Company.create()
-                .withId(companyDTO.getId())
-                .withName(companyDTO.getName())
-                .withAddress(companyDTO.getAddress())
-                .withAge(companyDTO.getAge()).build();
+        return Company.builder()
+                .id(companyDTO.getId())
+                .name(companyDTO.getName())
+                .address(companyDTO.getAddress())
+                .age(companyDTO.getAge()).build();
     }
 
     @Override
@@ -80,7 +80,7 @@ public class Company {
         this.age = age;
     }
 
-    public static Builder create() {
+    public static Builder builder() {
         return new Company().new Builder();
     }
 
@@ -89,22 +89,22 @@ public class Company {
             //empty constructor
         }
 
-        public Builder withId(Long id) {
+        public Builder id(Long id) {
             Company.this.id = id;
             return this;
         }
 
-        public Builder withName(String name) {
+        public Builder name(String name) {
             Company.this.name = name;
             return this;
         }
 
-        public Builder withAddress(String address) {
+        public Builder address(String address) {
             Company.this.address = address;
             return this;
         }
 
-        public Builder withAge(Integer age) {
+        public Builder age(Integer age) {
             Company.this.age = age;
             return this;
         }

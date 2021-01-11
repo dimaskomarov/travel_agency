@@ -13,9 +13,9 @@ public class CountryDto {
     }
 
     public static CountryDto parse(Country country) {
-        return CountryDto.create()
-                .withId(country.getId())
-                .withName(country.getName()).build();
+        return CountryDto.builder()
+                .id(country.getId())
+                .name(country.getName()).build();
     }
 
     @Override
@@ -56,7 +56,7 @@ public class CountryDto {
         this.name = name;
     }
 
-    public static Builder create(){
+    public static Builder builder(){
         return new CountryDto().new Builder();
     }
 
@@ -66,12 +66,12 @@ public class CountryDto {
             //empty constructor
         }
 
-        public Builder withId(Long id) {
+        public Builder id(Long id) {
             CountryDto.this.id = id;
             return this;
         }
 
-        public Builder withName(String name) {
+        public Builder name(String name) {
             CountryDto.this.name = name;
             return this;
         }

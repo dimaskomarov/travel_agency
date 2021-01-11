@@ -12,17 +12,13 @@ public class CompanyDto {
     private Integer age;
     private List<TourDto> toursDto;
 
-    private CompanyDto() {
-        //empty constructor
-    }
-
     public static CompanyDto parse(Company company, List<TourDto> toursDto) {
-        return CompanyDto.create()
-                .withId(company.getId())
-                .withName(company.getName())
-                .withAddress(company.getAddress())
-                .withAge(company.getAge())
-                .withToursDto(toursDto).build();
+        return CompanyDto.builder()
+                .id(company.getId())
+                .name(company.getName())
+                .address(company.getAddress())
+                .age(company.getAge())
+                .toursDto(toursDto).build();
     }
 
     @Override
@@ -93,7 +89,7 @@ public class CompanyDto {
         this.toursDto = toursDto;
     }
 
-    public static Builder create() {
+    public static Builder builder() {
         return new CompanyDto().new Builder();
     }
 
@@ -103,27 +99,27 @@ public class CompanyDto {
             //empty constructor
         }
 
-        public Builder withId(Long id) {
+        public Builder id(Long id) {
             CompanyDto.this.id = id;
             return this;
         }
 
-        public Builder withName(String name) {
+        public Builder name(String name) {
             CompanyDto.this.name = name;
             return this;
         }
 
-        public Builder withAddress(String address) {
+        public Builder address(String address) {
             CompanyDto.this.address = address;
             return this;
         }
 
-        public Builder withAge(Integer age) {
+        public Builder age(Integer age) {
             CompanyDto.this.age = age;
             return this;
         }
 
-        public Builder withToursDto(List<TourDto> toursDto) {
+        public Builder toursDto(List<TourDto> toursDto) {
             CompanyDto.this.toursDto = toursDto;
             return this;
         }

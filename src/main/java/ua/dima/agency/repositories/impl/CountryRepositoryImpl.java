@@ -75,7 +75,7 @@ public class CountryRepositoryImpl implements CountryRepository {
 
     @Override
     public List<Country> createAllByName(List<String> countryNames) {
-        return countryNames.stream().map(name -> create(Country.create().withName(name).build()))
+        return countryNames.stream().map(country -> create(Country.builder().name(country).build()))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());

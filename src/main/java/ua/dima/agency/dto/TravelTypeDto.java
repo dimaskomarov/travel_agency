@@ -6,16 +6,16 @@ import java.util.Objects;
 
 public class TravelTypeDto {
     private Long id;
-    private String type;
+    private String name;
 
     public TravelTypeDto() {
         //empty constructor
     }
 
     public static TravelTypeDto parse(TravelType travelType) {
-        return TravelTypeDto.create()
-                .withId(travelType.getId())
-                .withType(travelType.getType()).build();
+        return TravelTypeDto.builder()
+                .id(travelType.getId())
+                .name(travelType.getName()).build();
     }
 
     @Override
@@ -24,19 +24,19 @@ public class TravelTypeDto {
         if (!(o instanceof TravelTypeDto)) return false;
         TravelTypeDto that = (TravelTypeDto) o;
         return Objects.equals(id, that.id) &&
-                Objects.equals(type, that.type);
+                Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, type);
+        return Objects.hash(id, name);
     }
 
     @Override
     public String toString() {
         return "TravelTypeDto{" +
                 "id=" + id +
-                ", type='" + type + '\'' +
+                ", name='" + name + '\'' +
                 '}';
     }
 
@@ -48,15 +48,15 @@ public class TravelTypeDto {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
+    public String getName() {
+        return name;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public static Builder create(){
+    public static Builder builder(){
         return new TravelTypeDto().new Builder();
     }
 
@@ -66,13 +66,13 @@ public class TravelTypeDto {
             //empty constructor
         }
 
-        public Builder withId(Long id) {
+        public Builder id(Long id) {
             TravelTypeDto.this.id = id;
             return this;
         }
 
-        public Builder withType(String type) {
-            TravelTypeDto.this.type = type;
+        public Builder name(String name) {
+            TravelTypeDto.this.name = name;
             return this;
         }
 

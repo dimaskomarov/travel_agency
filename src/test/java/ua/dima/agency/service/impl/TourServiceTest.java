@@ -55,35 +55,35 @@ class TourServiceTest {
     @Test
     void get_existedTour_shouldReturnTour() {
         Long companyId = 1L;
-        Company company = Company.create()
-                .withId(companyId).withName("Goodwin")
-                .withAge(10).build();
+        Company company = Company.builder()
+                .id(companyId).name("Goodwin")
+                .age(10).build();
         Long typeId = 1L;
         String type = "by banana";
-        TravelTypeDto travelTypeDto = TravelTypeDto.create()
-                .withId(typeId).withType(type).build();
+        TravelTypeDto travelTypeDto = TravelTypeDto.builder()
+                .id(typeId).name(type).build();
         Long tourId = 1L;
         Double price = 200.0;
         Integer amountDays = 5;
-        Instant dateDeparture = createInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
-        Tour tour = Tour.create()
-                .withId(tourId).withPrice(price)
-                .withAmountDays(amountDays)
-                .withDateDeparture(dateDeparture)
-                .withCompanyId(companyId)
-                .withTravelTypeId(typeId).build();
+        Instant dateDeparture = builderInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
+        Tour tour = Tour.builder()
+                .id(tourId).price(price)
+                .amountDays(amountDays)
+                .dateDeparture(dateDeparture)
+                .companyId(companyId)
+                .travelTypeId(typeId).build();
         Long ukrId = 1L;
         String ukr = "Ukraine";
-        CountryDto ukraine = CountryDto.create().withId(ukrId).withName(ukr).build();
+        CountryDto ukraine = CountryDto.builder().id(ukrId).name(ukr).build();
         Long itaId = 2L;
         String ita = "Italy";
-        CountryDto italy = CountryDto.create().withId(itaId).withName(ita).build();
-        CountryTour ukrCountryTour = CountryTour.create()
-                                     .withTourId(tourId)
-                                     .withCountryId(ukrId).build();
-        CountryTour itaCountryTour = CountryTour.create()
-                                     .withTourId(tourId)
-                                     .withCountryId(itaId).build();
+        CountryDto italy = CountryDto.builder().id(itaId).name(ita).build();
+        CountryTour ukrCountryTour = CountryTour.builder()
+                                     .tourId(tourId)
+                                     .countryId(ukrId).build();
+        CountryTour itaCountryTour = CountryTour.builder()
+                                     .tourId(tourId)
+                                     .countryId(itaId).build();
         when(companyRepository.get(companyId)).thenReturn(Optional.of(company));
         when(tourRepository.getByCompanyId(tourId)).thenReturn(Arrays.asList(tour));
         when(tourRepository.get(tourId, companyId)).thenReturn(Optional.of(tour));
@@ -100,7 +100,7 @@ class TourServiceTest {
         assertEquals(amountDays, receivedTourDto.getAmountDays());
         assertEquals(dateDeparture, receivedTourDto.getDateDeparture());
         assertEquals(typeId, receivedTourDto.getTravelTypeDto().getId());
-        assertEquals(type, receivedTourDto.getTravelTypeDto().getType());
+        assertEquals(type, receivedTourDto.getTravelTypeDto().getName());
         assertEquals(2, receivedTourDto.getCountiesDto().size());
         assertEquals(ukrId, receivedTourDto.getCountiesDto().get(0).getId());
         assertEquals(ukr, receivedTourDto.getCountiesDto().get(0).getName());
@@ -120,7 +120,7 @@ class TourServiceTest {
     @Test
     void get_notExistedTour_shouldThrowNoDataException() {
         Long companyId = 1L;
-        Company company = Company.create().withId(companyId).withName("Goodwin").withAge(10).build();
+        Company company = Company.builder().id(companyId).name("Goodwin").age(10).build();
         Long tourId = 1L;
         when(companyRepository.get(companyId)).thenReturn(Optional.of(company));
         when(tourRepository.getByCompanyId(tourId)).thenReturn(Collections.emptyList());
@@ -131,17 +131,17 @@ class TourServiceTest {
     @Test
     void get_existedTour_shouldNoDataException() {
         Long companyId = 1L;
-        Company company = Company.create()
-                .withId(companyId).withName("Goodwin")
-                .withAge(10).build();
+        Company company = Company.builder()
+                .id(companyId).name("Goodwin")
+                .age(10).build();
         Long tourId = 1L;
-        Instant dateDeparture = createInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
-        Tour tour = Tour.create()
-                .withId(tourId).withPrice(200.0)
-                .withAmountDays(5)
-                .withDateDeparture(dateDeparture)
-                .withCompanyId(companyId)
-                .withTravelTypeId(1L).build();
+        Instant dateDeparture = builderInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
+        Tour tour = Tour.builder()
+                .id(tourId).price(200.0)
+                .amountDays(5)
+                .dateDeparture(dateDeparture)
+                .companyId(companyId)
+                .travelTypeId(1L).build();
         when(companyRepository.get(companyId)).thenReturn(Optional.of(company));
         when(tourRepository.getByCompanyId(tourId)).thenReturn(Arrays.asList(tour));
         when(tourRepository.get(tourId, companyId)).thenReturn(Optional.empty());
@@ -152,36 +152,36 @@ class TourServiceTest {
     @Test
     void getAll_existedCompany_shouldReturnTours() {
         Long companyId = 1L;
-        Company company = Company.create()
-                .withId(companyId).withName("Goodwin")
-                .withAge(10).build();
+        Company company = Company.builder()
+                .id(companyId).name("Goodwin")
+                .age(10).build();
         Long typeId = 1L;
         String type = "by banana";
-        TravelTypeDto travelTypeDto = TravelTypeDto.create()
-                .withId(typeId).withType(type)
+        TravelTypeDto travelTypeDto = TravelTypeDto.builder()
+                .id(typeId).name(type)
                 .build();
         Long tourId = 1L;
         Double price = 200.0;
         Integer amountDays = 5;
-        Instant dateDeparture = createInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
-        Tour tour = Tour.create()
-                .withId(tourId).withPrice(price)
-                .withAmountDays(amountDays)
-                .withDateDeparture(dateDeparture)
-                .withCompanyId(companyId)
-                .withTravelTypeId(typeId).build();
+        Instant dateDeparture = builderInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
+        Tour tour = Tour.builder()
+                .id(tourId).price(price)
+                .amountDays(amountDays)
+                .dateDeparture(dateDeparture)
+                .companyId(companyId)
+                .travelTypeId(typeId).build();
         Long ukrId = 1L;
         String ukr = "Ukraine";
-        CountryDto ukraine = CountryDto.create().withId(ukrId).withName(ukr).build();
+        CountryDto ukraine = CountryDto.builder().id(ukrId).name(ukr).build();
         Long itaId = 2L;
         String ita = "Italy";
-        CountryDto italy = CountryDto.create().withId(itaId).withName(ita).build();
-        CountryTour ukrCountryTour = CountryTour.create()
-                .withTourId(tourId)
-                .withCountryId(ukrId).build();
-        CountryTour itaCountryTour = CountryTour.create()
-                .withTourId(tourId)
-                .withCountryId(itaId).build();
+        CountryDto italy = CountryDto.builder().id(itaId).name(ita).build();
+        CountryTour ukrCountryTour = CountryTour.builder()
+                .tourId(tourId)
+                .countryId(ukrId).build();
+        CountryTour itaCountryTour = CountryTour.builder()
+                .tourId(tourId)
+                .countryId(itaId).build();
         when(companyRepository.get(companyId)).thenReturn(Optional.of(company));
         when(tourRepository.getByCompanyId(tourId)).thenReturn(Arrays.asList(tour));
         when(countryTourRepository.getAllByTourId(tourId)).thenReturn(Arrays.asList(ukrCountryTour, itaCountryTour));
@@ -197,7 +197,7 @@ class TourServiceTest {
         assertEquals(amountDays, receivedToursDto.get(0).getAmountDays());
         assertEquals(dateDeparture, receivedToursDto.get(0).getDateDeparture());
         assertEquals(typeId, receivedToursDto.get(0).getTravelTypeDto().getId());
-        assertEquals(type, receivedToursDto.get(0).getTravelTypeDto().getType());
+        assertEquals(type, receivedToursDto.get(0).getTravelTypeDto().getName());
         assertEquals(2, receivedToursDto.get(0).getCountiesDto().size());
         assertEquals(ukrId, receivedToursDto.get(0).getCountiesDto().get(0).getId());
         assertEquals(ukr, receivedToursDto.get(0).getCountiesDto().get(0).getName());
@@ -216,9 +216,9 @@ class TourServiceTest {
     @Test
     void getAll_existedCompany_shouldThrowNoDataException() {
         Long companyId = 1L;
-        Company company = Company.create()
-                .withId(companyId).withName("Goodwin")
-                .withAge(10).build();
+        Company company = Company.builder()
+                .id(companyId).name("Goodwin")
+                .age(10).build();
         when(companyRepository.get(companyId)).thenReturn(Optional.of(company));
         when(tourRepository.getByCompanyId(1L)).thenReturn(Collections.emptyList());
 
@@ -226,53 +226,53 @@ class TourServiceTest {
     }
 
     @Test
-    void create_existedCompany_shouldReturnNewTour() {
+    void builder_existedCompany_shouldReturnNewTour() {
         Long companyId = 1L;
-        Company company = Company.create()
-                .withId(companyId).withName("Goodwin")
-                .withAge(10).build();
+        Company company = Company.builder()
+                .id(companyId).name("Goodwin")
+                .age(10).build();
         Long typeId = 1L;
         String type = "by banana";
-        TravelTypeDto travelTypeDto = TravelTypeDto.create()
-                .withId(typeId).withType(type)
+        TravelTypeDto travelTypeDto = TravelTypeDto.builder()
+                .id(typeId).name(type)
                 .build();
         Long ukrId = 1L;
         String ukr = "Ukraine";
-        CountryDto ukraine = CountryDto.create().withId(ukrId).withName(ukr).build();
+        CountryDto ukraine = CountryDto.builder().id(ukrId).name(ukr).build();
         Long itaId = 2L;
         String ita = "Italy";
-        CountryDto italy = CountryDto.create().withId(itaId).withName(ita).build();
+        CountryDto italy = CountryDto.builder().id(itaId).name(ita).build();
         Long tourId = 1L;
         Double price = 200.0;
         Integer amountDays = 5;
-        Instant dateDeparture = createInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
-        Tour tourToCreate = Tour.create()
-                .withPrice(price)
-                .withAmountDays(amountDays)
-                .withDateDeparture(dateDeparture)
-                .withCompanyId(companyId)
-                .withTravelTypeId(typeId).build();
-        Tour createdTour = Tour.create()
-                .withId(tourId).withPrice(price)
-                .withAmountDays(amountDays)
-                .withDateDeparture(dateDeparture)
-                .withCompanyId(companyId)
-                .withTravelTypeId(typeId).build();
-        TourDto tourDtoToCreate = TourDto.create()
-                .withPrice(price)
-                .withAmountDays(amountDays)
-                .withDateDeparture(dateDeparture)
-                .withTravelTypeDto(travelTypeDto)
-                .withCountiesDto(Arrays.asList(italy, ukraine)).build();
-        CountryTour ukrCountryTour = CountryTour.create()
-                .withTourId(tourId)
-                .withCountryId(ukrId).build();
-        CountryTour itaCountryTour = CountryTour.create()
-                .withTourId(tourId)
-                .withCountryId(itaId).build();
+        Instant dateDeparture = builderInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
+        Tour tourTobuilder = Tour.builder()
+                .price(price)
+                .amountDays(amountDays)
+                .dateDeparture(dateDeparture)
+                .companyId(companyId)
+                .travelTypeId(typeId).build();
+        Tour builderdTour = Tour.builder()
+                .id(tourId).price(price)
+                .amountDays(amountDays)
+                .dateDeparture(dateDeparture)
+                .companyId(companyId)
+                .travelTypeId(typeId).build();
+        TourDto tourDtoTobuilder = TourDto.builder()
+                .price(price)
+                .amountDays(amountDays)
+                .dateDeparture(dateDeparture)
+                .travelTypeDto(travelTypeDto)
+                .countiesDto(Arrays.asList(italy, ukraine)).build();
+        CountryTour ukrCountryTour = CountryTour.builder()
+                .tourId(tourId)
+                .countryId(ukrId).build();
+        CountryTour itaCountryTour = CountryTour.builder()
+                .tourId(tourId)
+                .countryId(itaId).build();
         when(companyRepository.get(companyId)).thenReturn(Optional.of(company));
         when(travelTypeService.get(type)).thenReturn(travelTypeDto);
-        when(tourRepository.create(tourToCreate)).thenReturn(Optional.of(createdTour));
+        when(tourRepository.create(tourTobuilder)).thenReturn(Optional.of(builderdTour));
         when(countryService.get(ukr)).thenReturn(ukraine);
         when(countryService.get(ita)).thenReturn(italy);
         when(travelTypeService.get(typeId)).thenReturn(travelTypeDto);
@@ -280,49 +280,49 @@ class TourServiceTest {
         when(countryService.get(ukrId)).thenReturn(ukraine);
         when(countryService.get(itaId)).thenReturn(italy);
 
-        TourDto createdTourDto = tourServiceImpl.create(companyId, tourDtoToCreate);
+        TourDto builderdTourDto = tourServiceImpl.create(companyId, tourDtoTobuilder);
 
         verify(countryService, times(1)).create(italy);
         verify(countryService, times(1)).create(ukraine);
         verify(travelTypeService, times(1)).create(travelTypeDto);
         verify(countryTourRepository, times(1)).create(tourId, ukrId);
         verify(countryTourRepository, times(1)).create(tourId, itaId);
-        assertNotNull(createdTourDto);
-        assertEquals(tourId, createdTourDto.getId());
-        assertEquals(price, createdTourDto.getPrice());
-        assertEquals(amountDays, createdTourDto.getAmountDays());
-        assertEquals(dateDeparture, createdTourDto.getDateDeparture());
-        assertEquals(typeId, createdTourDto.getTravelTypeDto().getId());
-        assertEquals(type, createdTourDto.getTravelTypeDto().getType());
-        assertEquals(2, createdTourDto.getCountiesDto().size());
-        assertEquals(ukrId, createdTourDto.getCountiesDto().get(0).getId());
-        assertEquals(ukr, createdTourDto.getCountiesDto().get(0).getName());
-        assertEquals(itaId, createdTourDto.getCountiesDto().get(1).getId());
-        assertEquals(ita, createdTourDto.getCountiesDto().get(1).getName());
+        assertNotNull(builderdTourDto);
+        assertEquals(tourId, builderdTourDto.getId());
+        assertEquals(price, builderdTourDto.getPrice());
+        assertEquals(amountDays, builderdTourDto.getAmountDays());
+        assertEquals(dateDeparture, builderdTourDto.getDateDeparture());
+        assertEquals(typeId, builderdTourDto.getTravelTypeDto().getId());
+        assertEquals(type, builderdTourDto.getTravelTypeDto().getName());
+        assertEquals(2, builderdTourDto.getCountiesDto().size());
+        assertEquals(ukrId, builderdTourDto.getCountiesDto().get(0).getId());
+        assertEquals(ukr, builderdTourDto.getCountiesDto().get(0).getName());
+        assertEquals(itaId, builderdTourDto.getCountiesDto().get(1).getId());
+        assertEquals(ita, builderdTourDto.getCountiesDto().get(1).getName());
     }
 
     @Test
-    void create_notExistedCompany_shouldThrowNoDataException() {
+    void builder_notExistedCompany_shouldThrowNoDataException() {
         Long companyId = 1L;
         String type = "by banana";
-        TravelTypeDto travelTypeDto = TravelTypeDto.create()
-                .withId(1L).withType(type)
+        TravelTypeDto travelTypeDto = TravelTypeDto.builder()
+                .id(1L).name(type)
                 .build();
         Long ukrId = 1L;
-        CountryDto ukraine = CountryDto.create().withId(ukrId).withName("Ukraine").build();
+        CountryDto ukraine = CountryDto.builder().id(ukrId).name("Ukraine").build();
         Long itaId = 2L;
-        CountryDto italy = CountryDto.create().withId(itaId).withName("Italy").build();
+        CountryDto italy = CountryDto.builder().id(itaId).name("Italy").build();
         Long tourId = 1L;
-        Instant dateDeparture = createInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
-        TourDto tourDtoToCreate = TourDto.create()
-                .withPrice(200.0)
-                .withAmountDays(5)
-                .withDateDeparture(dateDeparture)
-                .withTravelTypeDto(travelTypeDto)
-                .withCountiesDto(Arrays.asList(italy, ukraine)).build();
+        Instant dateDeparture = builderInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
+        TourDto tourDtoTobuilder = TourDto.builder()
+                .price(200.0)
+                .amountDays(5)
+                .dateDeparture(dateDeparture)
+                .travelTypeDto(travelTypeDto)
+                .countiesDto(Arrays.asList(italy, ukraine)).build();
         when(companyRepository.get(companyId)).thenReturn(Optional.empty());
 
-        assertThrows(NoDataException.class, () -> tourServiceImpl.create(companyId, tourDtoToCreate));
+        assertThrows(NoDataException.class, () -> tourServiceImpl.create(companyId, tourDtoTobuilder));
         verify(countryService, never()).create(italy);
         verify(countryService, never()).create(ukraine);
         verify(travelTypeService, never()).create(travelTypeDto);
@@ -331,43 +331,43 @@ class TourServiceTest {
     }
 
     @Test
-    void create_existedCompany_shouldThrowExecuteException() {
+    void builder_existedCompany_shouldThrowExecuteException() {
         Long companyId = 1L;
-        Company company = Company.create()
-                .withId(companyId).withName("Goodwin")
-                .withAge(10).build();
+        Company company = Company.builder()
+                .id(companyId).name("Goodwin")
+                .age(10).build();
         Long typeId = 1L;
         String type = "by banana";
-        TravelTypeDto travelTypeDto = TravelTypeDto.create()
-                .withId(typeId).withType(type)
+        TravelTypeDto travelTypeDto = TravelTypeDto.builder()
+                .id(typeId).name(type)
                 .build();
         Long ukrId = 1L;
         String ukr = "Ukraine";
-        CountryDto ukraine = CountryDto.create().withId(ukrId).withName(ukr).build();
+        CountryDto ukraine = CountryDto.builder().id(ukrId).name(ukr).build();
         Long itaId = 2L;
         String ita = "Italy";
-        CountryDto italy = CountryDto.create().withId(itaId).withName(ita).build();
+        CountryDto italy = CountryDto.builder().id(itaId).name(ita).build();
         Long tourId = 1L;
         Double price = 200.0;
         Integer amountDays = 5;
-        Instant dateDeparture = createInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
-        Tour tourToCreate = Tour.create()
-                .withPrice(price)
-                .withAmountDays(amountDays)
-                .withDateDeparture(dateDeparture)
-                .withCompanyId(companyId)
-                .withTravelTypeId(typeId).build();
-        TourDto tourDtoToCreate = TourDto.create()
-                .withPrice(price)
-                .withAmountDays(amountDays)
-                .withDateDeparture(dateDeparture)
-                .withTravelTypeDto(travelTypeDto)
-                .withCountiesDto(Arrays.asList(italy, ukraine)).build();
+        Instant dateDeparture = builderInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
+        Tour tourTobuilder = Tour.builder()
+                .price(price)
+                .amountDays(amountDays)
+                .dateDeparture(dateDeparture)
+                .companyId(companyId)
+                .travelTypeId(typeId).build();
+        TourDto tourDtoTobuilder = TourDto.builder()
+                .price(price)
+                .amountDays(amountDays)
+                .dateDeparture(dateDeparture)
+                .travelTypeDto(travelTypeDto)
+                .countiesDto(Arrays.asList(italy, ukraine)).build();
         when(companyRepository.get(companyId)).thenReturn(Optional.of(company));
         when(travelTypeService.get(type)).thenReturn(travelTypeDto);
-        when(tourRepository.create(tourToCreate)).thenReturn(Optional.empty());
+        when(tourRepository.create(tourTobuilder)).thenReturn(Optional.empty());
 
-        assertThrows(ExecuteException.class, () -> tourServiceImpl.create(companyId, tourDtoToCreate));
+        assertThrows(ExecuteException.class, () -> tourServiceImpl.create(companyId, tourDtoTobuilder));
 
         verify(countryService, times(1)).create(italy);
         verify(countryService, times(1)).create(ukraine);
@@ -377,56 +377,56 @@ class TourServiceTest {
     }
 
     @Test
-    void create_tourWithExistedTravelTypeAndCountriesAndCountryTour_shouldReturnNewTour() {
+    void builder_tourWithExistedTravelTypeAndCountriesAndCountryTour_shouldReturnNewTour() {
         Long companyId = 1L;
-        Company company = Company.create()
-                .withId(companyId).withName("Goodwin")
-                .withAge(10).build();
+        Company company = Company.builder()
+                .id(companyId).name("Goodwin")
+                .age(10).build();
         Long typeId = 1L;
         String type = "by banana";
-        TravelTypeDto travelTypeDto = TravelTypeDto.create()
-                .withId(typeId).withType(type)
+        TravelTypeDto travelTypeDto = TravelTypeDto.builder()
+                .id(typeId).name(type)
                 .build();
         Long ukrId = 1L;
         String ukr = "Ukraine";
-        CountryDto ukraine = CountryDto.create().withId(ukrId).withName(ukr).build();
+        CountryDto ukraine = CountryDto.builder().id(ukrId).name(ukr).build();
         Long itaId = 2L;
         String ita = "Italy";
-        CountryDto italy = CountryDto.create().withId(itaId).withName(ita).build();
+        CountryDto italy = CountryDto.builder().id(itaId).name(ita).build();
         Long tourId = 1L;
         Double price = 200.0;
         Integer amountDays = 5;
-        Instant dateDeparture = createInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
-        Tour tourToCreate = Tour.create()
-                .withPrice(price)
-                .withAmountDays(amountDays)
-                .withDateDeparture(dateDeparture)
-                .withCompanyId(companyId)
-                .withTravelTypeId(typeId).build();
-        Tour createdTour = Tour.create()
-                .withId(tourId).withPrice(price)
-                .withAmountDays(amountDays)
-                .withDateDeparture(dateDeparture)
-                .withCompanyId(companyId)
-                .withTravelTypeId(typeId).build();
-        TourDto tourDtoToCreate = TourDto.create()
-                .withPrice(price)
-                .withAmountDays(amountDays)
-                .withDateDeparture(dateDeparture)
-                .withTravelTypeDto(travelTypeDto)
-                .withCountiesDto(Arrays.asList(italy, ukraine)).build();
-        CountryTour ukrCountryTour = CountryTour.create()
-                .withTourId(tourId)
-                .withCountryId(ukrId).build();
-        CountryTour itaCountryTour = CountryTour.create()
-                .withTourId(tourId)
-                .withCountryId(itaId).build();
+        Instant dateDeparture = builderInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
+        Tour tourTobuilder = Tour.builder()
+                .price(price)
+                .amountDays(amountDays)
+                .dateDeparture(dateDeparture)
+                .companyId(companyId)
+                .travelTypeId(typeId).build();
+        Tour builderdTour = Tour.builder()
+                .id(tourId).price(price)
+                .amountDays(amountDays)
+                .dateDeparture(dateDeparture)
+                .companyId(companyId)
+                .travelTypeId(typeId).build();
+        TourDto tourDtoTobuilder = TourDto.builder()
+                .price(price)
+                .amountDays(amountDays)
+                .dateDeparture(dateDeparture)
+                .travelTypeDto(travelTypeDto)
+                .countiesDto(Arrays.asList(italy, ukraine)).build();
+        CountryTour ukrCountryTour = CountryTour.builder()
+                .tourId(tourId)
+                .countryId(ukrId).build();
+        CountryTour itaCountryTour = CountryTour.builder()
+                .tourId(tourId)
+                .countryId(itaId).build();
         when(companyRepository.get(companyId)).thenReturn(Optional.of(company));
         doThrow(new ExtraDataException("")).when(countryService).create(italy);
         doThrow(new ExtraDataException("")).when(countryService).create(ukraine);
         doThrow(new ExtraDataException("")).when(travelTypeService).create(travelTypeDto);
         when(travelTypeService.get(type)).thenReturn(travelTypeDto);
-        when(tourRepository.create(tourToCreate)).thenReturn(Optional.of(createdTour));
+        when(tourRepository.create(tourTobuilder)).thenReturn(Optional.of(builderdTour));
         doThrow(new ExtraDataException("")).when(countryTourRepository).create(tourId, ukrId);
         doThrow(new ExtraDataException("")).when(countryTourRepository).create(tourId, itaId);
         when(countryService.get(ukr)).thenReturn(ukraine);
@@ -436,20 +436,20 @@ class TourServiceTest {
         when(countryService.get(ukrId)).thenReturn(ukraine);
         when(countryService.get(itaId)).thenReturn(italy);
 
-        TourDto createdTourDto = tourServiceImpl.create(companyId, tourDtoToCreate);
+        TourDto builderdTourDto = tourServiceImpl.create(companyId, tourDtoTobuilder);
 
-        assertNotNull(createdTourDto);
-        assertEquals(tourId, createdTourDto.getId());
-        assertEquals(price, createdTourDto.getPrice());
-        assertEquals(amountDays, createdTourDto.getAmountDays());
-        assertEquals(dateDeparture, createdTourDto.getDateDeparture());
-        assertEquals(typeId, createdTourDto.getTravelTypeDto().getId());
-        assertEquals(type, createdTourDto.getTravelTypeDto().getType());
-        assertEquals(2, createdTourDto.getCountiesDto().size());
-        assertEquals(ukrId, createdTourDto.getCountiesDto().get(0).getId());
-        assertEquals(ukr, createdTourDto.getCountiesDto().get(0).getName());
-        assertEquals(itaId, createdTourDto.getCountiesDto().get(1).getId());
-        assertEquals(ita, createdTourDto.getCountiesDto().get(1).getName());
+        assertNotNull(builderdTourDto);
+        assertEquals(tourId, builderdTourDto.getId());
+        assertEquals(price, builderdTourDto.getPrice());
+        assertEquals(amountDays, builderdTourDto.getAmountDays());
+        assertEquals(dateDeparture, builderdTourDto.getDateDeparture());
+        assertEquals(typeId, builderdTourDto.getTravelTypeDto().getId());
+        assertEquals(type, builderdTourDto.getTravelTypeDto().getName());
+        assertEquals(2, builderdTourDto.getCountiesDto().size());
+        assertEquals(ukrId, builderdTourDto.getCountiesDto().get(0).getId());
+        assertEquals(ukr, builderdTourDto.getCountiesDto().get(0).getName());
+        assertEquals(itaId, builderdTourDto.getCountiesDto().get(1).getId());
+        assertEquals(ita, builderdTourDto.getCountiesDto().get(1).getName());
     }
 
     @Test
@@ -457,50 +457,50 @@ class TourServiceTest {
         Long companyId = 1L;
         Long typeId = 1L;
         String type = "by banana";
-        TravelTypeDto travelTypeDto = TravelTypeDto.create()
-                .withId(typeId).withType(type)
+        TravelTypeDto travelTypeDto = TravelTypeDto.builder()
+                .id(typeId).name(type)
                 .build();
         Long ukrId = 1L;
         String ukr = "Ukraine";
-        CountryDto ukraine = CountryDto.create().withId(ukrId).withName(ukr).build();
+        CountryDto ukraine = CountryDto.builder().id(ukrId).name(ukr).build();
         Long itaId = 2L;
         String ita = "Italy";
-        CountryDto italy = CountryDto.create().withId(itaId).withName(ita).build();
+        CountryDto italy = CountryDto.builder().id(itaId).name(ita).build();
         Long tourId = 1L;
         Double price = 200.0;
         Integer amountDays = 5;
-        Instant dateDeparture = createInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
-        Tour oldTour = Tour.create()
-                .withId(tourId)
-                .withPrice(1.0)
-                .withAmountDays(1)
-                .withDateDeparture(createInstance("1900-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss"))
-                .withCompanyId(companyId)
-                .withTravelTypeId(typeId).build();
-        Tour newTourToUpdate = Tour.create()
-                .withPrice(price)
-                .withAmountDays(amountDays)
-                .withDateDeparture(dateDeparture)
-                .withCompanyId(companyId)
-                .withTravelTypeId(typeId).build();
-        Tour updatedTour = Tour.create()
-                .withId(tourId).withPrice(price)
-                .withAmountDays(amountDays)
-                .withDateDeparture(dateDeparture)
-                .withCompanyId(companyId)
-                .withTravelTypeId(typeId).build();
-        TourDto newTourDtoToUpdate = TourDto.create()
-                .withPrice(price)
-                .withAmountDays(amountDays)
-                .withDateDeparture(dateDeparture)
-                .withTravelTypeDto(travelTypeDto)
-                .withCountiesDto(Arrays.asList(italy, ukraine)).build();
-        CountryTour ukrCountryTour = CountryTour.create()
-                .withTourId(tourId)
-                .withCountryId(ukrId).build();
-        CountryTour itaCountryTour = CountryTour.create()
-                .withTourId(tourId)
-                .withCountryId(itaId).build();
+        Instant dateDeparture = builderInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
+        Tour oldTour = Tour.builder()
+                .id(tourId)
+                .price(1.0)
+                .amountDays(1)
+                .dateDeparture(builderInstance("1900-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss"))
+                .companyId(companyId)
+                .travelTypeId(typeId).build();
+        Tour newTourToUpdate = Tour.builder()
+                .price(price)
+                .amountDays(amountDays)
+                .dateDeparture(dateDeparture)
+                .companyId(companyId)
+                .travelTypeId(typeId).build();
+        Tour updatedTour = Tour.builder()
+                .id(tourId).price(price)
+                .amountDays(amountDays)
+                .dateDeparture(dateDeparture)
+                .companyId(companyId)
+                .travelTypeId(typeId).build();
+        TourDto newTourDtoToUpdate = TourDto.builder()
+                .price(price)
+                .amountDays(amountDays)
+                .dateDeparture(dateDeparture)
+                .travelTypeDto(travelTypeDto)
+                .countiesDto(Arrays.asList(italy, ukraine)).build();
+        CountryTour ukrCountryTour = CountryTour.builder()
+                .tourId(tourId)
+                .countryId(ukrId).build();
+        CountryTour itaCountryTour = CountryTour.builder()
+                .tourId(tourId)
+                .countryId(itaId).build();
         when(tourRepository.get(tourId)).thenReturn(Optional.of(oldTour));
         when(countryService.get(ukr)).thenReturn(ukraine);
         when(countryService.get(ita)).thenReturn(italy);
@@ -510,7 +510,7 @@ class TourServiceTest {
         when(countryService.get(ukrId)).thenReturn(ukraine);
         when(countryService.get(itaId)).thenReturn(italy);
 
-        TourDto createdTourDto = tourServiceImpl.update(newTourDtoToUpdate, tourId);
+        TourDto builderdTourDto = tourServiceImpl.update(newTourDtoToUpdate, tourId);
 
         verify(countryService, times(1)).create(italy);
         verify(countryService, times(1)).create(ukraine);
@@ -518,37 +518,37 @@ class TourServiceTest {
         verify(countryTourRepository, times(1)).deleteByTourId(tourId);
         verify(countryTourRepository, times(1)).create(tourId, ukrId);
         verify(countryTourRepository, times(1)).create(tourId, itaId);
-        assertNotNull(createdTourDto);
-        assertEquals(tourId, createdTourDto.getId());
-        assertEquals(price, createdTourDto.getPrice());
-        assertEquals(amountDays, createdTourDto.getAmountDays());
-        assertEquals(dateDeparture, createdTourDto.getDateDeparture());
-        assertEquals(typeId, createdTourDto.getTravelTypeDto().getId());
-        assertEquals(type, createdTourDto.getTravelTypeDto().getType());
-        assertEquals(2, createdTourDto.getCountiesDto().size());
-        assertEquals(ukrId, createdTourDto.getCountiesDto().get(0).getId());
-        assertEquals(ukr, createdTourDto.getCountiesDto().get(0).getName());
-        assertEquals(itaId, createdTourDto.getCountiesDto().get(1).getId());
-        assertEquals(ita, createdTourDto.getCountiesDto().get(1).getName());
+        assertNotNull(builderdTourDto);
+        assertEquals(tourId, builderdTourDto.getId());
+        assertEquals(price, builderdTourDto.getPrice());
+        assertEquals(amountDays, builderdTourDto.getAmountDays());
+        assertEquals(dateDeparture, builderdTourDto.getDateDeparture());
+        assertEquals(typeId, builderdTourDto.getTravelTypeDto().getId());
+        assertEquals(type, builderdTourDto.getTravelTypeDto().getName());
+        assertEquals(2, builderdTourDto.getCountiesDto().size());
+        assertEquals(ukrId, builderdTourDto.getCountiesDto().get(0).getId());
+        assertEquals(ukr, builderdTourDto.getCountiesDto().get(0).getName());
+        assertEquals(itaId, builderdTourDto.getCountiesDto().get(1).getId());
+        assertEquals(ita, builderdTourDto.getCountiesDto().get(1).getName());
     }
 
     @Test
     void update_notExistedTour_shouldThrowNoDataException() {
-        TravelTypeDto travelTypeDto = TravelTypeDto.create()
-                .withId(1L).withType("by banana")
+        TravelTypeDto travelTypeDto = TravelTypeDto.builder()
+                .id(1L).name("by banana")
                 .build();
         Long ukrId = 1L;
-        CountryDto ukraine = CountryDto.create().withId(ukrId).withName("Ukraine").build();
+        CountryDto ukraine = CountryDto.builder().id(ukrId).name("Ukraine").build();
         Long itaId = 2L;
-        CountryDto italy = CountryDto.create().withId(itaId).withName("Italy").build();
+        CountryDto italy = CountryDto.builder().id(itaId).name("Italy").build();
         Long tourId = 1L;
-        Instant dateDeparture = createInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
-        TourDto tourDtoWithoutId = TourDto.create()
-                .withPrice( 200.0)
-                .withAmountDays(5)
-                .withDateDeparture(dateDeparture)
-                .withTravelTypeDto(travelTypeDto)
-                .withCountiesDto(Arrays.asList(italy, ukraine)).build();
+        Instant dateDeparture = builderInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
+        TourDto tourDtoWithoutId = TourDto.builder()
+                .price( 200.0)
+                .amountDays(5)
+                .dateDeparture(dateDeparture)
+                .travelTypeDto(travelTypeDto)
+                .countiesDto(Arrays.asList(italy, ukraine)).build();
         when(tourRepository.get(tourId)).thenReturn(Optional.empty());
 
         assertThrows( NoDataException.class, () -> tourServiceImpl.update(tourDtoWithoutId, tourId));
@@ -565,49 +565,49 @@ class TourServiceTest {
         Long companyId = 1L;
         Long typeId = 1L;
         String type = "by banana";
-        TravelTypeDto travelTypeDto = TravelTypeDto.create()
-                .withId(typeId).withType(type)
+        TravelTypeDto travelTypeDto = TravelTypeDto.builder()
+                .id(typeId).name(type)
                 .build();
         Long ukrId = 1L;
         String ukr = "Ukraine";
-        CountryDto ukraine = CountryDto.create().withId(ukrId).withName(ukr).build();
+        CountryDto ukraine = CountryDto.builder().id(ukrId).name(ukr).build();
         Long itaId = 2L;
         String ita = "Italy";
-        CountryDto italy = CountryDto.create().withId(itaId).withName(ita).build();
+        CountryDto italy = CountryDto.builder().id(itaId).name(ita).build();
         Long tourId = 1L;
         Double price = 200.0;
         Integer amountDays = 5;
-        Instant dateDeparture = createInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
-        Tour oldTour = Tour.create()
-                .withPrice(1.0)
-                .withAmountDays(1)
-                .withDateDeparture(createInstance("1900-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss"))
-                .withCompanyId(companyId)
-                .withTravelTypeId(typeId).build();
-        Tour newTourForUpdate = Tour.create()
-                .withPrice(price)
-                .withAmountDays(amountDays)
-                .withDateDeparture(dateDeparture)
-                .withCompanyId(companyId)
-                .withTravelTypeId(typeId).build();
-        Tour updatedTour = Tour.create()
-                .withId(tourId).withPrice(price)
-                .withAmountDays(amountDays)
-                .withDateDeparture(dateDeparture)
-                .withCompanyId(companyId)
-                .withTravelTypeId(typeId).build();
-        TourDto tourDtoToUpdate = TourDto.create()
-                .withPrice(price)
-                .withAmountDays(amountDays)
-                .withDateDeparture(dateDeparture)
-                .withTravelTypeDto(travelTypeDto)
-                .withCountiesDto(Arrays.asList(italy, ukraine)).build();
-        CountryTour ukrCountryTour = CountryTour.create()
-                .withTourId(tourId)
-                .withCountryId(ukrId).build();
-        CountryTour itaCountryTour = CountryTour.create()
-                .withTourId(tourId)
-                .withCountryId(itaId).build();
+        Instant dateDeparture = builderInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
+        Tour oldTour = Tour.builder()
+                .price(1.0)
+                .amountDays(1)
+                .dateDeparture(builderInstance("1900-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss"))
+                .companyId(companyId)
+                .travelTypeId(typeId).build();
+        Tour newTourForUpdate = Tour.builder()
+                .price(price)
+                .amountDays(amountDays)
+                .dateDeparture(dateDeparture)
+                .companyId(companyId)
+                .travelTypeId(typeId).build();
+        Tour updatedTour = Tour.builder()
+                .id(tourId).price(price)
+                .amountDays(amountDays)
+                .dateDeparture(dateDeparture)
+                .companyId(companyId)
+                .travelTypeId(typeId).build();
+        TourDto tourDtoToUpdate = TourDto.builder()
+                .price(price)
+                .amountDays(amountDays)
+                .dateDeparture(dateDeparture)
+                .travelTypeDto(travelTypeDto)
+                .countiesDto(Arrays.asList(italy, ukraine)).build();
+        CountryTour ukrCountryTour = CountryTour.builder()
+                .tourId(tourId)
+                .countryId(ukrId).build();
+        CountryTour itaCountryTour = CountryTour.builder()
+                .tourId(tourId)
+                .countryId(itaId).build();
         when(tourRepository.get(tourId)).thenReturn(Optional.of(oldTour));
         doThrow(new ExtraDataException("")).when(countryService).create(ukraine);
         doThrow(new ExtraDataException("")).when(countryService).create(italy);
@@ -620,60 +620,60 @@ class TourServiceTest {
         when(countryService.get(ukrId)).thenReturn(ukraine);
         when(countryService.get(itaId)).thenReturn(italy);
 
-        TourDto createdTourDto = tourServiceImpl.update(tourDtoToUpdate, tourId);
+        TourDto builderdTourDto = tourServiceImpl.update(tourDtoToUpdate, tourId);
 
         verify(countryTourRepository, times(1)).deleteByTourId(tourId);
         verify(countryTourRepository, times(1)).create(tourId, ukrId);
         verify(countryTourRepository, times(1)).create(tourId, itaId);
-        assertNotNull(createdTourDto);
-        assertEquals(tourId, createdTourDto.getId());
-        assertEquals(price, createdTourDto.getPrice());
-        assertEquals(amountDays, createdTourDto.getAmountDays());
-        assertEquals(dateDeparture, createdTourDto.getDateDeparture());
-        assertEquals(typeId, createdTourDto.getTravelTypeDto().getId());
-        assertEquals(type, createdTourDto.getTravelTypeDto().getType());
-        assertEquals(2, createdTourDto.getCountiesDto().size());
-        assertEquals(ukrId, createdTourDto.getCountiesDto().get(0).getId());
-        assertEquals(ukr, createdTourDto.getCountiesDto().get(0).getName());
-        assertEquals(itaId, createdTourDto.getCountiesDto().get(1).getId());
-        assertEquals(ita, createdTourDto.getCountiesDto().get(1).getName());
+        assertNotNull(builderdTourDto);
+        assertEquals(tourId, builderdTourDto.getId());
+        assertEquals(price, builderdTourDto.getPrice());
+        assertEquals(amountDays, builderdTourDto.getAmountDays());
+        assertEquals(dateDeparture, builderdTourDto.getDateDeparture());
+        assertEquals(typeId, builderdTourDto.getTravelTypeDto().getId());
+        assertEquals(type, builderdTourDto.getTravelTypeDto().getName());
+        assertEquals(2, builderdTourDto.getCountiesDto().size());
+        assertEquals(ukrId, builderdTourDto.getCountiesDto().get(0).getId());
+        assertEquals(ukr, builderdTourDto.getCountiesDto().get(0).getName());
+        assertEquals(itaId, builderdTourDto.getCountiesDto().get(1).getId());
+        assertEquals(ita, builderdTourDto.getCountiesDto().get(1).getName());
     }
 
     @Test
     void update_existedTour_shouldThrowExecuteException() {
         Long companyId = 1L;
         Long typeId = 1L;
-        TravelTypeDto travelTypeDto = TravelTypeDto.create()
-                .withId(typeId).withType("by banana")
+        TravelTypeDto travelTypeDto = TravelTypeDto.builder()
+                .id(typeId).name("by banana")
                 .build();
         Long ukrId = 1L;
         String ukr = "Ukraine";
-        CountryDto ukraine = CountryDto.create().withId(ukrId).withName(ukr).build();
+        CountryDto ukraine = CountryDto.builder().id(ukrId).name(ukr).build();
         Long itaId = 2L;
         String ita = "Italy";
-        CountryDto italy = CountryDto.create().withId(itaId).withName(ita).build();
+        CountryDto italy = CountryDto.builder().id(itaId).name(ita).build();
         Long tourId = 1L;
         Double price = 200.0;
         Integer amountDays = 5;
-        Instant dateDeparture = createInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
-        Tour oldTour = Tour.create()
-                .withPrice(1.0)
-                .withAmountDays(1)
-                .withDateDeparture(createInstance("1900-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss"))
-                .withCompanyId(companyId)
-                .withTravelTypeId(typeId).build();
-        Tour newTourToUpdate = Tour.create()
-                .withPrice(price)
-                .withAmountDays(amountDays)
-                .withDateDeparture(dateDeparture)
-                .withCompanyId(companyId)
-                .withTravelTypeId(typeId).build();
-        TourDto tourDtoToUpdate = TourDto.create()
-                .withPrice(price)
-                .withAmountDays(amountDays)
-                .withDateDeparture(dateDeparture)
-                .withTravelTypeDto(travelTypeDto)
-                .withCountiesDto(Arrays.asList(italy, ukraine)).build();
+        Instant dateDeparture = builderInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
+        Tour oldTour = Tour.builder()
+                .price(1.0)
+                .amountDays(1)
+                .dateDeparture(builderInstance("1900-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss"))
+                .companyId(companyId)
+                .travelTypeId(typeId).build();
+        Tour newTourToUpdate = Tour.builder()
+                .price(price)
+                .amountDays(amountDays)
+                .dateDeparture(dateDeparture)
+                .companyId(companyId)
+                .travelTypeId(typeId).build();
+        TourDto tourDtoToUpdate = TourDto.builder()
+                .price(price)
+                .amountDays(amountDays)
+                .dateDeparture(dateDeparture)
+                .travelTypeDto(travelTypeDto)
+                .countiesDto(Arrays.asList(italy, ukraine)).build();
         when(tourRepository.get(tourId)).thenReturn(Optional.of(oldTour));
         when(countryService.get(ukr)).thenReturn(ukraine);
         when(countryService.get(ita)).thenReturn(italy);
@@ -691,17 +691,17 @@ class TourServiceTest {
     @Test
     void delete_existedTour_shouldDeleteCurrentTour() {
         Long companyId = 1L;
-        Company company = Company.create()
-                .withId(companyId).withName("Goodwin")
-                .withAge(10).build();
+        Company company = Company.builder()
+                .id(companyId).name("Goodwin")
+                .age(10).build();
         Long tourId = 1L;
-        Instant dateDeparture = createInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
-        Tour tourToDelete = Tour.create()
-                .withId(tourId).withPrice(200.0)
-                .withAmountDays(5)
-                .withDateDeparture(dateDeparture)
-                .withCompanyId(companyId)
-                .withTravelTypeId(1L).build();
+        Instant dateDeparture = builderInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
+        Tour tourToDelete = Tour.builder()
+                .id(tourId).price(200.0)
+                .amountDays(5)
+                .dateDeparture(dateDeparture)
+                .companyId(companyId)
+                .travelTypeId(1L).build();
         when(companyRepository.get(companyId)).thenReturn(Optional.of(company))
                 .thenReturn(Optional.empty());
         when(tourRepository.get(companyId, tourId)).thenReturn(Optional.of(tourToDelete));
@@ -727,9 +727,9 @@ class TourServiceTest {
     @Test
     void delete_existedCompanyWithoutAnyTours_shouldThrowNoDataException() {
         Long companyId = 1L;
-        Company company = Company.create()
-                .withId(companyId).withName("Goodwin")
-                .withAge(10).build();
+        Company company = Company.builder()
+                .id(companyId).name("Goodwin")
+                .age(10).build();
         Long tourId = 1L;
         when(companyRepository.get(companyId)).thenReturn(Optional.of(company));
         when(tourRepository.get(companyId, tourId)).thenReturn(Optional.empty());
@@ -743,17 +743,17 @@ class TourServiceTest {
     @Test
     void delete_existedTour_shouldThrowExecuteException() {
         Long companyId = 1L;
-        Company company = Company.create()
-                .withId(companyId).withName("Goodwin")
-                .withAge(10).build();
+        Company company = Company.builder()
+                .id(companyId).name("Goodwin")
+                .age(10).build();
         Long tourId = 1L;
-        Instant dateDeparture = createInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
-        Tour tourToDelete = Tour.create()
-                .withId(tourId).withPrice(200.0)
-                .withAmountDays(5)
-                .withDateDeparture(dateDeparture)
-                .withCompanyId(companyId)
-                .withTravelTypeId(1L).build();
+        Instant dateDeparture = builderInstance("2020-12-20 20:20:20", "yyyy-MM-dd HH:mm:ss");
+        Tour tourToDelete = Tour.builder()
+                .id(tourId).price(200.0)
+                .amountDays(5)
+                .dateDeparture(dateDeparture)
+                .companyId(companyId)
+                .travelTypeId(1L).build();
         when(companyRepository.get(companyId)).thenReturn(Optional.of(company));
         when(tourRepository.get(companyId, tourId)).thenReturn(Optional.of(tourToDelete));
         when(tourRepository.get(tourId)).thenReturn(Optional.of(tourToDelete));
@@ -766,9 +766,9 @@ class TourServiceTest {
     @Test
     void deleteAll_existedCompany_shouldDeleteAllTourByCompanyId() {
         Long companyId = 1L;
-        Company company = Company.create()
-                .withId(companyId).withName("Goodwin")
-                .withAge(10).build();
+        Company company = Company.builder()
+                .id(companyId).name("Goodwin")
+                .age(10).build();
         when(companyRepository.get(companyId)).thenReturn(Optional.of(company));
         when(companyRepository.getAll()).thenReturn(Collections.emptyList());
 
@@ -789,17 +789,17 @@ class TourServiceTest {
     @Test
     void deleteAll_existedCompany_shouldThrowExecuteException() {
         Long companyId = 1L;
-        Company company = Company.create()
-                .withId(companyId).withName("Goodwin")
-                .withAge(10).build();
+        Company company = Company.builder()
+                .id(companyId).name("Goodwin")
+                .age(10).build();
         when(companyRepository.get(companyId)).thenReturn(Optional.of(company));
-        when(tourRepository.getByCompanyId(companyId)).thenReturn(Arrays.asList(Tour.create().build()));
+        when(tourRepository.getByCompanyId(companyId)).thenReturn(Arrays.asList(Tour.builder().build()));
 
         assertThrows(ExecuteException.class, () -> tourServiceImpl.deleteAll(companyId));
         verify(tourRepository, times(1)).deleteByCompanyId(companyId);
     }
 
-    private Instant createInstance(String time, String pattern) {
+    private Instant builderInstance(String time, String pattern) {
         DateTimeFormatter format = DateTimeFormatter.ofPattern(pattern);
         return LocalDateTime.parse(time, format).toInstant(ZoneOffset.UTC);
     }

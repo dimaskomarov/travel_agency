@@ -1,27 +1,30 @@
 package ua.dima.agency.repositories.impl;
 
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ua.dima.agency.domain.User;
 import ua.dima.agency.repositories.UserRepository;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
+    private static final RowMapper<User> ROW_MAPPER = new BeanPropertyRowMapper<>(User.class);
+    private final JdbcTemplate jdbcTemplate;
 
-    private static Map<String, User> users = new HashMap<>();
-    static {
-        users.put("admin", new User(1L, "admin", "$2y$12$4WxWj9TVLRsgEo/j9L1sUezd.uf38YCCCCdIAKB0gxm/5KF0VJet."));
-        users.put("customer", new User(2L, "customer", "$2y$12$yp4cGHgL0WA6Jv66FKAkjOJkT5GdwepP5kw/63.LsJQhXcJqI.SPi"));
+    public UserRepositoryImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
-    public Optional<User> getByName(String userName) {
-        if(users.containsKey(userName)) {
-            return Optional.of(users.get(userName));
+    public Optional<User> getByLogin(String login) {
+        try{
+            return Optional.ofNullable(jdbcTemplate.queryForObject("SELECT * FROM users WHERE login = ?", ROW_MAPPER, login));
+        } catch(EmptyResultDataAccessException e) {
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 }

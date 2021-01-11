@@ -23,12 +23,12 @@ public class UserDetailsServiceImpl  implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
-        User user = userRepository.getByName(username)
+    public UserDetails loadUserByUsername(String login) {
+        User user = userRepository.getByLogin(login)
                 .orElseThrow(() -> new NoDataException("User not found"));
         List<Role> roles = roleRepository.getRoles(user.getId());
 
-        return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(), roles);
+        return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPassword(), roles);
     }
 
 }

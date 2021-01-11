@@ -56,30 +56,6 @@ public class Role implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return name;
-    }
-
-    public static Builder create() {
-        return new Role().new Builder();
-    }
-
-    public class Builder {
-        private Builder() {
-            //empty constructor
-        }
-
-        public Builder withId(Long id) {
-            Role.this.id = id;
-            return this;
-        }
-
-        public Builder withName(String name) {
-            Role.this.name = name;
-            return this;
-        }
-
-        public Role build() {
-            return Role.this;
-        }
+        return getName();
     }
 }

@@ -19,13 +19,13 @@ public class TourDto {
     }
 
     public static TourDto parse(Tour tour, TravelTypeDto travelTypeDto, List<CountryDto> countiesDto) {
-        return TourDto.create()
-                .withId(tour.getId())
-                .withPrice(tour.getPrice())
-                .withAmountDays(tour.getAmountDays())
-                .withDateDeparture(tour.getDateDeparture())
-                .withTravelTypeDto(travelTypeDto)
-                .withCountiesDto(countiesDto).build();
+        return TourDto.builder()
+                .id(tour.getId())
+                .price(tour.getPrice())
+                .amountDays(tour.getAmountDays())
+                .dateDeparture(tour.getDateDeparture())
+                .travelTypeDto(travelTypeDto)
+                .countiesDto(countiesDto).build();
     }
 
     @Override
@@ -106,7 +106,7 @@ public class TourDto {
         this.countiesDto = countiesDto;
     }
 
-    public static Builder create(){
+    public static Builder builder(){
         return new TourDto().new Builder();
     }
 
@@ -116,32 +116,32 @@ public class TourDto {
             //empty constructor
         }
 
-        public Builder withId(Long id) {
+        public Builder id(Long id) {
             TourDto.this.id = id;
             return this;
         }
 
-        public Builder withPrice(Double price) {
+        public Builder price(Double price) {
             TourDto.this.price = price;
             return this;
         }
 
-        public Builder withAmountDays(Integer amountDays) {
+        public Builder amountDays(Integer amountDays) {
             TourDto.this.amountDays = amountDays;
             return this;
         }
 
-        public Builder withDateDeparture(Instant dateDeparture) {
+        public Builder dateDeparture(Instant dateDeparture) {
             TourDto.this.dateDeparture = dateDeparture;
             return this;
         }
 
-        public Builder withTravelTypeDto(TravelTypeDto travelTypeDto) {
+        public Builder travelTypeDto(TravelTypeDto travelTypeDto) {
             TourDto.this.travelTypeDto = travelTypeDto;
             return this;
         }
 
-        public Builder withCountiesDto(List<CountryDto> countiesDto) {
+        public Builder countiesDto(List<CountryDto> countiesDto) {
             TourDto.this.countiesDto = countiesDto;
             return this;
         }

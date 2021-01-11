@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class User {
     private Long id;
-    private String name;
+    private String login;
     private String password;
 
     public User() {
@@ -14,9 +14,9 @@ public class User {
         this.id = id;
     }
 
-    public User(Long id, String name, String password) {
+    public User(Long id, String login, String password) {
         this.id = id;
-        this.name = name;
+        this.login = login;
         this.password = password;
     }
 
@@ -28,12 +28,12 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getLogin() {
+        return login;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLogin(String login) {
+        this.login = login;
     }
 
     public String getPassword() {
@@ -50,25 +50,25 @@ public class User {
         if (!(o instanceof User)) return false;
         User user = (User) o;
         return Objects.equals(id, user.id) &&
-                Objects.equals(name, user.name) &&
+                Objects.equals(login, user.login) &&
                 Objects.equals(password, user.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, password);
+        return Objects.hash(id, login, password);
     }
 
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
+                ", login='" + login + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
 
-    public static Builder create() {
+    public static Builder builder() {
         return new User().new Builder();
     }
 
@@ -77,17 +77,17 @@ public class User {
             //empty constructor
         }
 
-        public Builder withId(Long id) {
+        public Builder id(Long id) {
             User.this.id = id;
             return this;
         }
 
-        public Builder withName(String name) {
-            User.this.name = name;
+        public Builder login(String login) {
+            User.this.login = login;
             return this;
         }
 
-        public Builder withPassword(String password) {
+        public Builder password(String password) {
             User.this.password = password;
             return this;
         }

@@ -39,9 +39,9 @@ public class TravelTypeRepositoryImpl implements TravelTypeRepository {
     }
 
     @Override
-    public Optional<TravelType> get(String type) {
+    public Optional<TravelType> get(String name) {
         try {
-            TravelType travelType = jdbcTemplate.queryForObject("SELECT * FROM travel_types WHERE type=?", TRAVEL_TYPE_MAPPER, type);
+            TravelType travelType = jdbcTemplate.queryForObject("SELECT * FROM travel_types WHERE name=?", TRAVEL_TYPE_MAPPER, name);
             return Optional.ofNullable(travelType);
         } catch(EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -52,8 +52,8 @@ public class TravelTypeRepositoryImpl implements TravelTypeRepository {
     public Optional<TravelType> create(TravelType travelType) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO travel_types(type) VALUES(?)", new String[] {"id"});
-            statement.setString(1, travelType.getType());
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO travel_types(name) VALUES(?)", new String[] {"id"});
+            statement.setString(1, travelType.getName());
             return statement;
         }, keyHolder);
         long id = 0;
@@ -67,7 +67,7 @@ public class TravelTypeRepositoryImpl implements TravelTypeRepository {
     @Override
     public Optional<TravelType> update(Long id, TravelType travelType) {
         try {
-            jdbcTemplate.update("UPDATE travel_types SET type=? WHERE id=?", travelType.getType(), id);
+            jdbcTemplate.update("UPDATE travel_types SET name=? WHERE id=?", travelType.getName(), id);
             return get(id);
         } catch(EmptyResultDataAccessException e) {
             return Optional.empty();

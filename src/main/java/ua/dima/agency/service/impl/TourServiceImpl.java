@@ -105,12 +105,12 @@ public class TourServiceImpl implements TourService {
         createMissingCountryTour(tourDto.getCountiesDto(), tourId);
 
         Tour oldTour = getTourFromDB(tourId);
-        Tour newTour = Tour.create()
-                .withPrice(tourDto.getPrice())
-                .withAmountDays(tourDto.getAmountDays())
-                .withDateDeparture(tourDto.getDateDeparture())
-                .withCompanyId(oldTour.getCompanyId())
-                .withTravelTypeId(oldTour.getTravelTypeId()).build();
+        Tour newTour = Tour.builder()
+                .price(tourDto.getPrice())
+                .amountDays(tourDto.getAmountDays())
+                .dateDeparture(tourDto.getDateDeparture())
+                .companyId(oldTour.getCompanyId())
+                .travelTypeId(oldTour.getTravelTypeId()).build();
         Optional<Tour> updatedTour = tourRepository.update(tourId, newTour);
         if (updatedTour.isPresent()) {
             return buildTourDtoWithTypeAndCountry(updatedTour.get());
@@ -160,7 +160,7 @@ public class TourServiceImpl implements TourService {
     }
 
     private Tour buildTourWithTypeAndCountry(TourDto tourDTO, Long companyId) {
-        String typeFromTour = tourDTO.getTravelTypeDto().getType();
+        String typeFromTour = tourDTO.getTravelTypeDto().getName();
         TravelTypeDto receivedTravelType = travelTypeService.get(typeFromTour);
 
         return Tour.parse(tourDTO, companyId, receivedTravelType.getId());
@@ -169,7 +169,7 @@ public class TourServiceImpl implements TourService {
     private Tour getTourFromDB(Long tourId) {
         Optional<Tour> tour = tourRepository.get(tourId);
 
-        return tour.orElseGet(() -> Tour.create().build());
+        return tour.orElseGet(() -> Tour.builder().build());
     }
 
     public void createMissingCountryTour(List<CountryDto> countriesDto, Long tourId) {
