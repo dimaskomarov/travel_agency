@@ -8,7 +8,7 @@ import ua.dima.agency.service.TourService;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "companies/{companyId}/tours")
+@RequestMapping(value = "/companies/{companyId}/tours")
 public class TourController {
     private final TourService tourService;
 

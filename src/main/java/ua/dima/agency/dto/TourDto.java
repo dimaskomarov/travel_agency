@@ -4,6 +4,7 @@ import ua.dima.agency.domain.Tour;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 
 public class TourDto {
     private Long id;
@@ -18,40 +19,31 @@ public class TourDto {
     }
 
     public static TourDto parse(Tour tour, TravelTypeDto travelTypeDto, List<CountryDto> countiesDto) {
-        return TourDto.create()
-                .withId(tour.getId())
-                .withPrice(tour.getPrice())
-                .withAmountDays(tour.getAmountDays())
-                .withDateDeparture(tour.getDateDeparture())
-                .withTravelTypeDto(travelTypeDto)
-                .withCountiesDto(countiesDto).build();
+        return TourDto.builder()
+                .id(tour.getId())
+                .price(tour.getPrice())
+                .amountDays(tour.getAmountDays())
+                .dateDeparture(tour.getDateDeparture())
+                .travelTypeDto(travelTypeDto)
+                .countiesDto(countiesDto).build();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof TourDto)) return false;
         TourDto tourDto = (TourDto) o;
-
-        if (id != null ? !id.equals(tourDto.id) : tourDto.id != null) return false;
-        if (!price.equals(tourDto.price)) return false;
-        if (!amountDays.equals(tourDto.amountDays)) return false;
-        if (!dateDeparture.equals(tourDto.dateDeparture)) return false;
-        if (travelTypeDto != null ? !travelTypeDto.equals(tourDto.travelTypeDto) : tourDto.travelTypeDto != null)
-            return false;
-        return countiesDto != null ? countiesDto.equals(tourDto.countiesDto) : tourDto.countiesDto == null;
+        return Objects.equals(id, tourDto.id) &&
+                Objects.equals(price, tourDto.price) &&
+                Objects.equals(amountDays, tourDto.amountDays) &&
+                Objects.equals(dateDeparture, tourDto.dateDeparture) &&
+                Objects.equals(travelTypeDto, tourDto.travelTypeDto) &&
+                Objects.equals(countiesDto, tourDto.countiesDto);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + price.hashCode();
-        result = 31 * result + amountDays.hashCode();
-        result = 31 * result + dateDeparture.hashCode();
-        result = 31 * result + (travelTypeDto != null ? travelTypeDto.hashCode() : 0);
-        result = 31 * result + (countiesDto != null ? countiesDto.hashCode() : 0);
-        return result;
+        return Objects.hash(id, price, amountDays, dateDeparture, travelTypeDto, countiesDto);
     }
 
     @Override
@@ -114,7 +106,7 @@ public class TourDto {
         this.countiesDto = countiesDto;
     }
 
-    public static Builder create(){
+    public static Builder builder(){
         return new TourDto().new Builder();
     }
 
@@ -124,32 +116,32 @@ public class TourDto {
             //empty constructor
         }
 
-        public Builder withId(Long id) {
+        public Builder id(Long id) {
             TourDto.this.id = id;
             return this;
         }
 
-        public Builder withPrice(Double price) {
+        public Builder price(Double price) {
             TourDto.this.price = price;
             return this;
         }
 
-        public Builder withAmountDays(Integer amountDays) {
+        public Builder amountDays(Integer amountDays) {
             TourDto.this.amountDays = amountDays;
             return this;
         }
 
-        public Builder withDateDeparture(Instant dateDeparture) {
+        public Builder dateDeparture(Instant dateDeparture) {
             TourDto.this.dateDeparture = dateDeparture;
             return this;
         }
 
-        public Builder withTravelTypeDto(TravelTypeDto travelTypeDto) {
+        public Builder travelTypeDto(TravelTypeDto travelTypeDto) {
             TourDto.this.travelTypeDto = travelTypeDto;
             return this;
         }
 
-        public Builder withCountiesDto(List<CountryDto> countiesDto) {
+        public Builder countiesDto(List<CountryDto> countiesDto) {
             TourDto.this.countiesDto = countiesDto;
             return this;
         }

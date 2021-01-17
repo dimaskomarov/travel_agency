@@ -66,7 +66,7 @@ public class TravelTypeServiceImpl implements TravelTypeService {
 
     @Override
     public TravelTypeDto create(TravelTypeDto travelTypeDto) {
-        checkIfTypeNew(travelTypeDto.getType());
+        checkIfTypeNew(travelTypeDto.getName());
 
         Optional<TravelType> createdTravelType = travelTypeRepository.create(TravelType.parse(travelTypeDto));
         if(createdTravelType.isPresent()) {
@@ -78,7 +78,7 @@ public class TravelTypeServiceImpl implements TravelTypeService {
 
     @Override
     public TravelTypeDto update(Long id, TravelTypeDto travelTypeDto) {
-        checkIfTypeNew(travelTypeDto.getType());
+        checkIfTypeNew(travelTypeDto.getName());
 
         Optional<TravelType> updatedTravelType = travelTypeRepository.update(id, TravelType.parse(travelTypeDto));
         if(updatedTravelType.isPresent()) {

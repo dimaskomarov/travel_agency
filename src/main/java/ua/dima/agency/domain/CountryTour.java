@@ -1,5 +1,7 @@
 package ua.dima.agency.domain;
 
+import java.util.Objects;
+
 public class CountryTour {
     private Long countryId;
     private Long tourId;
@@ -11,19 +13,15 @@ public class CountryTour {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof CountryTour)) return false;
         CountryTour that = (CountryTour) o;
-
-        if (!countryId.equals(that.countryId)) return false;
-        return tourId.equals(that.tourId);
+        return Objects.equals(countryId, that.countryId) &&
+                Objects.equals(tourId, that.tourId);
     }
 
     @Override
     public int hashCode() {
-        int result = countryId.hashCode();
-        result = 31 * result + tourId.hashCode();
-        return result;
+        return Objects.hash(countryId, tourId);
     }
 
     @Override
@@ -50,7 +48,7 @@ public class CountryTour {
         this.tourId = tourId;
     }
 
-    public static Builder create() {
+    public static Builder builder() {
         return new CountryTour().new Builder();
     }
 
@@ -59,12 +57,12 @@ public class CountryTour {
             //empty constructor
         }
 
-        public Builder withCountryId(Long countryId) {
+        public Builder countryId(Long countryId) {
             CountryTour.this.countryId = countryId;
             return this;
         }
 
-        public Builder withTourId(Long tourId) {
+        public Builder tourId(Long tourId) {
             CountryTour.this.tourId = tourId;
             return this;
         }

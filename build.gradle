@@ -13,6 +13,24 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    //Dev tool
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-devtools'
+
+    //Security
+    implementation 'org.springframework.security.oauth:spring-security-oauth2:2.3.5.RELEASE'
+    implementation 'org.springframework.security:spring-security-jwt:1.1.1.RELEASE'
+
+    //JaxB
+    implementation 'javax.xml.bind:jaxb-api:2.3.0'
+    implementation 'com.sun.xml.bind:jaxb-core:2.3.0'
+    implementation 'com.sun.xml.bind:jaxb-impl:2.3.0'
+    implementation 'javax.activation:activation:1.1.1'
+    implementation 'org.javassist:javassist:3.27.0-GA'
+
+    implementation 'org.flywaydb:flyway-core:6.2.4'
+
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.postgresql:postgresql:42.2.18'

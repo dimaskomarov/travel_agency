@@ -36,12 +36,12 @@ public class ApplicationReadyEvent {
 
     @EventListener(ApplicationReadyEvent.class)
     public void testCompanyRepository() {
-        Company defaultCompany = Company.create().build();
+        Company defaultCompany = Company.builder().build();
 
-        Company testCompany = Company.create()
-                .withName("Travel for everyone")
-                .withAddress("Kharkov, st. Free 101")
-                .withAge(10)
+        Company testCompany = Company.builder()
+                .name("Travel for everyone")
+                .address("Kharkov, st. Free 101")
+                .age(10)
                 .build();
 
         Company companyNumberOne = companyRepository.get(1L).orElse(defaultCompany);
@@ -50,23 +50,23 @@ public class ApplicationReadyEvent {
         List<Company> allCompany = companyRepository.getAll();
         LOGGER.info("All companies: {}", allCompany);
 
-        Company createdCompany = companyRepository.create(testCompany).orElse(defaultCompany);
-        LOGGER.info("Created company: {}", createdCompany);
+        Company builderdCompany = companyRepository.create(testCompany).orElse(defaultCompany);
+        LOGGER.info("builderd company: {}", builderdCompany);
 
-        createdCompany.setAge(10_000);
-        Company updatedCompany = companyRepository.update(createdCompany.getId(), createdCompany).orElse(defaultCompany);
+        builderdCompany.setAge(10_000);
+        Company updatedCompany = companyRepository.update(builderdCompany.getId(), builderdCompany).orElse(defaultCompany);
         LOGGER.info("Updated company: {}", updatedCompany);
 
-        companyRepository.delete(createdCompany.getId());
-        LOGGER.info("Removed company: {}", createdCompany);
+        companyRepository.delete(builderdCompany.getId());
+        LOGGER.info("Removed company: {}", builderdCompany);
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void testCountryRepository() {
-        Country defaultCountry = Country.create().build();
+        Country defaultCountry = Country.builder().build();
 
-        Country uganda = Country.create()
-                .withName("Uganda")
+        Country uganda = Country.builder()
+                .name("Uganda")
                 .build();
 
         Country countryNumberOne = countryRepository.get(1L).orElse(defaultCountry);
@@ -75,26 +75,26 @@ public class ApplicationReadyEvent {
         List<Country> allCountries = countryRepository.getAll();
         LOGGER.info("All countries: {}", allCountries);
 
-        Country createdCountry = countryRepository.create(uganda)
+        Country builderdCountry = countryRepository.create(uganda)
                 .orElse(defaultCountry);
-        LOGGER.info("Created country: {}", createdCountry);
+        LOGGER.info("builderd country: {}", builderdCountry);
 
-        createdCountry.setName("Uganda1");
-        Country updatedCompany = countryRepository.update(createdCountry.getId(), createdCountry)
+        builderdCountry.setName("Uganda1");
+        Country updatedCompany = countryRepository.update(builderdCountry.getId(), builderdCountry)
                 .orElse(defaultCountry);
         LOGGER.info("Updated country: {}", updatedCompany);
 
-        countryRepository.delete(createdCountry.getId());
-        LOGGER.info("Removed country: {}", createdCountry);
+        countryRepository.delete(builderdCountry.getId());
+        LOGGER.info("Removed country: {}", builderdCountry);
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void testCountryTourRepository() {
-        CountryTour defaultCountryTour = CountryTour.create().build();
+        CountryTour defaultCountryTour = CountryTour.builder().build();
 
-        CountryTour testCountryTour = CountryTour.create()
-                .withCountryId(5L)
-                .withTourId(6L)
+        CountryTour testCountryTour = CountryTour.builder()
+                .countryId(5L)
+                .tourId(6L)
                 .build();
 
         List<CountryTour> allCountryToursByCountryId = countryTourRepository.getAllByCountryId(1L);
@@ -107,7 +107,7 @@ public class ApplicationReadyEvent {
         LOGGER.info("All countryTours: {}", allCountryTours);
 
         countryTourRepository.create(testCountryTour);
-        LOGGER.info("Created countryTour: {}", testCountryTour);
+        LOGGER.info("builderd countryTour: {}", testCountryTour);
 
         countryTourRepository.delete(testCountryTour);
         LOGGER.info("Removed countryTour by tourId: {}", testCountryTour);
@@ -115,17 +115,17 @@ public class ApplicationReadyEvent {
 
     @EventListener(ApplicationReadyEvent.class)
     public void testTourRepository() {
-        Tour defaultTour = Tour.create().build();
+        Tour defaultTour = Tour.builder().build();
 
         LocalDateTime localDateTime = LocalDateTime.parse("1990-11-22T10:00:00");
         Instant instant = localDateTime.toInstant(ZoneOffset.UTC);
 
-        Tour testTour = Tour.create()
-                .withPrice(2_675.0)
-                .withAmountDays(3)
-                .withDateDeparture(instant)
-                .withCompanyId(1L)
-                .withTravelTypeId(1L)
+        Tour testTour = Tour.builder()
+                .price(2_675.0)
+                .amountDays(3)
+                .dateDeparture(instant)
+                .companyId(1L)
+                .travelTypeId(1L)
                 .build();
 
         Tour tourNumberOne = tourRepository.get(1L).orElse(defaultTour);
@@ -134,24 +134,24 @@ public class ApplicationReadyEvent {
         List<Tour> allTours = tourRepository.getAll();
         LOGGER.info("All tours: {}", allTours);
 
-        Tour createdTour = tourRepository.create(testTour).orElse(defaultTour);
-        LOGGER.info("Created tour: {}", createdTour);
+        Tour builderdTour = tourRepository.create(testTour).orElse(defaultTour);
+        LOGGER.info("builderd tour: {}", builderdTour);
 
-        createdTour.setAmountDays(666);
-        Tour updatedTour = tourRepository.update(createdTour.getId(), createdTour).orElse(defaultTour);
+        builderdTour.setAmountDays(666);
+        Tour updatedTour = tourRepository.update(builderdTour.getId(), builderdTour).orElse(defaultTour);
         LOGGER.info("Updated tour: {}", updatedTour);
 
         tourRepository.delete(1L);
-        LOGGER.info("Removed tour: {}", createdTour);
+        LOGGER.info("Removed tour: {}", builderdTour);
     }
 
 
     @EventListener(ApplicationReadyEvent.class)
     public void testTravelTypeRepository() {
-        TravelType defaultTravelType = TravelType.create().build();
+        TravelType defaultTravelType = TravelType.builder().build();
 
-        TravelType travelType = TravelType.create()
-                .withType("By banana")
+        TravelType travelType = TravelType.builder()
+                .name("By banana")
                 .build();
 
         TravelType travelTypeNumberOne = travelTypeRepository.get(1L).orElse(defaultTravelType);
@@ -160,14 +160,14 @@ public class ApplicationReadyEvent {
         List<TravelType> allTravelTypes = travelTypeRepository.getAll();
         LOGGER.info("All travelTypes: {}", allTravelTypes);
 
-        TravelType createdTravelTypes = travelTypeRepository.create(travelType).orElse(defaultTravelType);
-        LOGGER.info("Created travelType: {}", createdTravelTypes);
+        TravelType builderdTravelTypes = travelTypeRepository.create(travelType).orElse(defaultTravelType);
+        LOGGER.info("builderd travelType: {}", builderdTravelTypes);
 
-        createdTravelTypes.setType("AAAAAA");
-        TravelType updatedCompany = travelTypeRepository.update(createdTravelTypes.getId(), createdTravelTypes).orElse(defaultTravelType);
+        builderdTravelTypes.setName("AAAAAA");
+        TravelType updatedCompany = travelTypeRepository.update(builderdTravelTypes.getId(), builderdTravelTypes).orElse(defaultTravelType);
         LOGGER.info("Updated travelType: {}", updatedCompany);
 
         travelTypeRepository.delete(6L);
-        LOGGER.info("Removed travelType: {}", createdTravelTypes);
+        LOGGER.info("Removed travelType: {}", builderdTravelTypes);
     }
 }

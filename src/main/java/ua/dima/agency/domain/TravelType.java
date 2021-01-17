@@ -6,42 +6,38 @@ import java.util.Objects;
 
 public class TravelType {
     private Long id;
-    private String type;
+    private String name;
 
     private TravelType() {
         //empty constructor
     }
 
     public static TravelType parse(TravelTypeDto travelTypeDto) {
-        return TravelType.create()
-                .withId(travelTypeDto.getId())
-                .withType(travelTypeDto.getType())
+        return TravelType.builder()
+                .id(travelTypeDto.getId())
+                .name(travelTypeDto.getName())
                 .build();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof TravelType)) return false;
         TravelType that = (TravelType) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        return type.equals(that.type);
+        return Objects.equals(id, that.id) &&
+                Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + type.hashCode();
-        return result;
+        return Objects.hash(id, name);
     }
 
     @Override
     public String toString() {
         return "TravelType{" +
                 "id=" + id +
-                ", type='" + type + '\'' +
+                ", name='" + name + '\'' +
                 '}';
     }
 
@@ -53,15 +49,15 @@ public class TravelType {
         this.id = id;
     }
 
-    public String getType() {
-        return type;
+    public String getName() {
+        return name;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public static Builder create() {
+    public static Builder builder() {
         return new TravelType().new Builder();
     }
 
@@ -70,13 +66,13 @@ public class TravelType {
             //empty constructor
         }
 
-        public Builder withId(Long id) {
+        public Builder id(Long id) {
             TravelType.this.id = id;
             return this;
         }
 
-        public Builder withType(String type) {
-            TravelType.this.type = type;
+        public Builder name(String name) {
+            TravelType.this.name = name;
             return this;
         }
 

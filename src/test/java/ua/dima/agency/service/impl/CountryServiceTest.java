@@ -39,7 +39,7 @@ class CountryServiceTest {
     void getById_existedCountry_shouldReturnCountry() {
         Long id = 1L;
         String name = "Ukraine";
-        Country ukraine = Country.create().withId(id).withName(name).build();
+        Country ukraine = Country.builder().id(id).name(name).build();
         when(countryRepository.get(id)).thenReturn(Optional.of(ukraine));
 
         CountryDto receivedCountryDto = countryServiceImpl.get(id);
@@ -61,7 +61,7 @@ class CountryServiceTest {
     void getByName_existedCountry_shouldReturnCountry() {
         Long id = 1L;
         String name = "Ukraine";
-        Country ukraine = Country.create().withId(id).withName(name).build();
+        Country ukraine = Country.builder().id(id).name(name).build();
         when(countryRepository.get(name)).thenReturn(Optional.of(ukraine));
 
         CountryDto receivedCountryDto = countryServiceImpl.get(name);
@@ -83,10 +83,10 @@ class CountryServiceTest {
     void getAll_validData_shouldReturnTwoCountries() {
         Long ukrId = 1L;
         String ukr = "Ukraine";
-        Country ukraine = Country.create().withId(ukrId).withName(ukr).build();
+        Country ukraine = Country.builder().id(ukrId).name(ukr).build();
         Long itaId = 2L;
         String ita = "Italy";
-        Country italy = Country.create().withId(itaId).withName(ita).build();
+        Country italy = Country.builder().id(itaId).name(ita).build();
         when(countryRepository.getAll()).thenReturn(Arrays.asList(ukraine, italy));
 
         List<CountryDto> countriesDto = countryServiceImpl.getAll();
@@ -107,41 +107,41 @@ class CountryServiceTest {
     }
 
     @Test
-    void create_newCountry_shouldReturnNewCountry() {
+    void builder_newCountry_shouldReturnNewCountry() {
         Long id = 1L;
         String name = "Ukraine";
-        Country ukraineWithoutId = Country.create().withName(name).build();
-        Country ukraine = Country.create().withId(id).withName(name).build();
+        Country ukraineWithoutId = Country.builder().name(name).build();
+        Country ukraine = Country.builder().id(id).name(name).build();
         when(countryRepository.get(name)).thenReturn(Optional.empty());
         when(countryRepository.create(ukraineWithoutId)).thenReturn(Optional.of(ukraine));
 
-        CountryDto countryDtoForCreating = CountryDto.create().withName(name).build();
-        CountryDto createdCountryDto = countryServiceImpl.create(countryDtoForCreating);
+        CountryDto countryDtoForCreating = CountryDto.builder().name(name).build();
+        CountryDto builderdCountryDto = countryServiceImpl.create(countryDtoForCreating);
 
-        assertNotNull(createdCountryDto);
-        assertNotNull(createdCountryDto.getId());
-        assertEquals(id, createdCountryDto.getId());
-        assertEquals(name, createdCountryDto.getName());
+        assertNotNull(builderdCountryDto);
+        assertNotNull(builderdCountryDto.getId());
+        assertEquals(id, builderdCountryDto.getId());
+        assertEquals(name, builderdCountryDto.getName());
     }
 
     @Test
-    void create_existedCountry_shouldThrowExtraDataException() {
+    void builder_existedCountry_shouldThrowExtraDataException() {
         String name = "Ukraine";
-        Country ukraine = Country.create().withId(1L).withName(name).build();
+        Country ukraine = Country.builder().id(1L).name(name).build();
         when(countryRepository.get(name)).thenReturn(Optional.of(ukraine));
 
-        CountryDto countryDtoForCreating = CountryDto.create().withName(name).build();
+        CountryDto countryDtoForCreating = CountryDto.builder().name(name).build();
         assertThrows(ExtraDataException.class, () -> countryServiceImpl.create(countryDtoForCreating));
     }
 
     @Test
-    void create_newCountry_shouldThrowExecuteException() {
+    void builder_newCountry_shouldThrowExecuteException() {
         String name = "Ukraine";
-        Country ukraineWithoutId = Country.create().withName(name).build();
+        Country ukraineWithoutId = Country.builder().name(name).build();
         when(countryRepository.get(name)).thenReturn(Optional.empty());
         when(countryRepository.create(ukraineWithoutId)).thenReturn(Optional.empty());
 
-        CountryDto countryDtoForCreating = CountryDto.create().withName(name).build();
+        CountryDto countryDtoForCreating = CountryDto.builder().name(name).build();
         assertThrows(ExecuteException.class, () -> countryServiceImpl.create(countryDtoForCreating));
     }
 
@@ -149,12 +149,12 @@ class CountryServiceTest {
     void update_newCountry_shouldReturnUpdatedCountry() {
         Long id = 1L;
         String name = "Ukraine";
-        Country ukraineWithoutId = Country.create().withName(name).build();
-        Country ukraine = Country.create().withId(id).withName(name).build();
+        Country ukraineWithoutId = Country.builder().name(name).build();
+        Country ukraine = Country.builder().id(id).name(name).build();
         when(countryRepository.get(name)).thenReturn(Optional.empty());
         when(countryRepository.update(id,  ukraineWithoutId)).thenReturn(Optional.of(ukraine));
 
-        CountryDto countryDtoForUpdating = CountryDto.create().withName(name).build();
+        CountryDto countryDtoForUpdating = CountryDto.builder().name(name).build();
         CountryDto updatedCountryDto = countryServiceImpl.update(id, countryDtoForUpdating);
 
         assertNotNull(updatedCountryDto);
@@ -166,10 +166,10 @@ class CountryServiceTest {
     void update_existedCountry_shouldThrowExtraDataException() {
         Long id = 1L;
         String name = "Ukraine";
-        Country ukraine = Country.create().withId(id).withName(name).build();
+        Country ukraine = Country.builder().id(id).name(name).build();
         when(countryRepository.get(name)).thenReturn(Optional.of(ukraine));
 
-        CountryDto countryDtoForUpdating = CountryDto.create().withName(name).build();
+        CountryDto countryDtoForUpdating = CountryDto.builder().name(name).build();
         assertThrows(ExtraDataException.class, () -> countryServiceImpl.update(id, countryDtoForUpdating));
     }
 
@@ -177,18 +177,18 @@ class CountryServiceTest {
     void update_newCountry_shouldThrowExecuteException() {
         Long id = 1L;
         String name = "Ukraine";
-        Country ukraineWithoutId = Country.create().withName(name).build();
+        Country ukraineWithoutId = Country.builder().name(name).build();
         when(countryRepository.get(name)).thenReturn(Optional.empty());
         when(countryRepository.update(id,  ukraineWithoutId)).thenReturn(Optional.empty());
 
-        CountryDto countryDtoForUpdating = CountryDto.create().withName(name).build();
+        CountryDto countryDtoForUpdating = CountryDto.builder().name(name).build();
         assertThrows(ExecuteException.class, () -> countryServiceImpl.update(id, countryDtoForUpdating));
     }
 
     @Test
     void delete_existedCountry_shouldDeleteCountry() {
         Long id = 1L;
-        Country ukraine = Country.create().withId(id).withName("Ukraine").build();
+        Country ukraine = Country.builder().id(id).name("Ukraine").build();
         when(countryRepository.get(id)).thenReturn(Optional.of(ukraine))
                 .thenReturn(Optional.empty());
 
@@ -212,7 +212,7 @@ class CountryServiceTest {
     @Test
     void delete_notExistedCountry_shouldThrowExecuteException() {
         Long id = 1L;
-        Country ukraine = Country.create().withId(id).withName("Ukraine").build();
+        Country ukraine = Country.builder().id(id).name("Ukraine").build();
         when(countryRepository.get(id)).thenReturn(Optional.of(ukraine));
 
         assertThrows(ExecuteException.class, () -> countryServiceImpl.delete(id));

@@ -2,6 +2,8 @@ package ua.dima.agency.domain;
 
 import ua.dima.agency.dto.CountryDto;
 
+import java.util.Objects;
+
 public class Country {
     private Long id;
     private String name;
@@ -11,27 +13,31 @@ public class Country {
     }
 
     public static Country parse(CountryDto countryDTO) {
-        return Country.create()
-                .withId(countryDTO.getId())
-                .withName(countryDTO.getName()).build();
+        return Country.builder()
+                .id(countryDTO.getId())
+                .name(countryDTO.getName()).build();
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
+        if (!(o instanceof Country)) return false;
         Country country = (Country) o;
-
-        if (id != null ? !id.equals(country.id) : country.id != null) return false;
-        return name.equals(country.name);
+        return Objects.equals(id, country.id) &&
+                Objects.equals(name, country.name);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + name.hashCode();
-        return result;
+        return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return "Country{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 
     public Long getId() {
@@ -50,7 +56,7 @@ public class Country {
         this.name = name;
     }
 
-    public static Builder create() {
+    public static Builder builder() {
         return new Country().new Builder();
     }
 
@@ -59,12 +65,12 @@ public class Country {
             //empty constructor
         }
 
-        public Builder withId(Long id) {
+        public Builder id(Long id) {
             Country.this.id = id;
             return this;
         }
 
-        public Builder withName(String name) {
+        public Builder name(String name) {
             Country.this.name = name;
             return this;
         }
